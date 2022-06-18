@@ -1,73 +1,19 @@
-# Other imports
-# GIT: https://www.youtube.com/watch?v=-_g3QITLaQA&t=173s
-
-# My classes
-from csd_framework.csd_deliberation_components import *
-from csd_framework.csd_context import *
-
+"""
+    GIT: https://www.youtube.com/watch?v=-_g3QITLaQA&t=173s
+    https://stackoverflow.com/questions/18529206/when-do-i-need-to-do-git-pull-before-or-after-git-add-git-commit
+    https://pythonprogramming.altervista.org/nice-gui-graphic-for-tkinter-with-ttk-and-azure-theme-from-this-guy/
+"""
+# Imports
+import tkinter as tk
+# import random
 # random.seed(10)
+from Agent import *
 
-all_dc = [DeliberationComponent(0, ['Test'])]  # This is a sorted list based on computational_effort
-all_dc.pop()
-all_dc.append(DC_default_action())
-all_dc.append(DC_goal_from_context())
-all_dc.append(DC_goal_from_imitation())
-all_dc.append(DC_plan_making())
-all_dc.append(DC_end())
+window = tk.Tk()
+greeting = tk.Label(text="Hello Maarten /Tkinter")
+greeting.pack()
 
-in_dc = all_dc
-current_dc = None
-out_dc = list()
+myAgent = Agent()
+myAgent.deliberate()
 
-
-class Deliberator:
-
-    def __init__(self):
-        print("Initialized:" + type(self).__name__)
-        self.currentContext = Context()
-
-    def main_deliberate(self):
-        print("-------------------------------------")
-        print("Start deliberating")
-        self.currentContext.clear()
-        act_or_crit = Criteria.ACTION_FINDING
-        while True:
-            print("-------------------------------------")
-            delib_aid = self.select_dc([act_or_crit])
-            act_or_crit, remove_from_in = delib_aid.deliberate(self.currentContext)
-            if remove_from_in: self.remove_dc(delib_aid)
-
-            if type(act_or_crit) == Action:
-                print("Perform action: " + act_or_crit.effect)
-                break
-            if type(act_or_crit) == Criteria:
-                print("Deliberate more: " + act_or_crit.name)
-        print("End deliberating")
-        print("-------------------------------------")
-
-    def select_dc(self, new_criteria: list) -> DeliberationComponent:
-        prt = "Select DC [Crt: " + new_criteria[0].name + "]"
-        selected_dc = DC_end()
-        for s_dc in in_dc:
-            if s_dc.check_criteria(new_criteria):
-                selected_dc = s_dc
-                prt += ": " + s_dc.name()
-                break
-        print(prt)
-        return selected_dc
-
-    def remove_dc(self, delib_aid):
-        print("Remove dc: " + str(type(delib_aid)))
-        out_dc.append(delib_aid)
-        in_dc.remove(delib_aid)
-
-
-# Copy DC select function based on criteria
-
-myDeliberator = Deliberator()
-myDeliberator.main_deliberate()
-
-# testContext = Context()
-# testContext.add_actions(actions)
-# testContext.print_context()
-# testContext.random_action()
+window.mainloop()
