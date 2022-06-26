@@ -12,7 +12,7 @@ all_dc.append(DC_end())
 
 in_dc = all_dc
 current_dc = None
-out_dc = list()
+out_dc = []
 
 
 class Deliberator:
