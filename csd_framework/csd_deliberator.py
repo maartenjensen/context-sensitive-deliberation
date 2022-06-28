@@ -1,16 +1,19 @@
 # My classes
-from csd_framework.csd_deliberation_components import *
+from csd_framework.csd_contextual_deliberation_components import *
 from csd_framework.csd_context import *
 
-all_dc = [DeliberationComponent(0, ['Test'])]  # This is a sorted list based on computational_effort
-all_dc.pop()
-all_dc.append(DC_default_action())
-all_dc.append(DC_goal_from_context())
-all_dc.append(DC_goal_from_imitation())
-all_dc.append(DC_plan_making())
-all_dc.append(DC_end())
+# CDC means Contextual Deliberation Component
+all_cdc = [ContextualDeliberationComponent(0, ['Test'])]  # This is a sorted list based on computational_effort
+all_cdc.pop()
+all_cdc.append(CC_minimal_old())
+all_cdc.append(CC_repetition())
+all_cdc.append(DC_default_action())
+all_cdc.append(DC_goal_from_context())
+all_cdc.append(DC_goal_from_imitation())
+all_cdc.append(DC_plan_making())
+all_cdc.append(DC_end())
 
-in_dc = all_dc
+in_dc = all_cdc
 current_dc = None
 out_dc = []
 
@@ -25,22 +28,29 @@ class Deliberator:
         print("-------------------------------------")
         print("Start deliberating")
         self.currentContext.clear()
-        act_or_crit = Criteria.ACTION_FINDING
+        act_or_crit = DelibFocus.CONTEXT_EXPANSION
         while True:
             print("-------------------------------------")
-            delib_aid = self.select_dc([act_or_crit])
-            act_or_crit, remove_from_in = delib_aid.deliberate(self.currentContext)
-            if remove_from_in: self.remove_dc(delib_aid)
+            cdc = self.select_cdc([act_or_crit])
+
+            remove_from_in = False
+            print()
+            if issubclass(type(cdc), ContextualComponent):
+                act_or_crit, remove_from_in = cdc.explore_context(self.currentContext)
+            elif issubclass(type(cdc), DeliberationComponent):
+                act_or_crit, remove_from_in = cdc.deliberate(self.currentContext)
+
+            if remove_from_in: self.remove_dc(cdc)
 
             if type(act_or_crit) == Action:
                 print("Perform action: " + act_or_crit.effect)
                 break
-            if type(act_or_crit) == Criteria:
+            if type(act_or_crit) == DelibFocus:
                 print("Deliberate more: " + act_or_crit.name)
         print("End deliberating")
         print("-------------------------------------")
 
-    def select_dc(self, new_criteria: list) -> DeliberationComponent:
+    def select_cdc(self, new_criteria: list) -> ContextualDeliberationComponent:
         prt = "Select DC [Crt: " + new_criteria[0].name + "]"
         selected_dc = DC_end()
         for s_dc in in_dc:

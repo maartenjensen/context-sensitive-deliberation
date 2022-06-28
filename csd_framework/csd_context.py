@@ -127,14 +127,3 @@ class ContextModule:
 
     def get_goal_imitation(self):
         return Goal.DO_NOTHING
-
-
-class Criteria(Enum):
-    # Logics criteria
-    ERROR = -1
-    ACTION_FINDING = 0
-    FIND_GOAL = 1
-    LAW_EVALUATION = 2
-
-    # Need based criteria
-    CONFORMITY = 3
