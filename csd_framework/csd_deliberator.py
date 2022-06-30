@@ -65,6 +65,7 @@ class Deliberator:
 
     def select_deliberation_component(self, new_criteria: list) -> DeliberationComponent:
         prt = "Select DC [Focus: " + new_criteria[0].name + "]"
+        selected_dc = DeliberationComponent(0, ['Test'])
         selected_dc = DC_end()
         for t_dc in in_dc:
             if t_dc.check_criteria(new_criteria):
@@ -76,6 +77,7 @@ class Deliberator:
 
     def select_context_expansion_function(self, new_criteria: list) -> ContextExpansionFunction:
         prt = "Select CEF [Focus: " + new_criteria[0].name + "]"
+        selected_cef = ContextExpansionFunction(0, ['Test'])
         selected_cef = CC_end()
         for t_cef in in_cef:
             if t_cef.check_criteria(new_criteria):

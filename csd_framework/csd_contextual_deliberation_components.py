@@ -1,8 +1,5 @@
 from csd_framework.csd_context import *
 
-""" The main contextual deliberation component classes """
-
-
 class DeliberationComponent:
     def __init__(self, computational_effort: int, criteria_list: list):
         self.cog_eff = computational_effort
@@ -20,10 +17,6 @@ class DeliberationComponent:
 
     def name(self) -> str:
         return type(self).__name__
-
-
-""" Deliberation component implementations """
-
 
 class DC_default_action(DeliberationComponent):
 
@@ -56,36 +49,6 @@ class DC_end(DeliberationComponent):
 
 
 """
-class DC_goal_from_context(DeliberationComponent):
-
-    def __init__(self):
-        super().__init__(2, [DelibFocus.FIND_GOAL, DelibFocus.CONFORMITY])
-
-    def deliberate(self, p_context: ContextModule):
-        if random.random() < 1:
-            print("Added goal from context:" + str(Goal.GO_TO_WORK))
-            p_context.add_goal([Goal.GO_TO_WORK])  # myContextModule.get_goal_context(Agent)
-            return DelibFocus.ACTION_FINDING, True
-        else:
-            print("Didn't find a goal from context")
-            return DelibFocus.FIND_GOAL, True
-
-
-class DC_goal_from_imitation(DeliberationComponent):
-
-    def __init__(self):
-        super().__init__(2, [DelibFocus.FIND_GOAL, DelibFocus.CONFORMITY])
-
-    def deliberate(self, p_context: ContextModule):
-        if random.random() < 0.4:
-            print("Added goal from imitation:" + str(Goal.DO_NOTHING))
-            p_context.add_goal([Goal.DO_NOTHING])
-            return DelibFocus.ACTION_FINDING, True
-        else:
-            print("Didn't find a goal from imitation")
-            return DelibFocus.FIND_GOAL, True
-
-
 class DC_plan_making(DeliberationComponent):
 
     def __init__(self):
