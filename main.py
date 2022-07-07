@@ -10,15 +10,47 @@ import tkinter as tk
 from enum import Enum
 from Agent import *
 
-# window = tk.Tk()
-# greeting = tk.Label(text="Hello Maarten /Tkinter")
-# greeting.pack()
+# Experimenting with tkinter
 
-myAgent = Agent()
-myAgent.deliberate()
+window = tk.Tk()
+myLabel1 = tk.Label(text="Hello Maarten /Tkinter")
+myLabel3 = tk.Label(text="My next sentence")
+
+
+def clickExit():
+    print("Pressed Exit! Terminated program")
+    exit(0)
+
+
+def clickPrint():
+    print(myEntry.get())
+
+photo1 = tk.PhotoImage(file="figures/my_simulation.png")
+#
+myEntry = tk.Entry(window, width=30)
+
+myButtonExit = tk.Button(window, text="Exit!", command=clickExit)  # , fg="blue", bg="grey")
+myButtonPrint = tk.Button(window, text="Print!", command=clickPrint)
+
+#myLabel1.grid(row=0, column=0) #columnspan
+myButtonExit.grid(row=0, column=1)
+
+myButtonPrint.grid(row=1, column=0)
+myEntry.grid(row=1, column=1)
+
+myLabel3.grid(row=2, column=1)
+tk.Label(window, image=photo1, bg="black").grid(row=0, column=0, sticky=tk.E)
+
+
+# myAgent = Agent()
+# myAgent.deliberate()
+
+
+
+window.mainloop()
 
 """
-# window.mainloop()
+
 class SimulatedWorld:
 
     def __init__(self, p_context):

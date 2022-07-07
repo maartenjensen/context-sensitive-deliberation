@@ -239,7 +239,7 @@ class CC_minimal(ContextExpansionFunction):
         p_context.main_focus.set_main_focus(main_focus)
         p_context.activity.add_data([main_focus])
         p_context.location.add_data([p_location])
-        return [DelibFocus.ACTION_FINDING], Tru
+        return [DelibFocus.ACTION_FINDING], True
 
 
 class CC_affordances(ContextExpansionFunction):
