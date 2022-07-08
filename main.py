@@ -12,6 +12,31 @@ from Agent import *
 
 # Experimenting with tkinter
 
+import tkinter as tk
+import matplotlib.pyplot as plt
+
+from plots import UpdatingPlot, install_plot_widgets
+
+from model import *
+from simulation_framework.gui import *
+
+model = SegregationModel(parameters)
+model.sim_setup()
+
+install_plot_widgets()
+root = tk.Tk()
+fig, ax = plt.subplots()
+plot_field = UpdatingPlot(model, animation_plot, master=root, figure=fig)
+def step():
+    model.sim_step()
+    plot_field.step()
+step_button = tk.Button(master=root, text="step", command=step)
+step_button.pack()
+plot_field.get_tk_widget().pack()
+root.mainloop()
+
+
+"""
 window = tk.Tk()
 myLabel1 = tk.Label(text="Hello Maarten /Tkinter")
 myLabel3 = tk.Label(text="My next sentence")
@@ -48,7 +73,7 @@ tk.Label(window, image=photo1, bg="black").grid(row=0, column=0, sticky=tk.E)
 
 
 window.mainloop()
-
+"""
 """
 
 class SimulatedWorld:
