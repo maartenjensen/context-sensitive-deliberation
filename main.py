@@ -4,39 +4,77 @@
     https://pythonprogramming.altervista.org/nice-gui-graphic-for-tkinter-with-ttk-and-azure-theme-from-this-guy/
 """
 # Imports
+# import random, random.seed(10)
 import tkinter as tk
-# import random
-# random.seed(10)
-from enum import Enum
-from Agent import *
-
-# Experimenting with tkinter
-
-import tkinter as tk
+import matplotlib as m_plt
 import matplotlib.pyplot as plt
 
-from plots import UpdatingPlot, install_plot_widgets
+from enum import Enum
+from Agent import *
+from gui_plotting import UpdatingPlot
 
-from model import *
-from simulation_framework.gui import *
+"""-------------------
+    CONTEXT CODE
+-------------------"""
 
-model = SegregationModel(parameters)
-model.sim_setup()
 
-install_plot_widgets()
-root = tk.Tk()
-fig, ax = plt.subplots()
-plot_field = UpdatingPlot(model, animation_plot, master=root, figure=fig)
-def step():
-    model.sim_step()
+myAgent = Agent()
+myAgent.deliberate()
+
+class SimulatedWorld:
+
+    def __init__(self, p_context):
+        self.theWorld = p_context
+
+
+# Example context
+#fullContext = CurrentContext()
+#fullContext.afford.add_data([Afford.BED, Afford.ALARM_CLOCK, Afford.SHOWER, Afford.BIKE])
+#fullContext.activity.add_data([Activity.MORNING_ROUTINE])
+
+#print("PRINT full context")
+#fullContext.print_context()
+
+#mySimulation = SimulatedWorld(fullContext)
+
+#myContext = CurrentContext()
+#myContext.print_context()
+# CC_minimal().explore_context()
+# CC_minimal().explore_context(myContext, Activity.WORK, Location.OFFICE)
+#CC_minimal().explore_context(myContext, Activity.SHOPPING_FOOD, Location.SHOP)
+# CC_minimal().explore_context(myContext, Activity.RELAXING, Location.OUTSIDE)
+#myContext.print_context()
+#CC_affordances().explore_context(myContext)
+#myContext.print_context()
+#CC_affordances_people().explore_context(myContext)
+#myContext.print_context()
+#CC_imitate_action().explore_context(myContext)
+#myContext.print_context()
+#CC_imitate_goal().explore_context(myContext)
+#myContext.print_context()
+
+"""-------------------
+    TKINTER SETUP
+-------------------"""
+
+
+def sim_step():
+    # model.sim_step()
     plot_field.step()
-step_button = tk.Button(master=root, text="step", command=step)
+
+
+m_plt.use('TkAgg')
+window = tk.Tk()
+fig, ax = plt.subplots()
+plot_field = UpdatingPlot(master=window, figure=fig)
+step_button = tk.Button(master=window, text="step", command=sim_step)
+
+# Package tkinter screen
 step_button.pack()
 plot_field.get_tk_widget().pack()
-root.mainloop()
+window.mainloop()
 
-
-"""
+""" RUBBISH
 window = tk.Tk()
 myLabel1 = tk.Label(text="Hello Maarten /Tkinter")
 myLabel3 = tk.Label(text="My next sentence")
@@ -73,38 +111,4 @@ tk.Label(window, image=photo1, bg="black").grid(row=0, column=0, sticky=tk.E)
 
 
 window.mainloop()
-"""
-"""
-
-class SimulatedWorld:
-
-    def __init__(self, p_context):
-        self.theWorld = p_context
-
-
-# Example context
-fullContext = CurrentContext()
-fullContext.afford.add_data([Afford.BED, Afford.ALARM_CLOCK, Afford.SHOWER, Afford.BIKE])
-fullContext.activity.add_data([Activity.MORNING_ROUTINE])
-
-print("PRINT full context")
-fullContext.print_context()
-
-mySimulation = SimulatedWorld(fullContext)
-
-myContext = CurrentContext()
-myContext.print_context()
-#CC_minimal().explore_context()
-#CC_minimal().explore_context(myContext, Activity.WORK, Location.OFFICE)
-CC_minimal().explore_context(myContext, Activity.SHOPPING_FOOD, Location.SHOP)
-#CC_minimal().explore_context(myContext, Activity.RELAXING, Location.OUTSIDE)
-myContext.print_context()
-CC_affordances().explore_context(myContext)
-myContext.print_context()
-CC_affordances_people().explore_context(myContext)
-myContext.print_context()
-CC_imitate_action().explore_context(myContext)
-myContext.print_context()
-CC_imitate_goal().explore_context(myContext)
-myContext.print_context()
 """

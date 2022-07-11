@@ -79,7 +79,7 @@ class Afford(Enum):
 class ContextElement:  # ContextExplorationUnit
 
     def __init__(self):
-        self.data = []
+        self.data = list()
 
     def add_data(self, p_data: []):
         for a_data in p_data:
@@ -234,7 +234,7 @@ class CC_minimal(ContextExpansionFunction):
         super().__init__(1, [DelibFocus.CONTEXT_EXPANSION])
 
     def explore_context(self, p_context: CurrentContext, p_main_focus=Activity.MORNING_ROUTINE,
-                        p_location=Location.BEDROOM) -> tuple[[], bool]:  # These last parameters should be removed
+                        p_location=Location.BEDROOM) -> tuple[[], bool]:  # TODO These last parameters should be removed
         main_focus = p_main_focus  # Get his information from the agent
         p_context.main_focus.set_main_focus(main_focus)
         p_context.activity.add_data([main_focus])

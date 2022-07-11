@@ -1,3 +1,38 @@
+"""
+PLOTS
+"""
+
+import matplotlib as plt
+
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+def install_plot_widgets():
+    plt.use("TkAgg")
+
+
+class UpdatingPlot(FigureCanvasTkAgg):
+    def __init__(self, model, plot_function, fargs=(), **kwargs):
+        super().__init__(**kwargs)
+        self.model = model
+        self.plot_function = plot_function
+        self.fargs = fargs
+
+    def step(self):
+        axs = self.figure.axes
+        print(axs)
+        for ax in axs:
+            ax.clear()
+        if len(axs) == 1:
+            self.plot_function(self.model, axs[0], *self.fargs)
+        else:
+            self.plot_function(self.model, axs, *self.fargs)
+        self.draw()
+
+"""
+MODEL
+"""
+
 import agentpy as ap
 
 class Person(ap.Agent):
@@ -70,3 +105,25 @@ def animation_plot(model, ax):
     ap.gridplot(group_grid, cmap='Accent', ax=ax)
     ax.set_title(f"Segregation model \n Time-step: {model.t}, "
                  f"Segregation: {model.get_segregation()}")
+
+
+"""
+GUI
+"""
+
+import tkinter as tk
+
+model = SegregationModel(parameters)
+model.sim_setup()
+
+install_plot_widgets()
+root = tk.Tk()
+fig, ax = plt.subplots()
+plot_field = UpdatingPlot(model, animation_plot, master=root, figure=fig)
+def step():
+    model.sim_step()
+    plot_field.step()
+step_button = tk.Button(master=root, text="step", command=step)
+step_button.pack()
+plot_field.get_tk_widget().pack()
+root.mainloop()
