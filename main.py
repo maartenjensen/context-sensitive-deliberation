@@ -28,30 +28,30 @@ class SimulatedWorld:
 
 
 # Example context
-#fullContext = CurrentContext()
-#fullContext.afford.add_data([Afford.BED, Afford.ALARM_CLOCK, Afford.SHOWER, Afford.BIKE])
-#fullContext.activity.add_data([Activity.MORNING_ROUTINE])
+fullContext = CurrentContext()
+fullContext.afford.add_data([Afford.BED, Afford.ALARM_CLOCK, Afford.SHOWER, Afford.BIKE])
+fullContext.activity.add_data([Activity.MORNING_ROUTINE])
 
-#print("PRINT full context")
-#fullContext.print_context()
+print("PRINT full context")
+fullContext.print_context()
 
-#mySimulation = SimulatedWorld(fullContext)
+mySimulation = SimulatedWorld(fullContext)
 
-#myContext = CurrentContext()
-#myContext.print_context()
-# CC_minimal().explore_context()
-# CC_minimal().explore_context(myContext, Activity.WORK, Location.OFFICE)
-#CC_minimal().explore_context(myContext, Activity.SHOPPING_FOOD, Location.SHOP)
-# CC_minimal().explore_context(myContext, Activity.RELAXING, Location.OUTSIDE)
-#myContext.print_context()
-#CC_affordances().explore_context(myContext)
-#myContext.print_context()
-#CC_affordances_people().explore_context(myContext)
-#myContext.print_context()
-#CC_imitate_action().explore_context(myContext)
-#myContext.print_context()
-#CC_imitate_goal().explore_context(myContext)
-#myContext.print_context()
+myContext = CurrentContext()
+myContext.print_context()
+CC_minimal().explore_context()
+CC_minimal().explore_context(myContext, Activity.WORK, Location.OFFICE)
+CC_minimal().explore_context(myContext, Activity.SHOPPING_FOOD, Location.SHOP)
+CC_minimal().explore_context(myContext, Activity.RELAXING, Location.OUTSIDE)
+myContext.print_context()
+CC_affordances().explore_context(myContext)
+myContext.print_context()
+CC_affordances_people().explore_context(myContext)
+myContext.print_context()
+CC_imitate_action().explore_context(myContext)
+myContext.print_context()
+CC_imitate_goal().explore_context(myContext)
+myContext.print_context()
 
 """-------------------
     TKINTER SETUP
