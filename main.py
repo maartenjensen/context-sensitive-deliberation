@@ -1,48 +1,6 @@
-"""----------------------
-     Mesa Tutorial
-----------------------"""
-from mesa_tutorial.mesa_tutorial import MesaShoppingModel
-import matplotlib.pyplot as plt
-import numpy as np
+from mesa_tutorial.mesa_interface import *
 
-n_agents = 50
-grid_with = 10
-grid_height = 10
-
-my_model = MesaShoppingModel(n_agents, grid_with, grid_height)
-for i in range(20):
-    my_model.step()
-
-agent_counts = np.zeros((my_model.grid.width, my_model.grid.height))
-for cell in my_model.grid.coord_iter():
-    cell_content, x, y = cell
-    agent_count = len(cell_content)
-    agent_counts[x][y] = agent_count
-plt.imshow(agent_counts, interpolation="nearest")
-plt.colorbar()
-plt.show()
-
-# Data processing agent variables
-food = my_model.datacollector.get_model_vars_dataframe()
-food.plot()
-plt.show()
-food.to_csv("output/avg_food.csv")
-
-# Data processing agent variables
-agent_params = my_model.datacollector.get_agent_vars_dataframe()
-print(agent_params.head())
-
-end_wealth = agent_params.xs(19, level="Step")["Money"]
-end_wealth.hist(bins=range(agent_params.Money.max() + 1))
-plt.show()
-
-one_agent_food = agent_params.xs(5, level="AgentID")
-one_agent_food.Food.plot()
-plt.show()
-
-end_wealth.to_csv("output/agent_data.csv")
-
-# Next step, do batch run of this simulation
+mesa_start_simulation()
 
 """-------------------
     CONTEXT CODE

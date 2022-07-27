@@ -1,68 +1,85 @@
-# Model source code: https://github.com/projectmesa/mesa/blob/main/mesa/model.py
-# Agent source code: https://github.com/projectmesa/mesa/blob/main/mesa/agent.py
 
+"""----------------------
+     Mesa Tutorial
+----------------------"""
+from mesa_tutorial.mesa_model import MesaShoppingModel
+import matplotlib.pyplot as plt
+import numpy as np
 import mesa
 
-def compute_avg_food(model):
-    agent_foods = [agent.food for agent in model.schedule.agents]
-    return sum(agent_foods) / len(agent_foods)
+# Model params
+n_agents = 50
+grid_with = 10
+grid_height = 10
 
-class MesaShoppingModel(mesa.Model):
-    """A model with some agents"""
+# Model running
+my_model = MesaShoppingModel(n_agents, grid_with, grid_height)
+for i in range(20):
+    my_model.step()
 
-    def __init__(self, n_agents, width, height):
-        # Initialize model settings
-        super().__init__()
-        self.num_agents = n_agents
-        self.grid = mesa.space.MultiGrid(width, height, True)
-        self.schedule = mesa.time.RandomActivation(self)
+# Plotting
+agent_counts = np.zeros((my_model.grid.width, my_model.grid.height))
+for cell in my_model.grid.coord_iter():
+    cell_content, x, y = cell
+    agent_count = len(cell_content)
+    agent_counts[x][y] = agent_count
 
-        # Create agents
-        for i in range(self.num_agents):
-            a = MyAgent(i, self)
-            self.schedule.add(a)
+plt.imshow(agent_counts, interpolation="nearest")
+plt.colorbar()
+plt.show()
 
-            x = self.random.randrange(self.grid.width)
-            y = self.random.randrange(self.grid.height)
-            self.grid.place_agent(a, (x, y))
+# Data processing agent variables
+food = my_model.datacollector.get_model_vars_dataframe()
+food.plot()
+plt.show()
+#food.to_csv("output/avg_food.csv")
 
-        self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food},
-                                                agent_reporters={"Money": "money", "Food": "food"})
+# Data processing agent variables
+agent_params = my_model.datacollector.get_agent_vars_dataframe()
+print(agent_params.head())
 
-    def step(self):
-        self.datacollector.collect(self)
-        self.schedule.step()
+end_wealth = agent_params.xs(19, level="Step")["Money"]
+end_wealth.hist(bins=range(agent_params.Money.max() + 1))
+plt.show()
 
+one_agent_food = agent_params.xs(5, level="AgentID")
+one_agent_food.Food.plot()
+plt.show()
 
-class MyAgent(mesa.Agent):
-    """An agent with some money"""
+# Batch running
+params = {"width": 10, "height": 10, "n_agents": range(10, 100, 10)}
 
-    def __init__(self, unique_id, model: MesaShoppingModel):
-        super().__init__(unique_id, model)
-        self.model = model
-        self.money = 50
-        self.food = 20
+results = mesa.batch_run(
+    MesaShoppingModel,
+    parameters=params,
+    iterations=5,
+    max_steps=100,
+    number_processes=1,
+    data_collection_period=1,
+    display_progress=True,
+)
 
-    def move(self):
-        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
-        new_position = self.random.choice(possible_steps)
-        self.model.grid.move_agent(self, new_position)
-        self.food -= 1
+import pandas as pd
 
-    def buy_food(self):
-        cellmates = self.model.grid.get_cell_list_contents([self.pos])
-        if len(cellmates) > 1:
-            other = self.random.choice(cellmates)
-            if other.food >= 2:
-                other.money += 2
-                other.food -= 1
-                self.money -= 2
-                self.food += 1
+results_df = pd.DataFrame(results)
+print(results_df.keys())
 
-    def step(self):
-        if self.food > 0:
-            self.move()
-            if self.money >= 2:
-                self.buy_food()
+results_filtered = results_df[(results_df.AgentID == 0) & (results_df.Step == 100)]
+N_values = results_filtered.n_agents.values
+gini_values = results_filtered.Money.values
+plt.scatter(N_values, gini_values)
+plt.show()
 
+# First, we filter the results
+one_episode_wealth = results_df[(results_df.n_agents == 10) & (results_df.iteration == 2)]
+# Then, print the columns of interest of the filtered data frame
+print(
+    one_episode_wealth.to_string(
+        index=False, columns=["Step", "AgentID", "Money"], max_rows=25
+    )
+)
 
+results_one_episode = results_df[
+    (results_df.n_agents == 10) & (results_df.iteration == 1) & (results_df.AgentID == 0)
+]
+print(results_one_episode.to_string(index=False, columns=["Step", "Money"], max_rows=25))
