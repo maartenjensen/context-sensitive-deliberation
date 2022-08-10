@@ -1,27 +1,18 @@
-from mesa_tutorial.mesa_interface import *
+from mesa_simulation.sim_init import *
 
 mesa_start_simulation()
+
 
 """-------------------
     CONTEXT CODE
 -------------------"""
-
-# Imports
-# import random, random.seed(10)
-import tkinter as tk
-import matplotlib as m_plt
-import matplotlib.pyplot as plt
-
-from enum import Enum
-from Agent import *
-from gui_plotting import UpdatingPlot
 
 #myAgent = Agent()
 #myAgent.deliberate()
 
 #class SimulatedWorld:
 
- #   def __init__(self, p_context):
+#   def __init__(self, p_context):
 #        self.theWorld = p_context
 
 

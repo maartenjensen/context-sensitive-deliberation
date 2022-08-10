@@ -1,4 +1,5 @@
 from mesa_tutorial.mesa_model import MesaShoppingModel
+from mesa_tutorial.mesa_params import *
 
 import mesa
 
@@ -14,7 +15,6 @@ def agent_portrayal(agent):
 
 grid = mesa.visualization.CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 server = mesa.visualization.ModularServer(
-    MesaShoppingModel, [grid], "Shopping model", {"n_agents": 100, "width": 10, "height": 10}
-)
+    MesaShoppingModel, [grid], Param.model_name, {Param.n_agents: 100, Param.width: 10, Param.height: 10})
 server.port = 8521  # The default
 server.launch()
