@@ -1,4 +1,5 @@
-from mesa_simulation.sim_model_and_agent import MesaShoppingModel, MyAgent
+from mesa_simulation.sim_model import MesaShoppingModel
+from mesa_simulation.sim_agent import MyAgent, MyLocation
 from mesa_simulation.sim_params import *
 
 import mesa
@@ -23,11 +24,17 @@ def agent_portrayal(agent: MyAgent):
                  "Filled": "true",
                  "r": 0.5}
 
-    if agent.food > 0:
-        portrayal["Color"] = "grey"
+    if isinstance(agent, MyAgent):
+        if agent.food > 0:
+            portrayal["Color"] = "grey"
+            portrayal["Layer"] = 0
+        else:
+            portrayal["Color"] = "red"
+            portrayal["Layer"] = 1
+            portrayal["r"] = 0.2
+
+    elif isinstance(agent, MyLocation):
+        portrayal["Color"] = "blue"
         portrayal["Layer"] = 0
-    else:
-        portrayal["Color"] = "red"
-        portrayal["Layer"] = 1
-        portrayal["r"] = 0.2
+
     return portrayal

@@ -29,45 +29,36 @@ class Activity(Enum):
 
 class Action(Enum):
     NONE = -1
-    GET_OUT_OF_BED = 0
-    TURN_OF_ALARM = 1
-    TAKE_A_SHOWER = 2
-    EAT = 3
-    DRIVE_TO_LOCATION = 4
-    BIKE_TO_LOCATION = 5
-    WORK = 6
-    BUY_FOOD = 7
+    EAT = 0
+    WALK_TO_LOCATION = 1
+    DRIVE_TO_LOCATION = 2
+    BIKE_TO_LOCATION = 3
+    BUY_BEEF = 4
+    BUY_CHICKEN = 5
+    BUY_TOFU = 6
 
 
 class Goal(Enum):
-    GET_TO_WORK = 0
     PERFORM_MORNING_ROUTINE = 1
     GET_FOOD = 2
     BE_A_GOOD_EMPLOYEE = 3
 
-
 # Keep it simple, for now its only location (not time) and affordances
 class Location(Enum):
-    BEDROOM = 0
-    HOME = 1
-    OUTSIDE = 2
-    OFFICE = 3
-    SHOP = 4
+    HOME = 0
+    OUTSIDE = 1
+    SHOP = 2
 
 
 # This needs to be something else??
 # It should be affordances
 class Afford(Enum):
-    BED = 0
-    CHAIR = 1
-    ALARM_CLOCK = 2
+    BEEF = 0
+    CHICKEN = 1
+    TOFU = 2
     BIKE = 3
     CAR = 4
-    SHOWER = 5
-    DESK = 6
-    COMPUTER = 7
-
-    PERSON_SHOP_ATTENDANT = 8
+    PERSON_SHOP_ATTENDANT = 5
 
 
 """####################################
@@ -234,7 +225,7 @@ class CC_minimal(ContextExpansionFunction):
         super().__init__(1, [DelibFocus.CONTEXT_EXPANSION])
 
     def explore_context(self, p_context: CurrentContext, p_main_focus=Activity.MORNING_ROUTINE,
-                        p_location=Location.BEDROOM) -> tuple[[], bool]:  # TODO These last parameters should be removed
+                        p_location=Location.HOME) -> tuple[[], bool]:  # TODO These last parameters should be removed
         main_focus = p_main_focus  # Get his information from the agent
         p_context.main_focus.set_main_focus(main_focus)
         p_context.activity.add_data([main_focus])

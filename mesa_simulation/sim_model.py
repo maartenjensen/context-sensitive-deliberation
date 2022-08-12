@@ -1,4 +1,5 @@
 import mesa
+from mesa_simulation.sim_agent import MyAgent, MyLocation
 
 def compute_avg_food(model):
     agent_foods = [agent.food for agent in model.schedule.agents]
@@ -15,14 +16,26 @@ class MesaShoppingModel(mesa.Model):
         self.schedule = mesa.time.RandomActivation(self)
         self.running = True
 
+        unique_id = 0
         # Create agents
         for i in range(self.num_agents):
-            a = MyAgent(i, self)
+            a = MyAgent(unique_id, self)
             self.schedule.add(a)
 
             x = self.random.randrange(self.grid.width)
             y = self.random.randrange(self.grid.height)
             self.grid.place_agent(a, (x, y))
+            unique_id += 1
+
+        # Create locations
+        for i in range(5):
+            loc = MyLocation(unique_id, self)
+            self.schedule.add(loc)
+
+            x = self.random.randrange(self.grid.width)
+            y = self.random.randrange(self.grid.height)
+            self.grid.place_agent(loc, (x, y))
+            unique_id += 1
 
         self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food},
                                                 agent_reporters={"Money": "money", "Food": "food"})
@@ -31,27 +44,3 @@ class MesaShoppingModel(mesa.Model):
         self.datacollector.collect(self)
         self.schedule.step()
 
-from csd_framework.csd_deliberator import Deliberator
-
-class MyAgent(mesa.Agent):
-    """An agent with some money"""
-
-    def __init__(self, unique_id, model: MesaShoppingModel):
-        super().__init__(unique_id, model)
-        self.model = model
-        self.money = 50
-        self.food = 20
-        # Input model of context
-        self.myDeliberator = Deliberator()
-
-    def action_move(self):
-        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
-        new_position = self.random.choice(possible_steps)
-        self.model.grid.move_agent(self, new_position)
-
-    def step(self):
-        # Input context sensitive deliberation
-        print("#####################################")
-        print("Agent " + str(self.unique_id) + " deliberates")
-        self.myDeliberator.main_deliberate()
-        print("#####################################")
