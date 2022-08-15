@@ -1,3 +1,3 @@
-from mesa_simulation.sim_init import *
+from village_simulation.server import *
 
 mesa_start_simulation()
