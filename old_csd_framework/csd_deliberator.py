@@ -1,6 +1,6 @@
 # My classes
-from csd_framework.csd_contextual_deliberation_components import *
-from csd_framework.csd_context import *
+from old_csd_framework.csd_contextual_deliberation_components import *
+from old_csd_framework.csd_context import *
 
 cef_all = [ContextExpansionFunction(0, ['Test'])]  # This is a sorted list based on computational_effort
 cef_all.pop()

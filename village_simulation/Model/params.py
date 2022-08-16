@@ -12,7 +12,7 @@ class Param:
 
     model_params = dict(
         world_cell_px=20,
-        world_w_cell=32,
+        world_w_cell=35,
         world_h_cell=15,
 
         n_agents=5,

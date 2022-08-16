@@ -1,11 +1,11 @@
-from village_simulation.Agents.buildings import House, Neighborhood, Shop
+from village_simulation.Agents.buildings import House, Neighborhood, Shop, TimeIndicator
 from village_simulation.Agents.agents import MyAgent
-from village_simulation.Model.model_parent import MesaParentModel
+from village_simulation.Model.model_parent import ParentModel
 
 
 class VillageBuilder:
 
-    def __init__(self, model: MesaParentModel, grid, schedule, random):
+    def __init__(self, model: ParentModel, grid, schedule, random):
         self.unique_id = -1
         self.model = model
         self.grid = grid
@@ -19,7 +19,7 @@ class VillageBuilder:
         # Create locations
         for i in range(n_neighborhoods):
             new_pos = (10 - 1 + ((10 + 1) * i), 0)
-            neigh = Neighborhood(self.get_unique_id(), self.model, new_pos, self)
+            neigh = Neighborhood(self.get_unique_id(), self.model, new_pos)
 
             for j in range(n_houses[i]):
                 new_pos = neigh.get_new_building_position(3)
@@ -28,6 +28,8 @@ class VillageBuilder:
             for j in range(n_shops[i]):
                 new_pos = neigh.get_new_building_position(5)
                 Shop(self.get_unique_id(), self.model, new_pos, neigh)
+        new_pos = (33, 14)
+        TimeIndicator(self.get_unique_id(), self.model, new_pos)
 
     def get_unique_id(self):
         self.unique_id += 1

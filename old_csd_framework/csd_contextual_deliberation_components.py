@@ -1,4 +1,4 @@
-from csd_framework.csd_context import *
+from old_csd_framework.csd_context import *
 
 class DeliberationComponent:
     def __init__(self, computational_effort: int, criteria_list: list):

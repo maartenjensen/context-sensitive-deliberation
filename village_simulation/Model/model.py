@@ -1,7 +1,7 @@
 import mesa
 
 from village_simulation.Agents.agents import MyAgent
-from village_simulation.Model.model_parent import MesaParentModel
+from village_simulation.Model.model_parent import ParentModel
 from village_simulation.village_builder import VillageBuilder
 
 def compute_avg_food(model):
@@ -14,7 +14,7 @@ def compute_avg_food(model):
     return agent_foods / agent_n
 
 
-class MesaShoppingModel(MesaParentModel):
+class ShoppingModel(ParentModel):
     """A model with some agents"""
 
     def __init__(

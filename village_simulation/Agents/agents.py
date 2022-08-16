@@ -1,19 +1,15 @@
-from enum import Enum
-
-import mesa
-
-from csd_framework.csd_context_explorer import ContextExplorer
-from csd_framework.csd_deliberator import Deliberator
+from new_csd_framework.csd_context_explorer import ContextExplorer
+from old_csd_framework.csd_deliberator import Deliberator
 from village_simulation.Agents.agents_parent import ParentAgent
 from village_simulation.Agents.buildings import House
 from village_simulation.Agents.enums import Activity, Plan, Need, Goal
-from village_simulation.Model.model_parent import MesaParentModel
+from village_simulation.Model.model_parent import ParentModel
 
 
 class MyAgent(ParentAgent):
     """An agent with some money"""
 
-    def __init__(self, unique_id, model: MesaParentModel, pos, my_house: House):
+    def __init__(self, unique_id, model: ParentModel, pos, my_house: House):
         super().__init__(unique_id, model)
         # Variables
         self.model = model
@@ -26,6 +22,11 @@ class MyAgent(ParentAgent):
         self.beef = 0
         self.chicken = 0
         self.tofu = 0
+
+        # Utility
+        self.ut_beef = 10
+        self.ut_chicken = 5
+        self.ut_tofu = 2
 
         # Enums
         self.activity = Activity.RELAXING
@@ -50,7 +51,7 @@ class MyAgent(ParentAgent):
         # Input context sensitive deliberation
         print("#####################################")
         print("Agent " + str(self.unique_id) + " retrieves context")
-        print(self.context_explorer.get_primary_information(self))
+        print(self.context_explorer.get_primary_information(self, self.model))
         # self.my_deliberator.main_deliberate()
         print("#####################################")
 
@@ -71,3 +72,22 @@ class MyAgent(ParentAgent):
             info += ", Bike"
         info += ", B:" + str(self.beef) + ",C:" + str(self.chicken) + ",T:" + str(self.tofu)
         return info
+
+    """ ACTIONS """
+    def eat_beef(self):
+        if self.beef > 0:
+            self.beef -= 1
+        else:
+            print("ERROR")
+
+    def eat_chicken(self):
+        if self.chicken > 0:
+            self.chicken -= 1
+        else:
+            print("ERROR")
+
+    def eat_tofu(self):
+        if self.tofu > 0:
+            self.tofu -= 1
+        else:
+            print("ERROR")

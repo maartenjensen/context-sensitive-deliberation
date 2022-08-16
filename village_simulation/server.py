@@ -1,4 +1,4 @@
-from village_simulation.Model.model import MesaShoppingModel
+from village_simulation.Model.model import ShoppingModel
 from village_simulation.Model.params import Param
 from village_simulation.portrayal import agent_portrayal
 
@@ -12,7 +12,7 @@ def mesa_start_simulation():
 
     model_name = Param.model_name
     server = mesa.visualization.ModularServer(
-        MesaShoppingModel, [grid, chart], model_name, Param.model_params
+        ShoppingModel, [grid, chart], model_name, Param.model_params
     )
     server.port = 8521  # The default
     print("Launching server with model : " + model_name)

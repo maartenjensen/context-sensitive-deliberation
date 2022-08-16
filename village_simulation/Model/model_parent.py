@@ -1,6 +1,6 @@
 import mesa
 
-class MesaParentModel(mesa.Model):
+class ParentModel(mesa.Model):
 
     def __init__(self):
         super().__init__()

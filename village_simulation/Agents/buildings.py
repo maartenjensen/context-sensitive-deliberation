@@ -1,20 +1,21 @@
+import math
+
 import mesa
 
-from village_simulation.Model.model_parent import MesaParentModel
+from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Model.params import Constants
 
 """ Base class """
 class Location(mesa.Agent):
     """Agents"""
 
-    def __init__(self, unique_id, model: MesaParentModel, pos, dim, color, layer, neighborhood):
+    def __init__(self, unique_id, model: ParentModel, pos, dim, color, layer):
         super().__init__(unique_id, model)
         self.model = model
         self.pos = pos
         self.dim = dim
         self.color = color
         self.layer = layer
-        self.neighborhood = neighborhood
 
         self.model.schedule.add(self)
         self.model.grid.place_agent(self, self.pos)
@@ -34,9 +35,11 @@ class Location(mesa.Agent):
 """ Child classes """
 class Shop(Location):
 
-    def __init__(self, unique_id, model: MesaParentModel, pos, neighborhood):
-        super().__init__(unique_id, model, pos, (5, 5), '#badbc6', Constants.layer_buildings, neighborhood)
+    def __init__(self, unique_id, model: ParentModel, pos, neighborhood):
+        super().__init__(unique_id, model, pos, (5, 5), '#badbc6', Constants.layer_buildings)
         print("Added a shop " + str(unique_id))
+
+        self.neighborhood = neighborhood
 
         self.beef = 100
         self.chicken = 100
@@ -54,9 +57,11 @@ class Shop(Location):
 
 class House(Location):
 
-    def __init__(self, unique_id, model: MesaParentModel, pos, neighborhood):
-        super().__init__(unique_id, model, pos, (3, 3), '#aabcf2', Constants.layer_buildings, neighborhood)
+    def __init__(self, unique_id, model: ParentModel, pos, neighborhood):
+        super().__init__(unique_id, model, pos, (3, 3), '#aabcf2', Constants.layer_buildings)
         print("Added a house " + str(unique_id))
+
+        self.neighborhood = neighborhood
 
         self.beef = 0
         self.chicken = 0
@@ -69,8 +74,8 @@ class House(Location):
 
 class Neighborhood(Location):
 
-    def __init__(self, unique_id, model: MesaParentModel, pos, neighborhood):
-        super().__init__(unique_id, model, pos, (10, 15), '#c7c7c7', Constants.layer_base, neighborhood)
+    def __init__(self, unique_id, model: ParentModel, pos):
+        super().__init__(unique_id, model, pos, (10, 15), '#c7c7c7', Constants.layer_base)
         print("Added a neighborhood " + str(unique_id))
         self.rel_building_x = -1
         self.rel_building_y = 1
@@ -79,3 +84,18 @@ class Neighborhood(Location):
         position = self.pos[0] + self.rel_building_x, self.pos[1] + self.rel_building_y
         self.rel_building_y += new_building_height + 1
         return position
+
+class TimeIndicator(Location):
+
+    def __init__(self, unique_id, model: ParentModel, pos):
+        super().__init__(unique_id, model, pos, (1, 1), '#cf9393', Constants.layer_base)
+
+    def to_str(self):
+        n_steps = self.model.schedule.steps
+        info = "D:" + str(math.ceil(n_steps / 12))
+        info += ",T:"
+        time = n_steps % 12
+        if time < 5:
+            info += "0"
+        info += str(time * 2) + ":00"
+        return info
