@@ -1,4 +1,5 @@
 from new_csd_framework.csd_context_module import ContextModule
+from new_csd_framework.csd_context_ontology import DefaultFood
 from village_simulation.Agents.agents_parent import ParentAgent
 from village_simulation.Model.model_parent import ParentModel
 
@@ -23,3 +24,14 @@ class ContextExplorer:
             string += ", " + str(self.cm.get_goal(agent))
 
         return string
+
+    def deliberate_on_primary_information(self, agent: ParentAgent, model: ParentModel):
+
+        time = self.cm.get_time(model)
+        if time == 6:
+            return agent.default_food
+        elif time == 12:
+            return agent.default_food
+        elif time == 18:
+            return agent.default_food
+        return agent.default_food.NONE

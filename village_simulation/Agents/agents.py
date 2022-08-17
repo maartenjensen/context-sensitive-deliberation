@@ -1,4 +1,5 @@
 from new_csd_framework.csd_context_explorer import ContextExplorer
+from new_csd_framework.csd_context_ontology import DefaultFood
 from old_csd_framework.csd_deliberator import Deliberator
 from village_simulation.Agents.agents_parent import ParentAgent
 from village_simulation.Agents.buildings import House
@@ -19,14 +20,21 @@ class MyAgent(ParentAgent):
         self.has_bike = self.model.random.getrandbits(1)
         self.has_car = self.model.random.getrandbits(1)
         self.money = 50
-        self.beef = 0
-        self.chicken = 0
-        self.tofu = 0
+        self.beef = self.model.random.randint(0, 5)
+        self.chicken = self.model.random.randint(0, 5)
+        self.tofu = self.model.random.randint(0, 5)
+
+        # Default food
+        self.default_food = DefaultFood.BEEF
+        if self.chicken > self.beef:
+            self.default_food = DefaultFood.CHICKEN
+        if self.tofu > self.chicken and self.tofu > self.beef:
+            self.default_food = DefaultFood.TOFU
 
         # Utility
-        self.ut_beef = 10
-        self.ut_chicken = 5
-        self.ut_tofu = 2
+        self.ut_beef = self.beef
+        self.ut_chicken = self.chicken
+        self.ut_tofu = self.tofu
 
         # Enums
         self.activity = Activity.RELAXING
@@ -52,6 +60,14 @@ class MyAgent(ParentAgent):
         print("#####################################")
         print("Agent " + str(self.unique_id) + " retrieves context")
         print(self.context_explorer.get_primary_information(self, self.model))
+        chosen_food = self.context_explorer.deliberate_on_primary_information(self, self.model)
+        if chosen_food == DefaultFood.BEEF:
+            self.eat_beef()
+        elif chosen_food == DefaultFood.CHICKEN:
+            self.eat_chicken()
+        elif chosen_food == DefaultFood.TOFU:
+            self.eat_tofu()
+
         # self.my_deliberator.main_deliberate()
         print("#####################################")
 
@@ -77,17 +93,20 @@ class MyAgent(ParentAgent):
     def eat_beef(self):
         if self.beef > 0:
             self.beef -= 1
+            print("eating beef")
         else:
             print("ERROR")
 
     def eat_chicken(self):
         if self.chicken > 0:
             self.chicken -= 1
+            print("eating chicken")
         else:
             print("ERROR")
 
     def eat_tofu(self):
         if self.tofu > 0:
             self.tofu -= 1
+            print("eating tofu")
         else:
             print("ERROR")

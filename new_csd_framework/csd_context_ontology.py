@@ -6,3 +6,9 @@ class Location(Enum):
     HOUSE = 1
     OUTSIDE = 2
     SHOP = 3
+
+class DefaultFood(Enum):
+    NONE = -1
+    BEEF = 0
+    CHICKEN = 1
+    TOFU = 2
