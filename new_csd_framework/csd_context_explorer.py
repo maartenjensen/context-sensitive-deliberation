@@ -1,14 +1,21 @@
 from new_csd_framework.csd_context_module import ContextModule
-from new_csd_framework.csd_context_ontology import DefaultFood
 from village_simulation.Agents.agents_parent import ParentAgent
+from village_simulation.Agents.enums import Activity, Plan, Need, Goal
 from village_simulation.Model.model_parent import ParentModel
-
+from new_csd_framework.csd_context_ontology import Location, DefaultFood
 
 class ContextExplorer:
 
     def __init__(self):
 
         self.cm = ContextModule()
+        self._0_location = Location.NONE
+        self._0_time = -1
+        self._0_activity = Activity.RELAXING
+        self._0_plan = Plan.NONE
+        self._0_need = Need.NONE
+        self._0_goal = Goal.NONE
+
 
     def get_primary_information(self, agent: ParentAgent, model: ParentModel):
 
