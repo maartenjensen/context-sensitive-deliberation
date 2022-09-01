@@ -59,8 +59,10 @@ class MyAgent(ParentAgent):
         # Input context sensitive deliberation
         print("#####################################")
         print("Agent " + str(self.unique_id) + " retrieves context")
-        print(self.context_explorer.get_primary_information(self, self.model))
-        chosen_food = self.context_explorer.deliberate_on_primary_information(self, self.model)
+        #print(self.context_explorer.get_primary_information(self, self.model))
+        self.context_explorer.get_primary_information(self, self.model)
+        print(self.context_explorer.print_primary_information())
+        chosen_food = self.context_explorer.deliberate(self, self.model)
         if chosen_food == DefaultFood.BEEF:
             self.eat_beef()
         elif chosen_food == DefaultFood.CHICKEN:
