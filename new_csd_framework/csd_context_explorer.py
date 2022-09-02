@@ -1,4 +1,5 @@
 from new_csd_framework.csd_context_module import ContextModule
+from village_simulation.Agents.actions import Actions
 from village_simulation.Agents.agents_parent import ParentAgent
 from village_simulation.Agents.enums import Activity, Plan, Need, Goal
 from village_simulation.Model.model_parent import ParentModel
@@ -11,6 +12,15 @@ class ContextExplorer:
 
         self.cm = ContextModule()
         self.deliberation_functions = []
+        self._0_location = Location.NONE
+        self._0_time = -1
+        self._0_activity = Activity.NONE
+        self._0_plan = Plan.NONE
+        self._0_need = Need.NONE
+        self._0_goal = Goal.NONE
+
+    def reset_primary_information(self):
+
         self._0_location = Location.NONE
         self._0_time = -1
         self._0_activity = Activity.NONE
@@ -57,13 +67,23 @@ class ContextExplorer:
     def deliberate_on_primary_information(self, agent: ParentAgent, model: ParentModel):
 
         time = self._0_time
+        chosen_food = DefaultFood.NONE
+
         if time == 6:
-            return agent.default_food, True
+            chosen_food = agent.default_food
         elif time == 12:
-            return agent.default_food, True
+            chosen_food = agent.default_food
         elif time == 18:
-            return agent.default_food, True
-        return agent.default_food.NONE, False
+            chosen_food = agent.default_food
+
+        if chosen_food == DefaultFood.NONE:
+            return DefaultFood.NONE, False
+        if chosen_food == DefaultFood.BEEF:
+            return agent.actions.eat_beef, True
+        if chosen_food == DefaultFood.CHICKEN:
+            return agent.actions.eat_chicken, True
+        if chosen_food == DefaultFood.TOFU:
+            return agent.actions.eat_tofu, True
 
     def deliberate(self, agent: ParentAgent, model: ParentModel):
 
@@ -73,3 +93,4 @@ class ContextExplorer:
                 return action, True
 
         return agent.default_food.NONE, False
+

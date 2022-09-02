@@ -1,4 +1,6 @@
 import mesa
+
+from new_csd_framework.csd_context_ontology import DefaultFood
 from village_simulation.Agents.enums import Activity, Plan, Need, Goal
 
 
@@ -18,9 +20,13 @@ class ParentAgent(mesa.Agent):
         self.beef = 0
         self.chicken = 0
         self.tofu = 0
+        self.actions = None
 
         # Enums
         self.activity = Activity.RELAXING
         self.plan = Plan.NONE
         self.need = Need.NONE
         self.goal = Goal.NONE
+
+        # Default food
+        self.default_food = DefaultFood.NONE

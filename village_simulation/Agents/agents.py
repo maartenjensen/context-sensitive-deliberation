@@ -1,6 +1,7 @@
 from new_csd_framework.csd_context_explorer import ContextExplorer
 from new_csd_framework.csd_context_ontology import DefaultFood
 from old_csd_framework.csd_deliberator import Deliberator
+from village_simulation.Agents.actions import Actions
 from village_simulation.Agents.agents_parent import ParentAgent
 from village_simulation.Agents.buildings import House
 from village_simulation.Agents.enums import Activity, Plan, Need, Goal
@@ -23,6 +24,7 @@ class MyAgent(ParentAgent):
         self.beef = self.model.random.randint(0, 5)
         self.chicken = self.model.random.randint(0, 5)
         self.tofu = self.model.random.randint(0, 5)
+        self.actions = Actions()
 
         # Default food
         self.default_food = DefaultFood.BEEF
@@ -62,13 +64,10 @@ class MyAgent(ParentAgent):
         #print(self.context_explorer.get_primary_information(self, self.model))
         self.context_explorer.get_primary_information(self, self.model)
         print(self.context_explorer.print_primary_information())
-        chosen_food = self.context_explorer.deliberate(self, self.model)
-        if chosen_food == DefaultFood.BEEF:
-            self.eat_beef()
-        elif chosen_food == DefaultFood.CHICKEN:
-            self.eat_chicken()
-        elif chosen_food == DefaultFood.TOFU:
-            self.eat_tofu()
+        chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+        print("Chosen_action:" + str(chosen_action))
+        if succeeded:
+            chosen_action(self, self.model)
 
         # self.my_deliberator.main_deliberate()
         print("#####################################")
@@ -90,25 +89,3 @@ class MyAgent(ParentAgent):
             info += ", Bike"
         info += ", B:" + str(self.beef) + ",C:" + str(self.chicken) + ",T:" + str(self.tofu)
         return info
-
-    """ ACTIONS """
-    def eat_beef(self):
-        if self.beef > 0:
-            self.beef -= 1
-            print("eating beef")
-        else:
-            print("ERROR")
-
-    def eat_chicken(self):
-        if self.chicken > 0:
-            self.chicken -= 1
-            print("eating chicken")
-        else:
-            print("ERROR")
-
-    def eat_tofu(self):
-        if self.tofu > 0:
-            self.tofu -= 1
-            print("eating tofu")
-        else:
-            print("ERROR")
