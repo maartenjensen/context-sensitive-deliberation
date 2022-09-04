@@ -37,3 +37,6 @@ class ContextModule:
     def get_goal(self, agent: ParentAgent):
         return agent.goal
 
+    def get_default_food(self, agent: ParentAgent, model: ParentModel):
+        # this should be replaced by a function that takes the people around this person and then the most liked food
+        return DefaultFood.TOFU

@@ -21,9 +21,9 @@ class MyAgent(ParentAgent):
         self.has_bike = self.model.random.getrandbits(1)
         self.has_car = self.model.random.getrandbits(1)
         self.money = 50
-        self.beef = self.model.random.randint(0, 5)
-        self.chicken = self.model.random.randint(0, 5)
-        self.tofu = self.model.random.randint(0, 5)
+        self.beef = 2 #self.model.random.randint(0, 5)
+        self.chicken = 4 #self.model.random.randint(0, 5)
+        self.tofu = 2 #self.model.random.randint(0, 5)
         self.actions = Actions()
 
         # Default food
@@ -61,13 +61,33 @@ class MyAgent(ParentAgent):
         # Input context sensitive deliberation
         print("#####################################")
         print("Agent " + str(self.unique_id) + " retrieves context")
-        #print(self.context_explorer.get_primary_information(self, self.model))
-        self.context_explorer.get_primary_information(self, self.model)
-        print(self.context_explorer.print_primary_information())
+        self.context_explorer.get_0_primary_information(self, self.model)
+        print(self.context_explorer.print_0_primary_information())
         chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
         print("Chosen_action:" + str(chosen_action))
         if succeeded:
             chosen_action(self, self.model)
+        else:
+            self.context_explorer.get_1_accesible_objects(self, self.model)
+            print(self.context_explorer.print_1_accesible_objects())
+            chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+            print("Chosen_action:" + str(chosen_action))
+            if succeeded:
+                chosen_action(self, self.model)
+            else:
+                self.context_explorer.get_2_imitation(self, self.model)
+                print(self.context_explorer.print_2_imitation())
+                chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+                print("Chosen_action:" + str(chosen_action))
+                if succeeded:
+                    chosen_action(self, self.model)
+                else:
+                    self.context_explorer.get_3_rational_choice(self, self.model)
+                    print(self.context_explorer.print_3_rational_choice())
+                    chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+                    print("Chosen_action:" + str(chosen_action))
+                    if succeeded:
+                        chosen_action(self, self.model)
 
         # self.my_deliberator.main_deliberate()
         print("#####################################")

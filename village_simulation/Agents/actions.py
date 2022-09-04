@@ -4,6 +4,12 @@ from village_simulation.Model.model_parent import ParentModel
 
 class Actions:
 
+    def none_action(self, agent: ParentAgent, model: ParentModel):
+        print("ERROR none_action should not be called")
+
+    def just_chill(self, agent: ParentAgent, model: ParentModel):
+        print("The agent has nothing to do and just chills")
+
     def eat_beef(self, agent: ParentAgent, model: ParentModel):
         if agent.beef > 0:
             agent.beef -= 1

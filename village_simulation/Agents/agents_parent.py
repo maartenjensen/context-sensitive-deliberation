@@ -30,3 +30,8 @@ class ParentAgent(mesa.Agent):
 
         # Default food
         self.default_food = DefaultFood.NONE
+
+        # Utility
+        self.ut_beef = self.beef
+        self.ut_chicken = self.chicken
+        self.ut_tofu = self.tofu
