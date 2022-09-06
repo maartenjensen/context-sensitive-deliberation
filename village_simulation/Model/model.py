@@ -1,6 +1,6 @@
 import mesa
 
-from village_simulation.Agents.agents import MyAgent
+from village_simulation.Agent.agents import MyAgent
 from village_simulation.Model.model_parent import ParentModel
 from village_simulation.village_builder import VillageBuilder
 
@@ -25,7 +25,9 @@ class ShoppingModel(ParentModel):
             n_agents,
             n_houses,
             n_shops,
-            n_neighborhoods
+            n_neighborhoods,
+            time_days,
+            time_hours_day
     ):
         # Initialize model settings
         super().__init__()
@@ -36,6 +38,8 @@ class ShoppingModel(ParentModel):
         self.n_houses = n_houses
         self.n_shops = n_shops
         self.n_neighborhoods = n_neighborhoods
+        self.time_days = time_days
+        self.time_hours_day = time_hours_day
 
         self.grid = mesa.space.MultiGrid(world_w_cell, world_h_cell, torus=False)
         self.schedule = mesa.time.RandomActivation(self)

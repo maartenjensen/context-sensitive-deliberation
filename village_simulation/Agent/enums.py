@@ -6,6 +6,9 @@ class Activity(Enum):
     WORK = 1
     GET_FOOD = 2
     RELAXING = 3
+    EAT = 4
+    LEISURE = 5
+    SLEEP = 6
 
 class Need(Enum):
     NONE = -1

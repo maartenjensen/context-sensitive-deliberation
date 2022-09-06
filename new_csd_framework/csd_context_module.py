@@ -1,6 +1,6 @@
 from new_csd_framework.csd_context_ontology import *
-from village_simulation.Agents.agents_parent import ParentAgent
-from village_simulation.Agents.buildings import Shop, House
+from village_simulation.Agent.agents_parent import ParentAgent
+from village_simulation.Building.buildings import Shop, House
 from village_simulation.Model.model_parent import ParentModel
 
 """ The ContextModule serves as a bridge between the information 
@@ -22,8 +22,8 @@ class ContextModule:
     # time is indicated in hours
     def get_time(self, model: ParentModel):
         n_steps = model.schedule.steps
-        time = n_steps % 12
-        return time * 2
+        time = n_steps % model.time_hours_day
+        return time
 
     def get_activity(self, agent: ParentAgent):
         return agent.activity

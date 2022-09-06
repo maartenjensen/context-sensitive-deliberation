@@ -1,4 +1,4 @@
-from village_simulation.Agents.agents_parent import ParentAgent
+from village_simulation.Agent.agents_parent import ParentAgent
 from village_simulation.Model.model_parent import ParentModel
 
 

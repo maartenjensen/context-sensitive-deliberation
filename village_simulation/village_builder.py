@@ -1,5 +1,5 @@
-from village_simulation.Agents.buildings import House, Neighborhood, Shop, TimeIndicator
-from village_simulation.Agents.agents import MyAgent
+from village_simulation.Building.buildings import House, Neighborhood, Shop, TimeIndicator
+from village_simulation.Agent.agents import MyAgent
 from village_simulation.Model.model_parent import ParentModel
 
 

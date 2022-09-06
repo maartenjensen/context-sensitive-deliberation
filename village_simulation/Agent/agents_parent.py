@@ -1,7 +1,8 @@
 import mesa
 
 from new_csd_framework.csd_context_ontology import DefaultFood
-from village_simulation.Agents.enums import Activity, Plan, Need, Goal
+from village_simulation.Agent.Schedules import ScheduleTime
+from village_simulation.Agent.enums import Activity, Plan, Need, Goal
 
 
 class ParentAgent(mesa.Agent):
@@ -21,6 +22,7 @@ class ParentAgent(mesa.Agent):
         self.chicken = 0
         self.tofu = 0
         self.actions = None
+        self.schedule = ScheduleTime()
 
         # Enums
         self.activity = Activity.RELAXING

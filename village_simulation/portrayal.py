@@ -1,5 +1,5 @@
-from village_simulation.Agents.buildings import Location
-from village_simulation.Agents.agents import MyAgent
+from village_simulation.Building.buildings import Location
+from village_simulation.Agent.agents import MyAgent
 from village_simulation.Model.params import Constants
 
 

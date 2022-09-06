@@ -1,7 +1,7 @@
 from new_csd_framework.csd_context_module import ContextModule
-from village_simulation.Agents.actions import Actions
-from village_simulation.Agents.agents_parent import ParentAgent
-from village_simulation.Agents.enums import Activity, Plan, Need, Goal
+from village_simulation.Agent.actions import Actions
+from village_simulation.Agent.agents_parent import ParentAgent
+from village_simulation.Agent.enums import Activity, Plan, Need, Goal
 from village_simulation.Model.model_parent import ParentModel
 from new_csd_framework.csd_context_ontology import Location, DefaultFood
 
@@ -14,7 +14,7 @@ class ContextExplorer:
         self.deliberation_functions = []
         self._0_location = Location.NONE
         self._0_time = -1
-        self._0_activity = Activity.NONE
+        self._0_activity = Activity.NONE  # TODO Should be a list rather than this
         self._0_plan = Plan.NONE
         self._0_need = Need.NONE
         self._0_goal = Goal.NONE
@@ -52,8 +52,12 @@ class ContextExplorer:
         self.deliberation_functions = [self.deliberate_default_action_from_context]
         self._0_location = self.cm.get_location(agent)
         self._0_time = self.cm.get_time(model)
+        self._0_activity = agent.schedule.time_schedule_mo[self._0_time] # TODO make function for this in the schedule?? Or in the context module?
+        # TODO add if function, what if there is no key, then it should not return something
+        print("Activity from time:" + str(self._0_activity))
+        # TODO implement get activity from schedule
 
-        if self.cm.get_activity(agent).value > -1:
+        if self.cm.get_activity(agent).value > -1:  # Activity can be based on time
             self._0_activity = self.cm.get_activity(agent)
         if self.cm.get_plan(agent).value > -1:
             self._0_plan = self.cm.get_activity(agent)

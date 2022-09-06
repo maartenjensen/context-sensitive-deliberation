@@ -6,8 +6,10 @@ from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Model.params import Constants
 
 """ Base class """
+
+
 class Location(mesa.Agent):
-    """Agents"""
+    """Agent"""
 
     def __init__(self, unique_id, model: ParentModel, pos, dim, color, layer):
         super().__init__(unique_id, model)
@@ -33,6 +35,8 @@ class Location(mesa.Agent):
 
 
 """ Child classes """
+
+
 class Shop(Location):
 
     def __init__(self, unique_id, model: ParentModel, pos, neighborhood):
@@ -55,6 +59,7 @@ class Shop(Location):
         info += "B:" + str(self.beef) + ",C:" + str(self.chicken) + ",T:" + str(self.tofu)
         return info
 
+
 class House(Location):
 
     def __init__(self, unique_id, model: ParentModel, pos, neighborhood):
@@ -72,6 +77,7 @@ class House(Location):
         info += "B:" + str(self.beef) + ",C:" + str(self.chicken) + ",T:" + str(self.tofu)
         return info
 
+
 class Neighborhood(Location):
 
     def __init__(self, unique_id, model: ParentModel, pos):
@@ -85,6 +91,7 @@ class Neighborhood(Location):
         self.rel_building_y += new_building_height + 1
         return position
 
+
 class TimeIndicator(Location):
 
     def __init__(self, unique_id, model: ParentModel, pos):
@@ -92,10 +99,13 @@ class TimeIndicator(Location):
 
     def to_str(self):
         n_steps = self.model.schedule.steps
-        info = "D:" + str(math.ceil(n_steps / 12))
+        info = str(math.floor(n_steps / self.model.time_hours_day) + 1) + " "
+        day = math.floor(n_steps / self.model.time_hours_day) % self.model.time_days
+        days = {0: "Mo", 1: "Tu", 2: "We", 3: "Th", 4: "Fr", 5: "Sa", 6: "Su"}
+        info += days[day]
         info += ",T:"
-        time = n_steps % 12
-        if time < 5:
+        time = n_steps % self.model.time_hours_day
+        if time < 10:
             info += "0"
-        info += str(time * 2) + ":00"
+        info += str(time) + ":00"
         return info

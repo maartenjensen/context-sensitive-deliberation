@@ -1,10 +1,11 @@
 from new_csd_framework.csd_context_explorer import ContextExplorer
 from new_csd_framework.csd_context_ontology import DefaultFood
 from old_csd_framework.csd_deliberator import Deliberator
-from village_simulation.Agents.actions import Actions
-from village_simulation.Agents.agents_parent import ParentAgent
-from village_simulation.Agents.buildings import House
-from village_simulation.Agents.enums import Activity, Plan, Need, Goal
+from village_simulation.Agent.Schedules import ScheduleTime
+from village_simulation.Agent.actions import Actions
+from village_simulation.Agent.agents_parent import ParentAgent
+from village_simulation.Building.buildings import House
+from village_simulation.Agent.enums import Activity, Plan, Need, Goal
 from village_simulation.Model.model_parent import ParentModel
 
 
@@ -21,10 +22,12 @@ class MyAgent(ParentAgent):
         self.has_bike = self.model.random.getrandbits(1)
         self.has_car = self.model.random.getrandbits(1)
         self.money = 50
-        self.beef = 2 #self.model.random.randint(0, 5)
-        self.chicken = 4 #self.model.random.randint(0, 5)
-        self.tofu = 2 #self.model.random.randint(0, 5)
+        self.beef = 2  #self.model.random.randint(0, 5)
+        self.chicken = 4  #self.model.random.randint(0, 5)
+        self.tofu = 2  #self.model.random.randint(0, 5)
         self.actions = Actions()
+        self.schedule = ScheduleTime()
+        self.schedule.init_schedule_default_worker()
 
         # Default food
         self.default_food = DefaultFood.BEEF
