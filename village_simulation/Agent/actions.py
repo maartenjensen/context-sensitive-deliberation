@@ -10,6 +10,12 @@ class Actions:
     def just_chill(self, agent: ParentAgent, model: ParentModel):
         print("The agent has nothing to do and just chills")
 
+    def sleep(self, agent: ParentAgent, model: ParentModel):
+        print("Action: sleeping")
+
+    def work(self, agent: ParentAgent, model: ParentModel):
+        print("Action: work")
+
     def eat_beef(self, agent: ParentAgent, model: ParentModel):
         if agent.beef > 0:
             agent.beef -= 1

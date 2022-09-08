@@ -1,16 +1,15 @@
 from new_csd_framework.csd_context_explorer import ContextExplorer
-from new_csd_framework.csd_context_ontology import DefaultFood
-from old_csd_framework.csd_deliberator import Deliberator
+from new_csd_framework.csd_deliberator import Deliberator
 from village_simulation.Agent.Schedules import ScheduleTime
 from village_simulation.Agent.actions import Actions
 from village_simulation.Agent.agents_parent import ParentAgent
 from village_simulation.Building.buildings import House
-from village_simulation.Agent.enums import Activity, Plan, Need, Goal
+from village_simulation.Agent.enums import Activity, Plan, Need, Goal, DefaultFood
 from village_simulation.Model.model_parent import ParentModel
 
 
 class MyAgent(ParentAgent):
-    """An agent with some money"""
+    """ An agent with some money """
 
     def __init__(self, unique_id, model: ParentModel, pos, my_house: House):
         super().__init__(unique_id, model)
@@ -27,7 +26,6 @@ class MyAgent(ParentAgent):
         self.tofu = 2  #self.model.random.randint(0, 5)
         self.actions = Actions()
         self.schedule = ScheduleTime()
-        self.schedule.init_schedule_default_worker()
 
         # Default food
         self.default_food = DefaultFood.BEEF
@@ -35,6 +33,8 @@ class MyAgent(ParentAgent):
             self.default_food = DefaultFood.CHICKEN
         if self.tofu > self.chicken and self.tofu > self.beef:
             self.default_food = DefaultFood.TOFU
+
+        self.schedule.init_schedule_default_worker(self.default_food)
 
         # Utility
         self.ut_beef = self.beef
@@ -64,33 +64,39 @@ class MyAgent(ParentAgent):
         # Input context sensitive deliberation
         print("#####################################")
         print("Agent " + str(self.unique_id) + " retrieves context")
-        self.context_explorer.get_0_primary_information(self, self.model)
-        print(self.context_explorer.print_0_primary_information())
-        chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-        print("Chosen_action:" + str(chosen_action))
-        if succeeded:
-            chosen_action(self, self.model)
-        else:
-            self.context_explorer.get_1_accesible_objects(self, self.model)
-            print(self.context_explorer.print_1_accesible_objects())
-            chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-            print("Chosen_action:" + str(chosen_action))
-            if succeeded:
-                chosen_action(self, self.model)
-            else:
-                self.context_explorer.get_2_imitation(self, self.model)
-                print(self.context_explorer.print_2_imitation())
-                chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-                print("Chosen_action:" + str(chosen_action))
-                if succeeded:
-                    chosen_action(self, self.model)
-                else:
-                    self.context_explorer.get_3_rational_choice(self, self.model)
-                    print(self.context_explorer.print_3_rational_choice())
-                    chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-                    print("Chosen_action:" + str(chosen_action))
-                    if succeeded:
-                        chosen_action(self, self.model)
+
+        myDeliberator = Deliberator()
+        chosen_action = myDeliberator.deliberate(self, self.model)
+        chosen_action(self, self.model)
+
+        # print("Old context retrieval")
+        # self.context_explorer.get_0_primary_information(self, self.model)
+        # print(self.context_explorer.print_0_primary_information())
+        # chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+        # print("Chosen_action:" + str(chosen_action))
+        # if succeeded:
+        #     chosen_action(self, self.model)
+        # else:
+        #     self.context_explorer.get_1_accesible_objects(self, self.model)
+        #     print(self.context_explorer.print_1_accesible_objects())
+        #     chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+        #     print("Chosen_action:" + str(chosen_action))
+        #     if succeeded:
+        #         chosen_action(self, self.model)
+        #     else:
+        #         self.context_explorer.get_2_imitation(self, self.model)
+        #         print(self.context_explorer.print_2_imitation())
+        #         chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+        #         print("Chosen_action:" + str(chosen_action))
+        #         if succeeded:
+        #             chosen_action(self, self.model)
+        #         else:
+        #             self.context_explorer.get_3_rational_choice(self, self.model)
+        #             print(self.context_explorer.print_3_rational_choice())
+        #             chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
+        #             print("Chosen_action:" + str(chosen_action))
+        #             if succeeded:
+        #                 chosen_action(self, self.model)
 
         # self.my_deliberator.main_deliberate()
         print("#####################################")

@@ -1,9 +1,8 @@
 from new_csd_framework.csd_context_module import ContextModule
 from village_simulation.Agent.actions import Actions
 from village_simulation.Agent.agents_parent import ParentAgent
-from village_simulation.Agent.enums import Activity, Plan, Need, Goal
+from village_simulation.Agent.enums import Activity, Plan, Need, Goal, Location, DefaultFood
 from village_simulation.Model.model_parent import ParentModel
-from new_csd_framework.csd_context_ontology import Location, DefaultFood
 
 
 class ContextExplorer:
@@ -25,7 +24,6 @@ class ContextExplorer:
         self._3_beef_util = -1
         self._3_chicken_util = -1
         self._3_tofu_util = -1
-
 
     def deliberate(self, agent: ParentAgent, model: ParentModel):
 
@@ -52,7 +50,8 @@ class ContextExplorer:
         self.deliberation_functions = [self.deliberate_default_action_from_context]
         self._0_location = self.cm.get_location(agent)
         self._0_time = self.cm.get_time(model)
-        self._0_activity = agent.schedule.time_schedule_mo[self._0_time] # TODO make function for this in the schedule?? Or in the context module?
+        self._0_activity = agent.schedule.time_schedule_mo[
+            self._0_time]  # TODO make function for this in the schedule?? Or in the context module?
         # TODO add if function, what if there is no key, then it should not return something
         print("Activity from time:" + str(self._0_activity))
         # TODO implement get activity from schedule
@@ -87,6 +86,7 @@ class ContextExplorer:
         return string
 
     """ Accesible objects """
+
     def reset_1_accesible_objects(self):
 
         self._1_beef = -1
@@ -113,6 +113,7 @@ class ContextExplorer:
         return string
 
     """ Imitation """
+
     def reset_2_imitation(self):
 
         self._2_other_fav_food = DefaultFood.NONE
@@ -131,6 +132,7 @@ class ContextExplorer:
         return string
 
     """ Rational choice """
+
     def reset_3_rational_choice(self):
 
         self._3_beef_util = -1
@@ -157,6 +159,7 @@ class ContextExplorer:
         return string
 
     """ Deliberation methods """
+
     def deliberate_default_action_from_context(self, agent: ParentAgent, model: ParentModel):
 
         time = self._0_time
