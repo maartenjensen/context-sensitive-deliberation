@@ -1,9 +1,7 @@
-import math
-
 import mesa
 
-from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Model.params import Constants
+from village_simulation.Model.sim_utils import SimUtils
 
 """ Base class """
 
@@ -11,23 +9,22 @@ from village_simulation.Model.params import Constants
 class Location(mesa.Agent):
     """Agent"""
 
-    def __init__(self, unique_id, model: ParentModel, pos, dim, color, layer):
+    def __init__(self, unique_id, model, pos, dim, color, layer):
         super().__init__(unique_id, model)
-        self.model = model
         self.pos = pos
         self.dim = dim
         self.color = color
         self.layer = layer
 
-        self.model.schedule.add(self)
-        self.model.grid.place_agent(self, self.pos)
+        SimUtils.get_model().schedule.add(self)
+        SimUtils.get_model().grid.place_agent(self, self.pos)
 
     def step(self):
         a = 1 + 1
 
     def get_random_position_on(self):
-        x = self.pos[0] - self.model.random.randint(0, self.dim[0] - 1)
-        y = self.pos[1] + self.model.random.randint(0, self.dim[1] - 1)
+        x = self.pos[0] - SimUtils.get_model().random.randint(0, self.dim[0] - 1)
+        y = self.pos[1] + SimUtils.get_model().random.randint(0, self.dim[1] - 1)
         return x, y
 
     def to_str(self):
@@ -39,7 +36,7 @@ class Location(mesa.Agent):
 
 class Shop(Location):
 
-    def __init__(self, unique_id, model: ParentModel, pos, neighborhood):
+    def __init__(self, unique_id, model, pos, neighborhood):
         super().__init__(unique_id, model, pos, (5, 5), '#badbc6', Constants.layer_buildings)
         print("Added a shop " + str(unique_id))
 
@@ -62,7 +59,7 @@ class Shop(Location):
 
 class House(Location):
 
-    def __init__(self, unique_id, model: ParentModel, pos, neighborhood):
+    def __init__(self, unique_id, model, pos, neighborhood):
         super().__init__(unique_id, model, pos, (3, 3), '#aabcf2', Constants.layer_buildings)
         print("Added a house " + str(unique_id))
 
@@ -80,7 +77,7 @@ class House(Location):
 
 class Neighborhood(Location):
 
-    def __init__(self, unique_id, model: ParentModel, pos):
+    def __init__(self, unique_id, model, pos):
         super().__init__(unique_id, model, pos, (10, 15), '#c7c7c7', Constants.layer_base)
         print("Added a neighborhood " + str(unique_id))
         self.rel_building_x = -1
@@ -90,22 +87,3 @@ class Neighborhood(Location):
         position = self.pos[0] + self.rel_building_x, self.pos[1] + self.rel_building_y
         self.rel_building_y += new_building_height + 1
         return position
-
-
-class TimeIndicator(Location):
-
-    def __init__(self, unique_id, model: ParentModel, pos):
-        super().__init__(unique_id, model, pos, (1, 1), '#cf9393', Constants.layer_base)
-
-    def to_str(self):
-        n_steps = self.model.schedule.steps
-        info = str(math.floor(n_steps / self.model.time_hours_day) + 1) + " "
-        day = math.floor(n_steps / self.model.time_hours_day) % self.model.time_days
-        days = {0: "Mo", 1: "Tu", 2: "We", 3: "Th", 4: "Fr", 5: "Sa", 6: "Su"}
-        info += days[day]
-        info += ",T:"
-        time = n_steps % self.model.time_hours_day
-        if time < 10:
-            info += "0"
-        info += str(time) + ":00"
-        return info

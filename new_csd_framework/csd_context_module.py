@@ -1,4 +1,4 @@
-from village_simulation.Agent.agents_parent import ParentAgent
+from village_simulation.Agent.agents import HumanParent
 from village_simulation.Agent.enums import Location, DefaultFood
 from village_simulation.Building.buildings import Shop, House
 from village_simulation.Model.model_parent import ParentModel
@@ -9,7 +9,7 @@ from village_simulation.Model.model_parent import ParentModel
 """
 class ContextModule:
 
-    def get_location(self, agent: ParentAgent):
+    def get_location(self, agent: HumanParent):
         if agent.location == agent.my_house:
             return Location.HOME
         elif isinstance(agent.location, House):
@@ -25,18 +25,18 @@ class ContextModule:
         time = n_steps % model.time_hours_day
         return time
 
-    def get_activity(self, agent: ParentAgent):
+    def get_activity(self, agent: HumanParent):
         return agent.activity
 
-    def get_plan(self, agent: ParentAgent):
+    def get_plan(self, agent: HumanParent):
         return agent.plan
 
-    def get_need(self, agent: ParentAgent):
+    def get_need(self, agent: HumanParent):
         return agent.need
 
-    def get_goal(self, agent: ParentAgent):
+    def get_goal(self, agent: HumanParent):
         return agent.goal
 
-    def get_default_food(self, agent: ParentAgent, model: ParentModel):
+    def get_default_food(self, agent: HumanParent, model: ParentModel):
         # this should be replaced by a function that takes the people around this person and then the most liked food
         return DefaultFood.TOFU

@@ -1,5 +1,7 @@
 import mesa
 
+from village_simulation.Agent.enums import Days
+
 
 class ParentModel(mesa.Model):
 
@@ -19,3 +21,9 @@ class ParentModel(mesa.Model):
         self.grid = mesa.space.MultiGrid(10, 10, torus=False)
         self.schedule = mesa.time.RandomActivation(self)
         self.running = True
+
+    def get_time(self) -> int:
+        return -1
+
+    def get_day(self) -> Days:
+        return Days.NONE

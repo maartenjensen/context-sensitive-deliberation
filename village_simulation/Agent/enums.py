@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 
 """ I"m putting everything in an Enum because otherwise its just being a big mess if I put enums in multiple files """
 
@@ -17,6 +17,25 @@ class Activity(Enum):
     EAT_TOFU = 9
 
 
+class Goal(Enum):
+    NONE = -1
+    BUY_FOOD = 0
+    BUY_CAR = 1
+
+
+class Urgency(Enum):
+    NONE = -1
+    IMMEDIATE = 0
+    SOON = 1
+    WHENEVER = 2
+
+
+class Origin(Enum):
+    NONE = auto()
+    SCHEDULE = auto()
+    LOCATION = auto()
+
+
 class Need(Enum):
     NONE = -1
     HUNGER = 0
@@ -24,11 +43,6 @@ class Need(Enum):
 
 
 class Plan(Enum):  # Maybe this needs to contain explicit steps for the plan
-    NONE = -1
-    GET_FOOD = 0
-
-
-class Goal(Enum):
     NONE = -1
     GET_FOOD = 0
 
@@ -57,3 +71,10 @@ class Days(Enum):
     FR = 5
     SA = 6
     SU = 7
+
+
+class Vehicle(Enum):
+    NONE = -1
+    BIKE = 0
+    BUS = 1
+    CAR = 2

@@ -1,14 +1,15 @@
+from mesa import Agent
+
+from village_simulation.Agent.agents import Human
 from village_simulation.Building.buildings import Location
-from village_simulation.Agent.agents import MyAgent
 from village_simulation.Model.params import Constants
 
 
-def agent_portrayal(agent: MyAgent):
+def agent_portrayal(agent: Agent):
     portrayal = {"Shape": "circle",
                  "Filled": "true",
                  "r": 0.75}
-
-    if isinstance(agent, MyAgent):
+    if isinstance(agent, Human):
         portrayal["Layer"] = Constants.layer_agents
         portrayal["Color"] = "grey"
         portrayal["Text"] = agent.to_str()

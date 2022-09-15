@@ -1,120 +1,54 @@
-from new_csd_framework.csd_context_explorer import ContextExplorer
-from new_csd_framework.csd_deliberator import Deliberator
-from village_simulation.Agent.Schedules import ScheduleTime
-from village_simulation.Agent.actions import Actions
-from village_simulation.Agent.agents_parent import ParentAgent
+import mesa
+
+from village_simulation.Agent.agent_schedules import ScheduleTime
+from village_simulation.Agent.agent_systems import AgentFood, AgentEconomy, AgentPosition
 from village_simulation.Building.buildings import House
-from village_simulation.Agent.enums import Activity, Plan, Need, Goal, DefaultFood
-from village_simulation.Model.model_parent import ParentModel
 
 
-class MyAgent(ParentAgent):
+class HumanParent(mesa.Agent):
+
+    def __init__(self, unique_id, model, pos, my_house: House):
+        super().__init__(unique_id, model)
+
+        # Agent systems
+        self.position = AgentPosition(unique_id, pos, my_house)
+        self.food = AgentFood()
+        self.economy = AgentEconomy()
+
+        # Deliberation and context
+        self.schedule_time = ScheduleTime()
+
+
+class Human(HumanParent):
     """ An agent with some money """
 
-    def __init__(self, unique_id, model: ParentModel, pos, my_house: House):
-        super().__init__(unique_id, model)
-        # Variables
-        self.model = model
-        self.pos = pos
-        self.my_house = my_house
-        self.location = None
-        self.has_bike = self.model.random.getrandbits(1)
-        self.has_car = self.model.random.getrandbits(1)
-        self.money = 50
-        self.beef = 2  #self.model.random.randint(0, 5)
-        self.chicken = 4  #self.model.random.randint(0, 5)
-        self.tofu = 2  #self.model.random.randint(0, 5)
-        self.actions = Actions()
-        self.schedule = ScheduleTime()
+    def __init__(self, unique_id, model, pos, my_house: House):
+        super().__init__(unique_id, model, pos, my_house)
 
-        # Default food
-        self.default_food = DefaultFood.BEEF
-        if self.chicken > self.beef:
-            self.default_food = DefaultFood.CHICKEN
-        if self.tofu > self.chicken and self.tofu > self.beef:
-            self.default_food = DefaultFood.TOFU
+        # Agent systems
+        self.position = AgentPosition(unique_id, pos, my_house)
+        self.food = AgentFood()
+        self.economy = AgentEconomy()
 
-        self.schedule.init_schedule_default_worker(self.default_food)
+        # Deliberation and context
+        self.schedule_time = ScheduleTime()
 
-        # Utility
-        self.ut_beef = self.beef
-        self.ut_chicken = self.chicken
-        self.ut_tofu = self.tofu
-
-        # Enums
-        self.activity = Activity.RELAXING
-        self.plan = Plan.NONE
-        self.need = Need.NONE
-        self.goal = Goal.NONE
-
-        # Complex variables
-        self.my_deliberator = Deliberator()
-        self.context_explorer = ContextExplorer()
-
-        # Functions
+        # Initialisation functions
         self.model.schedule.add(self)
-        self.move_to_house()
+        self.schedule_time.init_schedule_default_worker(self.food.default_food)
 
-    def action_move(self):
-        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
-        new_position = self.random.choice(possible_steps)
-        self.model.grid.move_agent(self, new_position)
+        self.position.move_to_house()
 
     def step(self):
         # Input context sensitive deliberation
         print("#####################################")
-        print("Agent " + str(self.unique_id) + " retrieves context")
-
-        myDeliberator = Deliberator()
-        chosen_action = myDeliberator.deliberate(self, self.model)
-        chosen_action(self, self.model)
-
-        # print("Old context retrieval")
-        # self.context_explorer.get_0_primary_information(self, self.model)
-        # print(self.context_explorer.print_0_primary_information())
-        # chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-        # print("Chosen_action:" + str(chosen_action))
-        # if succeeded:
-        #     chosen_action(self, self.model)
-        # else:
-        #     self.context_explorer.get_1_accesible_objects(self, self.model)
-        #     print(self.context_explorer.print_1_accesible_objects())
-        #     chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-        #     print("Chosen_action:" + str(chosen_action))
-        #     if succeeded:
-        #         chosen_action(self, self.model)
-        #     else:
-        #         self.context_explorer.get_2_imitation(self, self.model)
-        #         print(self.context_explorer.print_2_imitation())
-        #         chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-        #         print("Chosen_action:" + str(chosen_action))
-        #         if succeeded:
-        #             chosen_action(self, self.model)
-        #         else:
-        #             self.context_explorer.get_3_rational_choice(self, self.model)
-        #             print(self.context_explorer.print_3_rational_choice())
-        #             chosen_action, succeeded = self.context_explorer.deliberate(self, self.model)
-        #             print("Chosen_action:" + str(chosen_action))
-        #             if succeeded:
-        #                 chosen_action(self, self.model)
-
-        # self.my_deliberator.main_deliberate()
-        print("#####################################")
-
-    def move_to_house(self):
-        self.pos = self.my_house.get_random_position_on()
-        self.model.grid.place_agent(self, self.pos)
-        self.location = self.my_house
-
-    def get_food(self):
-        return self.beef + self.chicken + self.tofu
 
     def to_str(self):
         info = "ID:" + str(self.unique_id) + ", "
-        info += "Money: " + str(self.money)
-        if self.has_car:
+        info += "Money: " + str(self.economy.money) + " (" + str(self.economy.salary) + ")"
+        if self.position.has_bike:
             info += ", Car"
-        if self.has_bike:
+        if self.position.has_bike:
             info += ", Bike"
-        info += ", B:" + str(self.beef) + ",C:" + str(self.chicken) + ",T:" + str(self.tofu)
+        info += ", B:" + str(self.food.beef) + ",C:" + str(self.food.chicken) + ",T:" + str(self.food.tofu)
         return info

@@ -1,6 +1,5 @@
 from new_csd_framework.csd_context_module import ContextModule
-from village_simulation.Agent.actions import Actions
-from village_simulation.Agent.agents_parent import ParentAgent
+from village_simulation.Agent.agents import HumanParent
 from village_simulation.Agent.enums import Activity, Plan, Need, Goal, Location, DefaultFood
 from village_simulation.Model.model_parent import ParentModel
 
@@ -25,7 +24,7 @@ class ContextExplorer:
         self._3_chicken_util = -1
         self._3_tofu_util = -1
 
-    def deliberate(self, agent: ParentAgent, model: ParentModel):
+    def deliberate(self, agent: HumanParent, model: ParentModel):
 
         for delib_func in self.deliberation_functions:
             action, succeeded = delib_func(agent, model)
@@ -45,7 +44,7 @@ class ContextExplorer:
         self._0_need = Need.NONE
         self._0_goal = Goal.NONE
 
-    def get_0_primary_information(self, agent: ParentAgent, model: ParentModel):
+    def get_0_primary_information(self, agent: HumanParent, model: ParentModel):
 
         self.deliberation_functions = [self.deliberate_default_action_from_context]
         self._0_location = self.cm.get_location(agent)
@@ -93,7 +92,7 @@ class ContextExplorer:
         self._1_chicken = -1
         self._1_tofu = -1
 
-    def get_1_accesible_objects(self, agent: ParentAgent, model: ParentModel):
+    def get_1_accesible_objects(self, agent: HumanParent, model: ParentModel):
 
         self.deliberation_functions = [self.deliberate_default_action_from_context]
         self._1_beef = agent.beef
@@ -118,7 +117,7 @@ class ContextExplorer:
 
         self._2_other_fav_food = DefaultFood.NONE
 
-    def get_2_imitation(self, agent: ParentAgent, model: ParentModel):
+    def get_2_imitation(self, agent: HumanParent, model: ParentModel):
 
         self.deliberation_functions = [self.deliberation_imitation]
         self._2_other_fav_food = self.cm.get_default_food(agent, model)
@@ -139,7 +138,7 @@ class ContextExplorer:
         self._3_chicken_util = -1
         self._3_tofu_util = -1
 
-    def get_3_rational_choice(self, agent: ParentAgent, model: ParentModel):
+    def get_3_rational_choice(self, agent: HumanParent, model: ParentModel):
 
         self.deliberation_functions = [self.deliberation_utility_selection]
         self._3_beef_util = agent.ut_beef
@@ -160,7 +159,7 @@ class ContextExplorer:
 
     """ Deliberation methods """
 
-    def deliberate_default_action_from_context(self, agent: ParentAgent, model: ParentModel):
+    def deliberate_default_action_from_context(self, agent: HumanParent, model: ParentModel):
 
         time = self._0_time
         chosen_food = DefaultFood.NONE
@@ -198,7 +197,7 @@ class ContextExplorer:
         # Return nothing
         return agent.actions.none_action, False
 
-    def deliberation_imitation(self, agent: ParentAgent, model: ParentModel):
+    def deliberation_imitation(self, agent: HumanParent, model: ParentModel):
 
         chosen_food = self._2_other_fav_food
 
@@ -212,7 +211,7 @@ class ContextExplorer:
 
         return agent.actions.none_action, False
 
-    def deliberation_utility_selection(self, agent: ParentAgent, model: ParentModel):
+    def deliberation_utility_selection(self, agent: HumanParent, model: ParentModel):
 
         # Utility selection, here
         if self._3_beef_util >= self._3_chicken_util >= self._3_tofu_util:

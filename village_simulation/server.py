@@ -4,6 +4,7 @@ from village_simulation.portrayal import agent_portrayal
 
 import mesa
 
+
 def mesa_start_simulation():
     grid = mesa.visualization.CanvasGrid(agent_portrayal, Param.model_params['world_w_cell'],
                                          Param.model_params['world_h_cell'], Param.world_w_px, Param.world_h_px)
