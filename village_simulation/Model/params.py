@@ -19,8 +19,9 @@ class Param:
         world_h_cell=15,
 
         n_agents=1,
-        n_houses=[2, 0, 2],
+        n_houses=[2, 0, 1],
         n_shops=[0, 1, 0],
+        n_offices=[0, 0, 1],
         n_neighborhoods=3,
 
         time_days=7,

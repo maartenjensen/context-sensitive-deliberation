@@ -1,6 +1,7 @@
 from village_simulation.Agent.Deliberation.new_csd_context_module import ContextTimeActivity
-from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, ActEatTofu, \
-    ActNone, Actions
+from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
+    ActEatTofu, \
+    ActNone, Actions, ActTravelToHome, ActTravelToWork, ActTravelToShop
 from village_simulation.Agent.agents import Human
 from village_simulation.Agent.enums import Activity, Urgency, Origin
 
@@ -21,6 +22,9 @@ class Deliberator:
         self.actEatBeef = ActEatBeef()
         self.actEatChicken = ActEatChicken()
         self.actEatTofu = ActEatTofu()
+        self.actTravelToHome = ActTravelToHome()
+        self.actTravelToWork = ActTravelToWork()
+        self.actTravelToShop = ActTravelToShop()
 
     def deliberate(self, agent: Human):
 
@@ -51,6 +55,12 @@ class Deliberator:
             return self.actEatChicken
         elif activity == Activity.EAT_TOFU:
             return self.actEatTofu
+        elif activity == Activity.TRAVEL_TO_HOME:
+            return self.actTravelToHome
+        elif activity == Activity.TRAVEL_TO_SHOP:
+            return self.actTravelToShop
+        elif activity == Activity.TRAVEL_TO_WORK:
+            return self.actTravelToWork
 
         return self.actNone
 

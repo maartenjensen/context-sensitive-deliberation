@@ -1,28 +1,68 @@
 from village_simulation.Agent.enums import DefaultFood
-from village_simulation.Building.buildings import House
+from village_simulation.Building.house import House
+from village_simulation.Building.office import Office
+from village_simulation.Building.shop import Shop
 from village_simulation.Model.sim_utils import SimUtils
 
 
 class AgentPosition:
 
-    def __init__(self, unique_id, pos, my_house: House):
+    def __init__(self, agent_id, pos, my_house_id, my_shop_id, my_office_id):
 
-        self.unique_id = unique_id
+        self.agent_id = agent_id
         self.pos = pos
-        self.my_house = my_house
-        self.location = None
+        self.my_house_id = my_house_id
+        self.my_shop_id = my_shop_id
+        self.my_office_id = my_office_id
+        self.location_id = -1
+
         self.has_bike = SimUtils.get_model().random.getrandbits(1)
         self.has_car = SimUtils.get_model().random.getrandbits(1)
 
-    def action_move(self):
-        possible_steps = SimUtils.get_model().grid.get_neighborhood(self.pos, moore=True, include_center=False)
-        new_position = SimUtils.get_model().random.choice(possible_steps)
-        SimUtils.get_model().grid.move_agent(SimUtils.get_agent_by_id(self.unique_id), new_position)
+    def place_agent_in_house(self):
+        house = SimUtils.get_agent_by_id(self.my_house_id)
+        if isinstance(house, House):
+            self.pos = house.get_random_position_on()
+            SimUtils.get_model().grid.place_agent(SimUtils.get_agent_by_id(self.agent_id), self.pos)
+            self.location_id = self.my_house_id
+        else:
+            print(SimUtils.print_error(str(house) + " is not a house"))
 
     def move_to_house(self):
-        self.pos = self.my_house.get_random_position_on()
-        SimUtils.get_model().grid.place_agent(SimUtils.get_agent_by_id(self.unique_id), self.pos)
-        self.location = self.my_house
+        house = SimUtils.get_agent_by_id(self.my_house_id)
+        if isinstance(house, House):
+            self.pos = house.get_random_position_on()
+            SimUtils.get_model().grid.move_agent(SimUtils.get_agent_by_id(self.agent_id), self.pos)
+            self.location_id = self.my_house_id
+        else:
+            print(SimUtils.print_error(str(house) + " is not a house"))
+
+    def move_to_shop(self):
+        shop = SimUtils.get_agent_by_id(self.my_shop_id)
+        if isinstance(shop, Shop):
+            self.pos = shop.get_random_position_on()
+            SimUtils.get_model().grid.move_agent(SimUtils.get_agent_by_id(self.agent_id), self.pos)
+            self.location_id = self.my_shop_id
+        else:
+            print(SimUtils.print_error(str(shop) + " is not a shop"))
+
+    def move_to_office(self):
+        office = SimUtils.get_agent_by_id(self.my_office_id)
+        if isinstance(office, Office):
+            self.pos = office.get_random_position_on()
+            SimUtils.get_model().grid.move_agent(SimUtils.get_agent_by_id(self.agent_id), self.pos)
+            self.location_id = self.my_office_id
+        else:
+            print(SimUtils.print_error(str(office) + " is not an office"))
+
+    def at_home(self) -> bool:
+        return self.location_id == self.my_house_id
+
+    def at_work(self) -> bool:
+        return self.location_id == self.my_office_id
+
+    def at_shop(self) -> bool:
+        return self.location_id == self.my_shop_id
 
 
 class AgentFood:

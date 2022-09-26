@@ -4,17 +4,25 @@ from enum import Enum, auto
 
 
 class Activity(Enum):
-    NONE = -1
-    MORNING_ROUTINE = 0
-    WORK = 1
-    GET_FOOD = 2
-    RELAXING = 3
-    EAT = 4
-    LEISURE = 5
-    SLEEP = 6
-    EAT_BEEF = 7
-    EAT_CHICKEN = 8
-    EAT_TOFU = 9
+    NONE = auto()
+    WORK = auto()
+    RELAXING = auto()
+    EAT = auto()
+    EAT_TOGETHER = auto()
+    BUY_FOOD = auto()
+    BUY_CAR = auto()
+    LEISURE = auto()
+    SLEEP = auto()
+    TRAVEL = auto()
+
+    # To be removed
+    MORNING_ROUTINE = auto()
+    EAT_BEEF = auto()
+    EAT_CHICKEN = auto()
+    EAT_TOFU = auto()
+    TRAVEL_TO_WORK = auto()
+    TRAVEL_TO_HOME = auto()
+    TRAVEL_TO_SHOP = auto()
 
 
 class Goal(Enum):

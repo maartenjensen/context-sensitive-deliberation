@@ -14,6 +14,7 @@ class ParentModel(mesa.Model):
         self.num_agents = 0
         self.n_houses = 0
         self.n_shops = 0
+        self.n_offices = 0
         self.n_neighborhoods = 0
         self.time_days = 0
         self.time_hours_day = 0

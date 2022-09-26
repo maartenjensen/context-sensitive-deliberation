@@ -7,7 +7,7 @@ from village_simulation.Agent.agents import Human
 from village_simulation.Agent.enums import Days
 from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Model.sim_utils import SimUtils
-from village_simulation.village_builder import VillageBuilder
+from village_simulation.Model.model_builder import VillageBuilder
 
 
 def compute_avg_food(model):
@@ -31,6 +31,7 @@ class ShoppingModel(ParentModel):
             n_agents,
             n_houses,
             n_shops,
+            n_offices,
             n_neighborhoods,
             time_days,
             time_hours_day
@@ -47,6 +48,7 @@ class ShoppingModel(ParentModel):
         self.num_agents = n_agents
         self.n_houses = n_houses
         self.n_shops = n_shops
+        self.n_offices = n_offices
         self.n_neighborhoods = n_neighborhoods
         self.time_days = time_days
         self.time_hours_day = time_hours_day
@@ -56,7 +58,7 @@ class ShoppingModel(ParentModel):
         self.running = True
 
         village_builder = VillageBuilder()
-        village_builder.build_buildings(self.n_houses, self.n_shops, self.n_neighborhoods)
+        village_builder.build_buildings(self.n_houses, self.n_shops, self.n_offices, self.n_neighborhoods)
         village_builder.spawn_agents(self.num_agents)
 
         self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food},

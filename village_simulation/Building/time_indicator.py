@@ -1,6 +1,6 @@
 import math
 
-from village_simulation.Building.buildings import Location
+from village_simulation.Building.location import Location
 from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Model.params import Constants
 

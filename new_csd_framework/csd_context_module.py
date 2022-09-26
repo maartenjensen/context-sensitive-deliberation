@@ -1,6 +1,7 @@
 from village_simulation.Agent.agents import HumanParent
 from village_simulation.Agent.enums import Location, DefaultFood
-from village_simulation.Building.buildings import Shop, House
+from village_simulation.Building.house import House
+from village_simulation.Building.shop import Shop
 from village_simulation.Model.model_parent import ParentModel
 
 """ The ContextModule serves as a bridge between the information 

@@ -22,3 +22,9 @@ class SimUtils:
                 return agent
         print("Error, no agent with the following ID:" + str(unique_id))
         return None
+
+    @staticmethod
+    def print_error(string: str):
+        print("ERROR:" + string)
+
+    """ I cannot define classes here or I will get circular import"""

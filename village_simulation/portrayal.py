@@ -1,7 +1,7 @@
 from mesa import Agent
 
 from village_simulation.Agent.agents import Human
-from village_simulation.Building.buildings import Location
+from village_simulation.Building.location import Location
 from village_simulation.Model.params import Constants
 
 
