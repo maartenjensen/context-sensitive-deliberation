@@ -1,6 +1,6 @@
 import mesa
 
-from village_simulation.Agent.enums import Days
+from village_simulation.Agent.Data.enums import Days
 
 
 class ParentModel(mesa.Model):

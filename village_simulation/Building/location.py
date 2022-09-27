@@ -1,6 +1,6 @@
 import mesa
 
-from village_simulation.Model.sim_utils import SimUtils
+from village_simulation.Common.sim_utils import SimUtils
 
 
 class Location(mesa.Agent):

@@ -1,5 +1,6 @@
 from mesa import Agent
 
+from village_simulation.Agent.Data.enums import Days
 from village_simulation.Model.model_parent import ParentModel
 
 
@@ -22,6 +23,14 @@ class SimUtils:
                 return agent
         print("Error, no agent with the following ID:" + str(unique_id))
         return None
+
+    @staticmethod
+    def get_time() -> int:
+        return SimUtils.get_model().get_time()
+
+    @staticmethod
+    def get_day() -> Days:
+        return SimUtils.get_model().get_day()
 
     @staticmethod
     def print_error(string: str):

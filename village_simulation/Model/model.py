@@ -3,10 +3,10 @@ import math
 import mesa
 
 from village_simulation.Agent.Deliberation.csd_deliberator import Deliberator
-from village_simulation.Agent.agents import Human
-from village_simulation.Agent.enums import Days
+from village_simulation.Agent.Data.the_agent import Human
+from village_simulation.Agent.Data.enums import Days
 from village_simulation.Model.model_parent import ParentModel
-from village_simulation.Model.sim_utils import SimUtils
+from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.Model.model_builder import VillageBuilder
 
 
@@ -15,7 +15,7 @@ def compute_avg_food(model):
     agent_n = 0
     for agent in model.schedule.agents:
         if isinstance(agent, Human):
-            agent_foods += agent.food.get_food()
+            agent_foods += agent.food.get_total_food()
             agent_n += 1
     return agent_foods / agent_n
 
@@ -78,9 +78,8 @@ class ShoppingModel(ParentModel):
 
             if isinstance(agent, Human):
                 print("#####################################")
-                print("Agent " + str(agent.unique_id) + " retrieves context")
-                chosen_action_object = deliberator.deliberate(agent)
-                chosen_action_object.execute_action(agent)
+                print("Agent " + str(agent.unique_id) + " is deliberating")
+                deliberator.deliberate(agent) # the deliberator performs an action for the agent
                 print("#####################################")
 
     def get_time(self) -> int:

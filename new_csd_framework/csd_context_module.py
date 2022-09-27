@@ -1,5 +1,5 @@
-from village_simulation.Agent.agents import HumanParent
-from village_simulation.Agent.enums import Location, DefaultFood
+from village_simulation.Agent.Data.the_agent import HumanParent
+from village_simulation.Agent.Data.enums import LocationEnum, DefaultFood
 from village_simulation.Building.house import House
 from village_simulation.Building.shop import Shop
 from village_simulation.Model.model_parent import ParentModel
@@ -12,13 +12,13 @@ class ContextModule:
 
     def get_location(self, agent: HumanParent):
         if agent.location == agent.my_house:
-            return Location.HOME
+            return LocationEnum.HOME
         elif isinstance(agent.location, House):
-            return Location.HOUSE
+            return LocationEnum.HOUSE
         elif isinstance(agent.location, Shop):
-            return Location.SHOP
+            return LocationEnum.SHOP
         else:
-            return Location.OUTSIDE
+            return LocationEnum.OUTSIDE
 
     # time is indicated in hours
     def get_time(self, model: ParentModel):

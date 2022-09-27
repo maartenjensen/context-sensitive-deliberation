@@ -1,6 +1,6 @@
 from new_csd_framework.csd_context_module import ContextModule
-from village_simulation.Agent.agents import HumanParent
-from village_simulation.Agent.enums import Activity, Plan, Need, Goal, Location, DefaultFood
+from village_simulation.Agent.Data.the_agent import HumanParent
+from village_simulation.Agent.Data.enums import Activity, Plan, Need, Goal, LocationEnum, DefaultFood
 from village_simulation.Model.model_parent import ParentModel
 
 
@@ -10,7 +10,7 @@ class ContextExplorer:
 
         self.cm = ContextModule()
         self.deliberation_functions = []
-        self._0_location = Location.NONE
+        self._0_location = LocationEnum.NONE
         self._0_time = -1
         self._0_activity = Activity.NONE  # TODO Should be a list rather than this
         self._0_plan = Plan.NONE
@@ -37,7 +37,7 @@ class ContextExplorer:
 
     def reset_0_primary_information(self):
 
-        self._0_location = Location.NONE
+        self._0_location = LocationEnum.NONE
         self._0_time = -1
         self._0_activity = Activity.NONE
         self._0_plan = Plan.NONE
@@ -67,7 +67,7 @@ class ContextExplorer:
     def print_0_primary_information(self):
 
         string = ""
-        if self._0_location != Location.NONE:
+        if self._0_location != LocationEnum.NONE:
             string += str(self._0_location)
         if self._0_time != -1:
             string += ", Time:" + str(self._0_time)

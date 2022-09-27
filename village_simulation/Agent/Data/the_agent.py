@@ -1,7 +1,9 @@
 import mesa
 
-from village_simulation.Agent.agent_schedules import ScheduleTime
-from village_simulation.Agent.agent_systems import AgentFood, AgentEconomy, AgentPosition
+from village_simulation.Agent.Data.data_economy import AgentEconomy
+from village_simulation.Agent.Data.data_food import AgentFood
+from village_simulation.Agent.Data.data_position import AgentPosition
+from village_simulation.Agent.Data.data_time_schedule import TimeSchedule
 
 
 class HumanParent(mesa.Agent):
@@ -15,7 +17,7 @@ class HumanParent(mesa.Agent):
         self.economy = AgentEconomy()
 
         # Deliberation and context
-        self.schedule_time = ScheduleTime()
+        self.schedule_time = TimeSchedule()
 
 
 class Human(HumanParent):
@@ -30,16 +32,15 @@ class Human(HumanParent):
         self.economy = AgentEconomy()
 
         # Deliberation and context
-        self.schedule_time = ScheduleTime()
+        self.schedule_time = TimeSchedule()
 
         # Initialisation functions
         self.model.schedule.add(self)
-        self.schedule_time.init_schedule_default_worker(self.food.default_food)
-
-        self.position.place_agent_in_house()
 
     def step(self):
-        # Input context sensitive deliberation
+        # Input context sensitive deliberation, I want the deliberator to take control over the behavior of the agent
+        # this works better in python because of problems with cyclic imports, so I made a separation between data
+        # and the manipulating systems
         print("#####################################")
 
     def to_str(self):

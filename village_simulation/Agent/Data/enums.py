@@ -55,12 +55,13 @@ class Plan(Enum):  # Maybe this needs to contain explicit steps for the plan
     GET_FOOD = 0
 
 
-class Location(Enum):
+class LocationEnum(Enum):
     NONE = -1
     HOME = 0
     HOUSE = 1
     OUTSIDE = 2
     SHOP = 3
+    WORK = 4
 
 
 class DefaultFood(Enum):

@@ -1,0 +1,49 @@
+from village_simulation.Agent.Data.data_time_schedule import TimeSchedule, ActivityInformation
+from village_simulation.Agent.Data.enums import Activity, LocationEnum
+
+" The systems should become static "
+
+class SysScheduleTime:
+    """ This schedule is based on time, most times will trigger specific activities
+        Maybe these dictionaries have to be replaced by for example a dataframe, numpy stuff??
+        Simplified this timeschedule, now there are no weekends/weekdays, just one type of day,
+        originally I implemented this and it could be useful for replanning but now I removed it """
+
+    def set_time_schedule(self, time_schedule: TimeSchedule):
+        act_sleep = ActivityInformation(Activity.SLEEP)
+        sleep_schedule = {0: act_sleep, 1: act_sleep, 2: act_sleep, 3: act_sleep,
+                          4: act_sleep, 5: act_sleep, 23: act_sleep}
+
+        act_eat = ActivityInformation(Activity.EAT)
+        eating_schedule = {6: act_eat, 12: act_eat, 18: act_eat}
+
+        act_work = ActivityInformation(Activity.WORK)
+        working_schedule = {8: act_work, 9: act_work, 10: act_work, 11: act_work,
+                            13: act_work, 14: act_work, 15: act_work, 16: act_work}
+
+        travel_schedule = {7: ActivityInformation(Activity.TRAVEL, travel_to=LocationEnum.WORK),
+                           17: ActivityInformation(Activity.TRAVEL, travel_to=LocationEnum.HOME)}
+
+        shop_schedule = {19: ActivityInformation(Activity.TRAVEL, travel_to=LocationEnum.SHOP),
+                         20: ActivityInformation(Activity.BUY_FOOD),
+                         21: ActivityInformation(Activity.TRAVEL, travel_to=LocationEnum.HOME)}
+
+        time_schedule.my_schedule.update(sleep_schedule)
+        time_schedule.my_schedule.update(eating_schedule)
+        time_schedule.my_schedule.update(working_schedule)
+        time_schedule.my_schedule.update(travel_schedule)
+        time_schedule.my_schedule.update(shop_schedule)
+
+    def print_schedule(self, time_schedule: TimeSchedule):
+        schedule_str = ""
+        for time, activity_inf in time_schedule.my_schedule.items():
+            schedule_str += str(time) + '->' + str(activity_inf.activity) + ", "
+
+        print(schedule_str)
+
+
+class ScheduleLocation:
+    """ This schedule is based on location, some locations will trigger specific activities """
+
+    def __init__(self):
+        self.loc_schedule = {}

@@ -1,6 +1,6 @@
-from village_simulation.Agent.agents import Human
-from village_simulation.Agent.enums import Days, Activity
-from village_simulation.Model.sim_utils import SimUtils
+from village_simulation.Agent.Data.the_agent import Human
+from village_simulation.Agent.Data.enums import Days, Activity
+from village_simulation.Common.sim_utils import SimUtils
 
 """ These classes explore the context and has function to get the information out of the simulation"""
 class NewContextModule:

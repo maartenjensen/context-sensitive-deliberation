@@ -2,8 +2,9 @@ from village_simulation.Agent.Deliberation.new_csd_context_module import Context
 from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
     ActEatTofu, \
     ActNone, Actions, ActTravelToHome, ActTravelToWork, ActTravelToShop
-from village_simulation.Agent.agents import Human
-from village_simulation.Agent.enums import Activity, Urgency, Origin
+from village_simulation.Agent.Data.the_agent import Human
+from village_simulation.Agent.Data.enums import Activity, Urgency, Origin
+from village_simulation.Common.sim_utils import SimUtils
 
 """ The deliberator class contains all the deliberation functions, it explores the context and calls
     the deliberation functions to help with decision making """
@@ -12,9 +13,9 @@ from village_simulation.Agent.enums import Activity, Urgency, Origin
 class Deliberator:
 
     def __init__(self):
-        print("Initialize Context modules")
-        self.CTimeActivity = ContextTimeActivity()
-
+        print("Initialize deliberator")
+        # self.CTimeActivity = ContextTimeActivity()
+        #
         self.actNone = ActNone()
         self.actChill = ActChill()
         self.actSleep = ActSleep()
@@ -28,16 +29,30 @@ class Deliberator:
 
     def deliberate(self, agent: Human):
 
-        self.CTimeActivity.explore_context(agent)
-        self.CTimeActivity.print_context()
+        print("Deliberating")
+        time = SimUtils.get_model().get_time()
+        location_type = agent.position.location_type
+        activity_information = agent.schedule_time.get_activity_based_on_time(time)  # Always gives an activity
+        print(
+            "Time: " + str(time) + ", Loc: " + str(location_type) + ", Activity: " + str(activity_information.activity))
+        # TODO activity_from_location (not relevant for now)
+        # TODO insert select activity from multiple activities (e.g. higher priority)
+        # Since there is only one activity
+        action_from_act = self.get_action_from_activity(activity_information.activity)
+        # TODO check preconditions of action
+        if action_from_act != self.actNone:
+            print("Execute the action")
+            action_from_act.execute_action(agent)
+            return
 
-        action_object = self.get_action_from_activity(self.CTimeActivity.time_based_activity)
-        action_object.check_preconditions(agent)
-        if action_object != self.actNone:
-            return action_object
-        else:
-            print("Good the program works, an actNone has been returned")
-            return action_object
+        print("More deliberation is needed")
+
+        # self.CTimeActivity.explore_context(agent)
+        # self.CTimeActivity.print_context()
+
+        # action_object = self.get_action_from_activity(self.CTimeActivity.time_based_activity)
+        # action_object.check_preconditions(agent)
+        #
 
         # There can at some point also be multiple activities right?
 
@@ -48,6 +63,8 @@ class Deliberator:
         elif activity == Activity.WORK:
             return self.actWork
         elif activity == Activity.EAT:
+            return self.actNone
+        elif activity == Activity.LEISURE:
             return self.actChill
         elif activity == Activity.EAT_BEEF:
             return self.actEatBeef

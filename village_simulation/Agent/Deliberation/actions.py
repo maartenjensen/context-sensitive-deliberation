@@ -1,4 +1,4 @@
-from village_simulation.Agent.agents import Human
+from village_simulation.Agent.Data.the_agent import Human
 
 
 class Actions:
