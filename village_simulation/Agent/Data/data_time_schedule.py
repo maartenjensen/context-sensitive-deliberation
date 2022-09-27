@@ -1,12 +1,16 @@
-from village_simulation.Agent.Data.enums import LocationEnum, Activity
+from village_simulation.Agent.Data.enums import LocationEnum, Activity, DefaultFood
 
 
 class ActivityInformation:
 
-    def __init__(self, activity, *, travel_to=LocationEnum.NONE, food_to_eat=0):
+    def __init__(self, activity, *, travel_to=LocationEnum.NONE, food_to_eat=DefaultFood.NONE,
+                 beef_to_buy=0, chicken_to_buy=0, tofu_to_buy=0):
         self.activity = activity
         self.travel_to = travel_to
         self.food_to_eat = food_to_eat
+        self.beef_to_buy = beef_to_buy
+        self.chicken_to_buy = chicken_to_buy
+        self.tofu_to_buy = tofu_to_buy
 
 
 class TimeSchedule:
@@ -21,3 +25,19 @@ class TimeSchedule:
 
     def get_activity_based_on_time(self, time: int) -> ActivityInformation:
         return self.my_schedule[time]
+
+    def print_schedule(self):
+        schedule_str = ""
+        for time, activity_inf in self.my_schedule.items():
+            schedule_str += str(time) + '->' + str(activity_inf.activity)
+            if activity_inf.activity == Activity.TRAVEL:
+                schedule_str += " " + str(activity_inf.travel_to)
+            elif activity_inf.activity == Activity.EAT:
+                schedule_str += " " + str(activity_inf.food_to_eat)
+            elif activity_inf.activity == Activity.BUY_FOOD:
+                schedule_str += " B:" + str(activity_inf.beef_to_buy) + " C:" + str(activity_inf.chicken_to_buy)
+                schedule_str += " T:" + str(activity_inf.tofu_to_buy)
+
+            schedule_str += ", "
+
+        print(schedule_str)

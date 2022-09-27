@@ -1,4 +1,6 @@
 from village_simulation.Agent.Data.the_agent import Human
+from village_simulation.Agent.Systems.sys_food import SysAgentFood
+from village_simulation.Agent.Systems.sys_position import SysAgentPosition
 
 
 class Actions:
@@ -120,7 +122,7 @@ class ActTravelToWork(Actions):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            agent.position.move_to_office()
+            SysAgentPosition().move_to_office(agent.position)
             print("Moving to office")
             return True
         else:
@@ -138,7 +140,7 @@ class ActTravelToHome(Actions):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            agent.position.move_to_house()
+            SysAgentPosition().move_to_house(agent.position)
             print("Moving to home")
             return True
         else:
@@ -156,9 +158,42 @@ class ActTravelToShop(Actions):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            agent.position.move_to_shop()
+            SysAgentPosition().move_to_shop(agent.position)
             print("Moving to shop")
             return True
         else:
             print("ERROR")
             return False
+
+
+class ActBuyFood(Actions):
+
+    def __init__(self, amount_beef, amount_chicken, amount_tofu):
+
+        self.amount_beef = amount_beef
+        self.amount_chicken = amount_chicken
+        self.amount_tofu = amount_tofu
+
+    def get_food_cost(self):
+
+        # This should actually be retrieved from the store
+        return self.amount_beef + self.amount_chicken + self.amount_tofu
+
+    def check_preconditions(self, agent: Human) -> bool:
+
+        print("Check whether the agent is at the shop and has enough money")
+        if not agent.position.at_shop():
+            return False
+        return agent.economy.money >= self.get_food_cost()
+
+    def execute_action(self, agent: Human) -> bool:
+
+        if self.check_preconditions(agent):
+            SysAgentFood().add_food(agent.food, self.amount_beef, self.amount_chicken, self.amount_tofu)
+            agent.economy.money -= self.get_food_cost()
+            print("Buy food: B:" + str(self.amount_beef) + ", C:" + str(self.amount_chicken) + ", T:" + str(self.amount_tofu))
+            return True
+        else:
+            print("ERROR")
+            return False
+

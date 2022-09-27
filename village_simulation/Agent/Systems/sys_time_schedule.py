@@ -1,7 +1,8 @@
 from village_simulation.Agent.Data.data_time_schedule import TimeSchedule, ActivityInformation
-from village_simulation.Agent.Data.enums import Activity, LocationEnum
+from village_simulation.Agent.Data.enums import Activity, LocationEnum, DefaultFood
 
 " The systems should become static "
+
 
 class SysScheduleTime:
     """ This schedule is based on time, most times will trigger specific activities
@@ -34,12 +35,17 @@ class SysScheduleTime:
         time_schedule.my_schedule.update(travel_schedule)
         time_schedule.my_schedule.update(shop_schedule)
 
-    def print_schedule(self, time_schedule: TimeSchedule):
-        schedule_str = ""
-        for time, activity_inf in time_schedule.my_schedule.items():
-            schedule_str += str(time) + '->' + str(activity_inf.activity) + ", "
+    def specify_food_in_schedule(self, time_schedule: TimeSchedule, default_food: DefaultFood):
+        act_eat = ActivityInformation(Activity.EAT, food_to_eat=default_food)
+        specified_food_schedule = {6: act_eat, 12: act_eat, 18: act_eat}
+        time_schedule.my_schedule.update(specified_food_schedule)
 
-        print(schedule_str)
+    def specify_buy_in_schedule(self, time_schedule: TimeSchedule, beef_to_buy: int, chicken_to_buy: int,
+                                tofu_to_buy: int):
+        act_buy = ActivityInformation(Activity.BUY_FOOD, beef_to_buy=beef_to_buy,
+                                      chicken_to_buy=chicken_to_buy, tofu_to_buy=tofu_to_buy)
+        specified_food_schedule = {20: act_buy}
+        time_schedule.my_schedule.update(specified_food_schedule)
 
 
 class ScheduleLocation:

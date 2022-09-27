@@ -47,12 +47,3 @@ class SysAgentPosition:
             position.location_type = LocationEnum.WORK
         else:
             print(SimUtils.print_error(str(office) + " is not an office"))
-
-    def at_home(self, position: AgentPosition) -> bool:
-        return position.location_id == position.my_house_id
-
-    def at_work(self, position: AgentPosition) -> bool:
-        return position.location_id == position.my_office_id
-
-    def at_shop(self, position: AgentPosition) -> bool:
-        return position.location_id == position.my_shop_id

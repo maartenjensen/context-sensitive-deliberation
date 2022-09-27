@@ -47,11 +47,16 @@ class VillageBuilder:
             random_house_id = SimUtils.get_model().random.choice(self.houses).unique_id
             random_shop_id = SimUtils.get_model().random.choice(self.shops).unique_id
             random_office_id = SimUtils.get_model().random.choice(self.offices).unique_id
-            new_human = Human(self.get_unique_id(), SimUtils.get_model(), (0, 0), random_house_id, random_shop_id, random_office_id)
+            new_human = Human(self.get_unique_id(), SimUtils.get_model(), (0, 0), random_house_id, random_shop_id,
+                              random_office_id)
 
             SysAgentPosition().place_agent_in_house(new_human.position)
-            SysScheduleTime().set_time_schedule(new_human.schedule_time)
-            SysScheduleTime().print_schedule(new_human.schedule_time)
+            sys_time_schedule = SysScheduleTime()
+            sys_time_schedule.set_time_schedule(new_human.schedule_time)
+            sys_time_schedule.specify_food_in_schedule(new_human.schedule_time, new_human.food.default_food)
+            sys_time_schedule.specify_buy_in_schedule(new_human.schedule_time, new_human.food.beef,
+                                                      new_human.food.chicken, new_human.food.tofu)
+            new_human.schedule_time.print_schedule()
 
     def get_unique_id(self):
         self.unique_id += 1

@@ -1,9 +1,10 @@
+from village_simulation.Agent.Data.data_time_schedule import ActivityInformation
 from village_simulation.Agent.Deliberation.new_csd_context_module import ContextTimeActivity
 from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
     ActEatTofu, \
-    ActNone, Actions, ActTravelToHome, ActTravelToWork, ActTravelToShop
+    ActNone, Actions, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood
 from village_simulation.Agent.Data.the_agent import Human
-from village_simulation.Agent.Data.enums import Activity, Urgency, Origin
+from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood
 from village_simulation.Common.sim_utils import SimUtils
 
 """ The deliberator class contains all the deliberation functions, it explores the context and calls
@@ -38,25 +39,28 @@ class Deliberator:
         # TODO activity_from_location (not relevant for now)
         # TODO insert select activity from multiple activities (e.g. higher priority)
         # Since there is only one activity
-        action_from_act = self.get_action_from_activity(activity_information.activity)
+        action_from_activity = self.get_action_from_activity(activity_information.activity)
+        if action_from_activity == self.actNone:
+            action_from_activity = self.get_action_from_activity_with_information(activity_information)
+
         # TODO check preconditions of action
-        if action_from_act != self.actNone:
-            print("Execute the action")
-            action_from_act.execute_action(agent)
-            return
+        if action_from_activity != self.actNone:
+            if action_from_activity.check_preconditions(agent):
+                action_from_activity.execute_action(agent)
+                return
 
         print("More deliberation is needed")
 
         # self.CTimeActivity.explore_context(agent)
         # self.CTimeActivity.print_context()
 
-        # action_object = self.get_action_from_activity(self.CTimeActivity.time_based_activity)
+        # action_object = self.get_action_from_activity(self.CTimeActivity.time_based_activit y)
         # action_object.check_preconditions(agent)
         #
 
         # There can at some point also be multiple activities right?
 
-    def get_action_from_activity(self, activity) -> Actions:
+    def get_action_from_activity(self, activity: Activity) -> Actions:
 
         if activity == Activity.SLEEP:
             return self.actSleep
@@ -66,18 +70,31 @@ class Deliberator:
             return self.actNone
         elif activity == Activity.LEISURE:
             return self.actChill
-        elif activity == Activity.EAT_BEEF:
-            return self.actEatBeef
-        elif activity == Activity.EAT_CHICKEN:
-            return self.actEatChicken
-        elif activity == Activity.EAT_TOFU:
-            return self.actEatTofu
-        elif activity == Activity.TRAVEL_TO_HOME:
-            return self.actTravelToHome
-        elif activity == Activity.TRAVEL_TO_SHOP:
-            return self.actTravelToShop
-        elif activity == Activity.TRAVEL_TO_WORK:
-            return self.actTravelToWork
+
+        return self.actNone
+
+    def get_action_from_activity_with_information(self, activity_information: ActivityInformation) -> Actions:
+
+        activity = activity_information.activity
+        if activity == Activity.TRAVEL:
+            if activity_information.travel_to == LocationEnum.HOME:
+                return self.actTravelToHome
+            elif activity_information.travel_to == LocationEnum.SHOP:
+                return self.actTravelToShop
+            elif activity_information.travel_to == LocationEnum.WORK:
+                return self.actTravelToWork
+
+        elif activity == Activity.EAT:
+            if activity_information.food_to_eat == DefaultFood.BEEF:
+                return self.actEatBeef
+            elif activity_information.food_to_eat == DefaultFood.CHICKEN:
+                return self.actEatChicken
+            elif activity_information.food_to_eat == DefaultFood.TOFU:
+                return self.actEatTofu
+
+        elif activity == Activity.BUY_FOOD:
+            return ActBuyFood(activity_information.beef_to_buy, activity_information.chicken_to_buy,
+                              activity_information.tofu_to_buy)
 
         return self.actNone
 

@@ -6,9 +6,15 @@ class AgentFood:
 
     def __init__(self):
 
-        self.beef = SimUtils.get_model().random.randint(0, 5)
-        self.chicken = SimUtils.get_model().random.randint(0, 5)
-        self.tofu = SimUtils.get_model().random.randint(0, 5)
+        self.beef = 0
+        self.chicken = 0
+        self.tofu = 0
+        if SimUtils.get_model().random.random() < 0.334:
+            self.beef = 3
+        elif SimUtils.get_model().random.random() < 0.5:
+            self.chicken = 3
+        else:
+            self.tofu = 3
 
         # Default food
         self.default_food = DefaultFood.BEEF
