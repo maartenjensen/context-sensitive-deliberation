@@ -4,7 +4,7 @@ from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, Act
     ActEatTofu, \
     ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood
 from village_simulation.Agent.Data.the_agent import Human
-from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood
+from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups
 from village_simulation.Common.sim_utils import SimUtils
 
 """ The deliberator class contains all the deliberation functions, it explores the context and calls
@@ -49,35 +49,33 @@ class Deliberator:
             action_from_activity = self.get_action_from_activity_with_information(activity_information)
 
         # TODO check preconditions of action
-        if self.execute_action(agent, activity_information.activity, action_from_activity):
+        if self.check_and_execute_action(agent, activity_information.activity, action_from_activity):
             return
 
         """ Step 4: consider accessible objects and see whether they can also be used e.g. default is eat beef
          if no beef is available but chicken is available it can be chosen as well """
-        # TODO but this can be done later
+        # TODO but this can be done later its easy, just a check on what is the activity what are my options and then is there only one option
 
         """ Step 5: imitate from people at same location (and thus same time) """
         action_from_imitation = self.get_action_from_imitation_at_location(agent, activity_information.activity)
-        if self.execute_action(agent, activity_information.activity, action_from_imitation):
+        if self.check_and_execute_action(agent, activity_information.activity, action_from_imitation):
             return
 
-        """ Step 6: check with collective groups """
+        """ Step 6: check with collective groups (this is just a hardcoded piece) """
+        action_from_social_group = self.get_action_from_social_group(agent, activity_information.activity)
+        if self.check_and_execute_action(agent, activity_information.activity, action_from_social_group):
+            return
 
-        # self.CTimeActivity.explore_context(agent)
-        # self.CTimeActivity.print_context()
+        """ Step 7: rational choice???? """
+        # TODO find a goal from preconditions and problems
 
-        # action_object = self.get_action_from_activity(self.CTimeActivity.time_based_activit y)
-        # action_object.check_preconditions(agent)
-        #
-
-        # There can at some point also be multiple activities right?
 
         print("More deliberation is needed")
-        agent.deliberation.current_activity = activity_information.activity
-        agent.deliberation.current_action = None
+
 
     """ Returns whether the action was successfully performed"""
-    def execute_action(self, agent, activity, action) -> bool:
+
+    def check_and_execute_action(self, agent, activity, action) -> bool:
 
         if action != self.actNone:
             if action.check_preconditions(agent):
@@ -128,6 +126,7 @@ class Deliberator:
         return self.actNone
 
     """ This should be implemented as taking the average of all the humans, rather than the first occurrence"""
+
     def get_action_from_imitation_at_location(self, human: Human, activity: Activity):
 
         for a in SimUtils.get_all_agents(False):
@@ -136,6 +135,22 @@ class Deliberator:
                     if a.deliberation.current_action is not None and a.deliberation.current_activity == activity:
                         print("Imitating H" + str(a.unique_id) + " on action: " + str(a.deliberation.current_action))
                         return a.deliberation.current_action
+
+        return self.actNone
+
+    def get_action_from_social_group(self, human: Human, activity: Activity):
+
+        print("Get action from social group:" + str(activity))
+        if activity == activity.EAT:
+            if human.data_social_groups.my_group == SocialGroups.VEGAN:
+                return self.actEatTofu
+            elif human.data_social_groups.my_group == SocialGroups.BEEF_EATERS:
+                return self.actEatBeef
+        elif activity == activity.BUY_FOOD:
+            if human.data_social_groups.my_group == SocialGroups.VEGAN:
+                return ActBuyFood(0, 0, 3)
+            elif human.data_social_groups.my_group == SocialGroups.BEEF_EATERS:
+                return ActBuyFood(3, 0, 0)
 
         return self.actNone
 

@@ -10,6 +10,6 @@ class AgentDataDeliberation:
 
     def print(self):
         if self.current_action is not None:
-            print("Current activity: " + str(self.current_activity) + ", action: " + str(self.current_action))
+            print("Activity: " + str(self.current_activity) + ", chosen action: " + str(self.current_action))
         else:
-            print("Current activity: " + str(self.current_activity) + ", action: is None")
+            print("Activity: " + str(self.current_activity) + ", chosen action: None")

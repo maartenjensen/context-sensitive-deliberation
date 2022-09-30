@@ -87,3 +87,9 @@ class Vehicle(Enum):
     BIKE = 0
     BUS = 1
     CAR = 2
+
+
+class SocialGroups(Enum):
+    NONE = auto()
+    VEGAN = auto()
+    BEEF_EATERS = auto()

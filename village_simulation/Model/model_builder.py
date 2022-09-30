@@ -60,7 +60,7 @@ class VillageBuilder:
     def make_some_agents_stupid(self):
 
         print("Stupifying agents (this means that information is removed from their schedule")
-        agent_id = 13
+        agent_id = 9
         stupid_agent = SimUtils.get_agent_by_id(agent_id)
         if isinstance(stupid_agent, Human):
             sys_time_schedule = SysScheduleTime()

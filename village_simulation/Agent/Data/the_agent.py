@@ -4,6 +4,7 @@ from village_simulation.Agent.Data.data_deliberation import AgentDataDeliberatio
 from village_simulation.Agent.Data.data_economy import AgentEconomy
 from village_simulation.Agent.Data.data_food import AgentFood
 from village_simulation.Agent.Data.data_position import AgentPosition
+from village_simulation.Agent.Data.data_social_groups import AgentDataSocialGroups
 from village_simulation.Agent.Data.data_time_schedule import TimeSchedule
 
 
@@ -17,6 +18,7 @@ class HumanParent(mesa.Agent):
         self.food = AgentFood()
         self.economy = AgentEconomy()
         self.deliberation = AgentDataDeliberation()
+        self.data_social_groups = AgentDataSocialGroups()
 
         # Deliberation and context
         self.schedule_time = TimeSchedule()
@@ -33,6 +35,7 @@ class Human(HumanParent):
         self.food = AgentFood()
         self.economy = AgentEconomy()
         self.deliberation = AgentDataDeliberation()
+        self.data_social_groups = AgentDataSocialGroups()
 
         # Deliberation and context
         self.schedule_time = TimeSchedule()
@@ -54,4 +57,5 @@ class Human(HumanParent):
         if self.position.has_bike:
             info += ", Bike"
         info += ", B:" + str(self.food.beef) + ",C:" + str(self.food.chicken) + ",T:" + str(self.food.tofu)
+        info += ", Social group: " + str(self.data_social_groups.my_group)
         return info

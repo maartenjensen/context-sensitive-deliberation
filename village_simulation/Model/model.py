@@ -5,6 +5,7 @@ import mesa
 from village_simulation.Agent.Deliberation.csd_deliberator import Deliberator
 from village_simulation.Agent.Data.the_agent import Human
 from village_simulation.Agent.Data.enums import Days
+from village_simulation.Agent.Systems.sys_deliberation import SysAgentDeliberation
 from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.Model.model_builder import VillageBuilder
@@ -84,6 +85,11 @@ class ShoppingModel(ParentModel):
                 deliberator.deliberate(agent)  # the deliberator performs an action for the agent
                 agent.deliberation.print()
                 print("#####################################")
+
+        for agent in self.schedule.agent_buffer(shuffled=True):
+
+            if isinstance(agent, Human):
+                SysAgentDeliberation().clear_deliberation(agent.deliberation)
 
     def get_time(self) -> int:
         n_steps = self.schedule.steps

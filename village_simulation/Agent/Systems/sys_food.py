@@ -1,4 +1,3 @@
-from village_simulation.Agent.Data.data_economy import AgentEconomy
 from village_simulation.Agent.Data.data_food import AgentFood
 
 
