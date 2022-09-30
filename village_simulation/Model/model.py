@@ -60,6 +60,8 @@ class ShoppingModel(ParentModel):
         village_builder = VillageBuilder()
         village_builder.build_buildings(self.n_houses, self.n_shops, self.n_offices, self.n_neighborhoods)
         village_builder.spawn_agents(self.num_agents)
+        village_builder.make_some_agents_stupid()
+        village_builder.print_humans()
 
         self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food},
                                                 agent_reporters={"Money": lambda a: getattr(a, "money", None),

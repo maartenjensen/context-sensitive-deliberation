@@ -49,24 +49,19 @@ class Deliberator:
             action_from_activity = self.get_action_from_activity_with_information(activity_information)
 
         # TODO check preconditions of action
-        if action_from_activity != self.actNone:
-            if action_from_activity.check_preconditions(agent):
-                action_from_activity.execute_action(agent)
-                agent.deliberation.current_activity = activity_information.activity
-                agent.deliberation.current_action = action_from_activity
-                return
+        if self.execute_action(agent, activity_information.activity, action_from_activity):
+            return
 
         """ Step 4: consider accessible objects and see whether they can also be used e.g. default is eat beef
          if no beef is available but chicken is available it can be chosen as well """
-        # TODO check whether
+        # TODO but this can be done later
 
         """ Step 5: imitate from people at same location (and thus same time) """
-        # TODO program this now
+        action_from_imitation = self.get_action_from_imitation_at_location(agent, activity_information.activity)
+        if self.execute_action(agent, activity_information.activity, action_from_imitation):
+            return
 
         """ Step 6: check with collective groups """
-
-
-        print("More deliberation is needed")
 
         # self.CTimeActivity.explore_context(agent)
         # self.CTimeActivity.print_context()
@@ -76,6 +71,22 @@ class Deliberator:
         #
 
         # There can at some point also be multiple activities right?
+
+        print("More deliberation is needed")
+        agent.deliberation.current_activity = activity_information.activity
+        agent.deliberation.current_action = None
+
+    """ Returns whether the action was successfully performed"""
+    def execute_action(self, agent, activity, action) -> bool:
+
+        if action != self.actNone:
+            if action.check_preconditions(agent):
+                action.execute_action(agent)
+                agent.deliberation.current_activity = activity
+                agent.deliberation.current_action = action
+                return True
+
+        return False
 
     def get_action_from_activity(self, activity: Activity) -> Action:
 
@@ -110,8 +121,21 @@ class Deliberator:
                 return self.actEatTofu
 
         elif activity == Activity.BUY_FOOD:
-            return ActBuyFood(activity_information.beef_to_buy, activity_information.chicken_to_buy,
-                              activity_information.tofu_to_buy)
+            if activity_information.beef_to_buy + activity_information.chicken_to_buy + activity_information.tofu_to_buy > 0:
+                return ActBuyFood(activity_information.beef_to_buy, activity_information.chicken_to_buy,
+                                  activity_information.tofu_to_buy)
+
+        return self.actNone
+
+    """ This should be implemented as taking the average of all the humans, rather than the first occurrence"""
+    def get_action_from_imitation_at_location(self, human: Human, activity: Activity):
+
+        for a in SimUtils.get_all_agents(False):
+            if isinstance(a, Human):
+                if a.unique_id is not human.unique_id and a.position.location_id == human.position.location_id:
+                    if a.deliberation.current_action is not None and a.deliberation.current_activity == activity:
+                        print("Imitating H" + str(a.unique_id) + " on action: " + str(a.deliberation.current_action))
+                        return a.deliberation.current_action
 
         return self.actNone
 

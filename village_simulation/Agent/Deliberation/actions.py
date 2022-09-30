@@ -183,6 +183,7 @@ class ActBuyFood(Action):
 
         print("Check whether the agent is at the shop and has enough money")
         if not agent.position.at_shop():
+            print("Agent not at the shop")
             return False
         return agent.economy.money >= self.get_food_cost()
 

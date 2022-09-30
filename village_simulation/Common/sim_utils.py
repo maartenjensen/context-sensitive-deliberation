@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from mesa import Agent
 
 from village_simulation.Agent.Data.enums import Days
@@ -23,6 +25,11 @@ class SimUtils:
                 return agent
         print("Error, no agent with the following ID:" + str(unique_id))
         return None
+
+    @staticmethod
+    def get_all_agents(are_shuffled=True) -> Iterator[Agent]:
+
+        return SimUtils.get_model().schedule.agent_buffer(shuffled=are_shuffled)
 
     @staticmethod
     def get_time() -> int:

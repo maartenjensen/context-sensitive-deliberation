@@ -47,6 +47,12 @@ class SysScheduleTime:
         specified_food_schedule = {20: act_buy}
         time_schedule.my_schedule.update(specified_food_schedule)
 
+    """ Specific functions """
+    def custom_overwrite_buy_food(self, time_schedule: TimeSchedule):
+        act_buy = ActivityInformation(Activity.BUY_FOOD)
+        specified_food_schedule = {20: act_buy}
+        time_schedule.my_schedule.update(specified_food_schedule)
+
 
 class ScheduleLocation:
     """ This schedule is based on location, some locations will trigger specific activities """

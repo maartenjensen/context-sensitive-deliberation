@@ -56,7 +56,22 @@ class VillageBuilder:
             sys_time_schedule.specify_food_in_schedule(new_human.schedule_time, new_human.food.default_food)
             sys_time_schedule.specify_buy_in_schedule(new_human.schedule_time, new_human.food.beef,
                                                       new_human.food.chicken, new_human.food.tofu)
-            new_human.schedule_time.print_schedule()
+
+    def make_some_agents_stupid(self):
+
+        print("Stupifying agents (this means that information is removed from their schedule")
+        agent_id = 13
+        stupid_agent = SimUtils.get_agent_by_id(agent_id)
+        if isinstance(stupid_agent, Human):
+            sys_time_schedule = SysScheduleTime()
+            sys_time_schedule.custom_overwrite_buy_food(stupid_agent.schedule_time)
+            print("Agent " + str(agent_id) + " forgot which food to buy")
+
+    def print_humans(self):
+        for a in SimUtils.get_all_agents(False):
+            if isinstance(a, Human):
+                print("Human " + str(a.unique_id))
+                a.schedule_time.print_schedule()
 
     def get_unique_id(self):
         self.unique_id += 1
