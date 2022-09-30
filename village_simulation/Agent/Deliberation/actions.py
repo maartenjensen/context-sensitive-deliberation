@@ -3,7 +3,7 @@ from village_simulation.Agent.Systems.sys_food import SysAgentFood
 from village_simulation.Agent.Systems.sys_position import SysAgentPosition
 
 
-class Actions:
+class Action:
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Preconditions checked and accepted")
@@ -14,7 +14,7 @@ class Actions:
         return True
 
 
-class ActNone(Actions):
+class ActNone(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Should not be called")
@@ -25,7 +25,7 @@ class ActNone(Actions):
         return True
 
 
-class ActChill(Actions):
+class ActChill(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Check whether the agent is at home (simplification)")
@@ -36,7 +36,7 @@ class ActChill(Actions):
         return True
 
 
-class ActSleep(Actions):
+class ActSleep(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Check whether the agent is at home (simplification)")
@@ -47,7 +47,7 @@ class ActSleep(Actions):
         return True
 
 
-class ActWork(Actions):
+class ActWork(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Check whether the agent is at work")
@@ -58,7 +58,7 @@ class ActWork(Actions):
         return True
 
 
-class ActEatBeef(Actions):
+class ActEatBeef(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
 
@@ -76,7 +76,7 @@ class ActEatBeef(Actions):
             return False
 
 
-class ActEatChicken(Actions):
+class ActEatChicken(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
 
@@ -94,7 +94,7 @@ class ActEatChicken(Actions):
             return False
 
 
-class ActEatTofu(Actions):
+class ActEatTofu(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
 
@@ -112,7 +112,7 @@ class ActEatTofu(Actions):
             return False
 
 
-class ActTravelToWork(Actions):
+class ActTravelToWork(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
 
@@ -130,7 +130,7 @@ class ActTravelToWork(Actions):
             return False
 
 
-class ActTravelToHome(Actions):
+class ActTravelToHome(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
 
@@ -148,7 +148,7 @@ class ActTravelToHome(Actions):
             return False
 
 
-class ActTravelToShop(Actions):
+class ActTravelToShop(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
 
@@ -166,7 +166,7 @@ class ActTravelToShop(Actions):
             return False
 
 
-class ActBuyFood(Actions):
+class ActBuyFood(Action):
 
     def __init__(self, amount_beef, amount_chicken, amount_tofu):
 

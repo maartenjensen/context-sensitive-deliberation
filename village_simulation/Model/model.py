@@ -79,7 +79,8 @@ class ShoppingModel(ParentModel):
             if isinstance(agent, Human):
                 print("#####################################")
                 print("Agent " + str(agent.unique_id) + " is deliberating")
-                deliberator.deliberate(agent) # the deliberator performs an action for the agent
+                deliberator.deliberate(agent)  # the deliberator performs an action for the agent
+                agent.deliberation.print()
                 print("#####################################")
 
     def get_time(self) -> int:
