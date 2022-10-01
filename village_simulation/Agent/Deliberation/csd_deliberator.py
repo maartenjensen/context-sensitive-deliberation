@@ -4,7 +4,7 @@ from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, Act
     ActEatTofu, \
     ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood
 from village_simulation.Agent.Data.the_agent import Human
-from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups
+from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, Goal
 from village_simulation.Common.sim_utils import SimUtils
 
 """ The deliberator class contains all the deliberation functions, it explores the context and calls
@@ -66,7 +66,20 @@ class Deliberator:
         if self.check_and_execute_action(agent, activity_information.activity, action_from_social_group):
             return
 
-        """ Step 7: rational choice???? """
+        """ Step 7: find a goal from activities """
+        goal_from_activity = self.get_goal_from_activity(activity_information)
+        # TODO get goal in other ways, maybe from imitation??
+
+        """ Step 8: Utility theory """
+        action_from_utility = self.actNone
+        if goal_from_activity == Goal.BUY_FOOD:
+            action_from_utility = self.check_action_from_utility_food_buy(agent)
+        elif goal_from_activity == Goal.BUY_CAR:
+            action_from_utility = self.check_action_from_utility_car_buy(agent)
+
+        if self.check_and_execute_action(agent, activity_information.activity, action_from_utility):
+            return
+
         # TODO find a goal from preconditions and problems
 
 
@@ -74,6 +87,24 @@ class Deliberator:
 
 
     """ Returns whether the action was successfully performed"""
+
+    def check_action_from_utility_food_buy(self, human: Human):
+
+        print("Checking utility values for food buy selection")
+        # Check if there is only one option
+        if human.food.ut_beef > human.food.ut_chicken and human.food.ut_beef > human.food.ut_tofu:
+            return ActBuyFood(human.food.buy_food_amount, 0, 0)
+        if human.food.ut_chicken > human.food.ut_beef and human.food.ut_chicken > human.food.ut_tofu:
+            return ActBuyFood(0, human.food.buy_food_amount, 0)
+        if human.food.ut_tofu > human.food.ut_beef and human.food.ut_tofu > human.food.ut_chicken:
+            return ActBuyFood(0, 0, human.food.buy_food_amount)
+
+
+    def check_action_from_utility_car_buy(self, human: Human):
+
+        # Check if there is only one option
+        print("Buy a car (TO Implement!)")
+        return self.actNone
 
     def check_and_execute_action(self, agent, activity, action) -> bool:
 
@@ -129,6 +160,9 @@ class Deliberator:
 
     def get_action_from_imitation_at_location(self, human: Human, activity: Activity):
 
+        if activity == activity.BUY_CAR:
+            print("No people to imitate from, could easily be implemented")
+
         for a in SimUtils.get_all_agents(False):
             if isinstance(a, Human):
                 if a.unique_id is not human.unique_id and a.position.location_id == human.position.location_id:
@@ -151,8 +185,21 @@ class Deliberator:
                 return ActBuyFood(0, 0, 3)
             elif human.data_social_groups.my_group == SocialGroups.BEEF_EATERS:
                 return ActBuyFood(3, 0, 0)
+        elif activity == activity.BUY_CAR:
+            print("No group related to car buying, could easily be implemented")
 
         return self.actNone
+
+    def get_goal_from_activity(self, activity_information: ActivityInformation):
+
+        print("Get goal from activity")
+        if activity_information.activity == Activity.BUY_CAR:
+            return Goal.BUY_CAR
+        elif activity_information.activity == Activity.BUY_FOOD:
+            return Goal.BUY_FOOD
+
+        return Goal.NONE
+
 
 
 class ActivityHandler:

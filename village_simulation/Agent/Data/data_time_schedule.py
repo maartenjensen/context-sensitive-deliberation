@@ -4,13 +4,14 @@ from village_simulation.Agent.Data.enums import LocationEnum, Activity, DefaultF
 class ActivityInformation:
 
     def __init__(self, activity, *, travel_to=LocationEnum.NONE, food_to_eat=DefaultFood.NONE,
-                 beef_to_buy=0, chicken_to_buy=0, tofu_to_buy=0):
+                 beef_to_buy=0, chicken_to_buy=0, tofu_to_buy=0, car_to_buy=0):
         self.activity = activity
         self.travel_to = travel_to
         self.food_to_eat = food_to_eat
         self.beef_to_buy = beef_to_buy
         self.chicken_to_buy = chicken_to_buy
         self.tofu_to_buy = tofu_to_buy
+        self.car_to_buy = car_to_buy
 
 
 class TimeSchedule:

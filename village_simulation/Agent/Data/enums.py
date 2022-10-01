@@ -26,9 +26,9 @@ class Activity(Enum):
 
 
 class Goal(Enum):
-    NONE = -1
-    BUY_FOOD = 0
-    BUY_CAR = 1
+    NONE = auto()
+    BUY_FOOD = auto()
+    BUY_CAR = auto()
 
 
 class Urgency(Enum):
@@ -93,3 +93,10 @@ class SocialGroups(Enum):
     NONE = auto()
     VEGAN = auto()
     BEEF_EATERS = auto()
+
+
+class CarTypes(Enum):
+    NONE = auto()
+    VOLKSWAGEN_GOLF = auto()
+    AUDI = auto()
+    TESLA = auto()

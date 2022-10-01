@@ -23,6 +23,8 @@ class AgentFood:
         if self.tofu > self.chicken and self.tofu > self.beef:
             self.default_food = DefaultFood.TOFU
 
+        self.buy_food_amount = 3
+
         # Utility
         self.ut_beef = self.beef
         self.ut_chicken = self.chicken

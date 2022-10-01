@@ -67,6 +67,13 @@ class VillageBuilder:
             sys_time_schedule.custom_overwrite_buy_food(stupid_agent.schedule_time)
             print("Agent " + str(agent_id) + " forgot which food to buy")
 
+        agent_id = 10
+        smart_agent = SimUtils.get_agent_by_id(agent_id)
+        if isinstance(smart_agent, Human):
+            sys_time_schedule = SysScheduleTime()
+            sys_time_schedule.custom_overwrite_buy_car(smart_agent.schedule_time)
+            print("Agent " + str(agent_id) + " wants to buy a car in the evening")
+
     def print_humans(self):
         for a in SimUtils.get_all_agents(False):
             if isinstance(a, Human):
