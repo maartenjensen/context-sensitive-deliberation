@@ -1,11 +1,13 @@
 import mesa
 
+from village_simulation.Agent.Data.data_car import AgentDataCar
 from village_simulation.Agent.Data.data_deliberation import AgentDataDeliberation
 from village_simulation.Agent.Data.data_economy import AgentEconomy
 from village_simulation.Agent.Data.data_food import AgentFood
 from village_simulation.Agent.Data.data_position import AgentPosition
 from village_simulation.Agent.Data.data_social_groups import AgentDataSocialGroups
 from village_simulation.Agent.Data.data_time_schedule import TimeSchedule
+from village_simulation.Agent.Data.data_values import AgentDataValues
 
 
 class HumanParent(mesa.Agent):
@@ -17,8 +19,10 @@ class HumanParent(mesa.Agent):
         self.position = AgentPosition(unique_id, pos, my_house_id, my_shop_id, my_office_id)
         self.food = AgentFood()
         self.economy = AgentEconomy()
+        self.car = AgentDataCar()
         self.deliberation = AgentDataDeliberation()
         self.data_social_groups = AgentDataSocialGroups()
+        self.values = AgentDataValues()
 
         # Deliberation and context
         self.schedule_time = TimeSchedule()

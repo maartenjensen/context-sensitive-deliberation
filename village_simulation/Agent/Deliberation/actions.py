@@ -1,6 +1,8 @@
+from village_simulation.Agent.Data.enums import CarTypes
 from village_simulation.Agent.Data.the_agent import Human
 from village_simulation.Agent.Systems.sys_food import SysAgentFood
 from village_simulation.Agent.Systems.sys_position import SysAgentPosition
+from village_simulation.Agent.Systems.sys_time_schedule import SysScheduleTime
 
 
 class Action:
@@ -192,9 +194,33 @@ class ActBuyFood(Action):
         if self.check_preconditions(agent):
             SysAgentFood().add_food(agent.food, self.amount_beef, self.amount_chicken, self.amount_tofu)
             agent.economy.money -= self.get_food_cost()
-            print("Buy food: B:" + str(self.amount_beef) + ", C:" + str(self.amount_chicken) + ", T:" + str(self.amount_tofu))
+            print("Buy food: B:" + str(self.amount_beef) + ", C:" + str(self.amount_chicken) + ", T:" + str(
+                self.amount_tofu))
             return True
         else:
             print("ERROR")
             return False
 
+
+class ActBuyCar(Action):
+
+    def __init__(self, carType: CarTypes):
+
+        self.carType = carType
+
+    def check_preconditions(self, agent: Human) -> bool:
+
+        print("Check whether the agent has enough savings")
+        return True
+
+    def execute_action(self, agent: Human) -> bool:
+
+        if self.check_preconditions(agent):
+            SysScheduleTime().custom_overwrite_bought_a_car(agent.schedule_time)
+            # Add the car to possession and change the savings to right amount
+            agent.economy.savings -= 40000
+            print("Agent " + str(agent.unique_id) + " bought a " + str(self.carType))
+            return True
+        else:
+            print("ERROR")
+            return False

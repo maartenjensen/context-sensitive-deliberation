@@ -1,10 +1,10 @@
 from village_simulation.Agent.Data.data_time_schedule import ActivityInformation
-from village_simulation.Agent.Deliberation.new_csd_context_module import ContextTimeActivity
 from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
     ActEatTofu, \
-    ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood
+    ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood, ActBuyCar
 from village_simulation.Agent.Data.the_agent import Human
-from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, Goal
+from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, \
+    Goal, CarTypes
 from village_simulation.Common.sim_utils import SimUtils
 
 """ The deliberator class contains all the deliberation functions, it explores the context and calls
@@ -99,11 +99,30 @@ class Deliberator:
         if human.food.ut_tofu > human.food.ut_beef and human.food.ut_tofu > human.food.ut_chicken:
             return ActBuyFood(0, 0, human.food.buy_food_amount)
 
-
+    """ This function should of course be rewritten to a function where it loops, actually it should be merged
+        with the function above. """
     def check_action_from_utility_car_buy(self, human: Human):
 
-        # Check if there is only one option
-        print("Buy a car (TO Implement!)")
+        savings = human.economy.savings
+        if savings < human.car.cost_audi:
+            print("Not enough savings")
+            return self.actNone
+        elif savings < human.car.cost_audi:
+            return ActBuyCar(CarTypes.VOLKSWAGEN_GOLF)
+        elif savings < human.car.cost_tesla:
+            if human.car.ut_audi > human.car.ut_vw_golf:
+                return ActBuyCar(CarTypes.AUDI)
+            else:
+                return ActBuyCar(CarTypes.VOLKSWAGEN_GOLF)
+        else:
+            if human.car.ut_audi > human.car.ut_vw_golf and human.car.ut_audi > human.car.ut_tesla:
+                return ActBuyCar(CarTypes.AUDI)
+            elif human.car.ut_vw_golf > human.car.ut_audi and human.car.ut_vw_golf > human.car.ut_tesla:
+                return ActBuyCar(CarTypes.VOLKSWAGEN_GOLF)
+            elif human.car.ut_tesla > human.car.ut_audi and human.car.ut_tesla > human.car.ut_vw_golf:
+                return ActBuyCar(CarTypes.TESLA)
+
+        print("No car found TODO, implement values to make comparison on normative level")
         return self.actNone
 
     def check_and_execute_action(self, agent, activity, action) -> bool:

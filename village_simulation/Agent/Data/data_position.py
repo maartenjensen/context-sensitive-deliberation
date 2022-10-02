@@ -17,7 +17,6 @@ class AgentPosition:
         self.has_bike = SimUtils.get_model().random.getrandbits(1)
         self.has_car = SimUtils.get_model().random.getrandbits(1)
 
-        self.car_type = CarTypes.NONE
 
     def at_home(self) -> bool:
         return self.location_id == self.my_house_id

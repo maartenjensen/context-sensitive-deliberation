@@ -49,14 +49,16 @@ class SysScheduleTime:
 
     """ Specific functions """
     def custom_overwrite_buy_food(self, time_schedule: TimeSchedule):
-        act_buy = ActivityInformation(Activity.BUY_FOOD)
-        specified_food_schedule = {20: act_buy}
+        specified_food_schedule = {20: ActivityInformation(Activity.BUY_FOOD)}
         time_schedule.my_schedule.update(specified_food_schedule)
 
     def custom_overwrite_buy_car(self, time_schedule: TimeSchedule):
-        act_buy_car = ActivityInformation(Activity.BUY_CAR)
-        specified_car_schedule = {22: act_buy_car}
+        specified_car_schedule = {22: ActivityInformation(Activity.BUY_CAR)}
         time_schedule.my_schedule.update(specified_car_schedule)
+
+    def custom_overwrite_bought_a_car(self, time_schedule: TimeSchedule):
+        specified_leisure_schedule = {22: ActivityInformation(Activity.LEISURE)}
+        time_schedule.my_schedule.update(specified_leisure_schedule)
 
 
 class ScheduleLocation:
