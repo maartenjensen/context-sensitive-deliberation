@@ -15,20 +15,12 @@ class Activity(Enum):
     SLEEP = auto()
     TRAVEL = auto()
 
-    # To be removed
-    MORNING_ROUTINE = auto()
-    EAT_BEEF = auto()
-    EAT_CHICKEN = auto()
-    EAT_TOFU = auto()
-    TRAVEL_TO_WORK = auto()
-    TRAVEL_TO_HOME = auto()
-    TRAVEL_TO_SHOP = auto()
-
 
 class Goal(Enum):
     NONE = auto()
     BUY_FOOD = auto()
     BUY_CAR = auto()
+    EAT_WITH_FRIEND = auto()
 
 
 class Urgency(Enum):

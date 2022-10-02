@@ -60,6 +60,14 @@ class SysScheduleTime:
         specified_leisure_schedule = {22: ActivityInformation(Activity.LEISURE)}
         time_schedule.my_schedule.update(specified_leisure_schedule)
 
+    def custom_overwrite_eat_with_friend(self, time_schedule: TimeSchedule, friend_id):
+        specified_eating_schedule = {17: ActivityInformation(Activity.TRAVEL, travel_to=LocationEnum.SHOP),
+                                     18: ActivityInformation(Activity.BUY_FOOD, eat_with_friend_id=friend_id),
+                                     19: ActivityInformation(Activity.TRAVEL, eat_with_friend_id=friend_id),
+                                     20: ActivityInformation(Activity.EAT_TOGETHER, eat_with_friend_id=friend_id),
+                                     21: ActivityInformation(Activity.LEISURE, eat_with_friend_id=friend_id),
+                                     22: ActivityInformation(Activity.TRAVEL, eat_with_friend_id=friend_id)}
+        time_schedule.my_schedule.update(specified_eating_schedule)
 
 class ScheduleLocation:
     """ This schedule is based on location, some locations will trigger specific activities """

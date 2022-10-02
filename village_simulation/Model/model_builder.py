@@ -74,6 +74,22 @@ class VillageBuilder:
             sys_time_schedule.custom_overwrite_buy_car(smart_agent.schedule_time)
             print("Agent " + str(agent_id) + " wants to buy a car in the evening")
 
+        friend_1_id = 11
+        friend_2_id = 12
+        friend_1 = SimUtils.get_agent_by_id(friend_1_id)
+
+        if isinstance(friend_1, Human):
+            sys_time_schedule = SysScheduleTime()
+            sys_time_schedule.custom_overwrite_eat_with_friend(friend_1.schedule_time, friend_2_id)
+            print("Agent " + str(friend_1_id) + " wants to eat with Agent" + str(friend_2_id))
+
+        friend_2 = SimUtils.get_agent_by_id(friend_2_id)
+        if isinstance(friend_2, Human):
+            sys_time_schedule = SysScheduleTime()
+            sys_time_schedule.custom_overwrite_eat_with_friend(friend_2.schedule_time, friend_1_id)
+            print("Agent " + str(friend_2_id) + " wants to eat with Agent" + str(friend_1_id))
+
+
     def print_humans(self):
         for a in SimUtils.get_all_agents(False):
             if isinstance(a, Human):
