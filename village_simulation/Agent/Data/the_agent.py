@@ -4,6 +4,7 @@ from village_simulation.Agent.Data.data_car import AgentDataCar
 from village_simulation.Agent.Data.data_deliberation import AgentDataDeliberation
 from village_simulation.Agent.Data.data_economy import AgentEconomy
 from village_simulation.Agent.Data.data_food import AgentFood
+from village_simulation.Agent.Data.data_needs import AgentDataNeeds
 from village_simulation.Agent.Data.data_position import AgentPosition
 from village_simulation.Agent.Data.data_social_groups import AgentDataSocialGroups
 from village_simulation.Agent.Data.data_time_schedule import TimeSchedule
@@ -23,6 +24,7 @@ class HumanParent(mesa.Agent):
         self.deliberation = AgentDataDeliberation()
         self.data_social_groups = AgentDataSocialGroups()
         self.values = AgentDataValues()
+        self.needs = AgentDataNeeds()
 
         # Deliberation and context
         self.schedule_time = TimeSchedule()

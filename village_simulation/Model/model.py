@@ -6,6 +6,7 @@ from village_simulation.Agent.Deliberation.csd_deliberator import Deliberator
 from village_simulation.Agent.Data.the_agent import Human
 from village_simulation.Agent.Data.enums import Days
 from village_simulation.Agent.Systems.sys_deliberation import SysAgentDeliberation
+from village_simulation.Agent.Systems.sys_needs import SysNeeds
 from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.Model.model_builder import VillageBuilder
@@ -35,7 +36,8 @@ class ShoppingModel(ParentModel):
             n_offices,
             n_neighborhoods,
             time_days,
-            time_hours_day
+            time_hours_day,
+            time_steps_day
     ):
         # Initialize model settings
         super().__init__()
@@ -53,6 +55,7 @@ class ShoppingModel(ParentModel):
         self.n_neighborhoods = n_neighborhoods
         self.time_days = time_days
         self.time_hours_day = time_hours_day
+        self.time_steps_day = time_steps_day
 
         self.grid = mesa.space.MultiGrid(world_w_cell, world_h_cell, torus=False)
         self.schedule = mesa.time.RandomActivation(self)
@@ -77,14 +80,22 @@ class ShoppingModel(ParentModel):
 
         deliberator = Deliberator()
 
+        print("#####################################")
         for agent in self.schedule.agent_buffer(shuffled=True):
 
             if isinstance(agent, Human):
-                print("#####################################")
+                print("Updating needs")
+                SysNeeds.update_needs(agent.needs, self.get_time(), )
+
+        for agent in self.schedule.agent_buffer(shuffled=True):
+
+            if isinstance(agent, Human):
+
                 print("Agent " + str(agent.unique_id) + " is deliberating")
                 deliberator.deliberate(agent)  # the deliberator performs an action for the agent
                 agent.deliberation.print()
-                print("#####################################")
+
+        print("#####################################")
 
         for agent in self.schedule.agent_buffer(shuffled=True):
 

@@ -18,14 +18,15 @@ class Param:
         world_w_cell=35,
         world_h_cell=15,
 
-        n_agents=4,
+        n_agents=2,
         n_houses=[2, 0, 1],
         n_shops=[0, 1, 0],
         n_offices=[0, 0, 1],
         n_neighborhoods=3,
 
         time_days=7,
-        time_hours_day=24
+        time_hours_day=24,
+        time_steps_day=96
     )
 
     world_w_px = model_params['world_cell_px'] * model_params['world_w_cell']
