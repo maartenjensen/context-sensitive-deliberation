@@ -2,11 +2,11 @@ import math
 
 import mesa
 
-from village_simulation.Agent.Deliberation.csd_deliberator import Deliberator
-from village_simulation.Agent.Data.the_agent import Human
-from village_simulation.Agent.Data.enums import Days
-from village_simulation.Agent.Systems.sys_deliberation import SysAgentDeliberation
-from village_simulation.Agent.Systems.sys_needs import SysNeeds
+from village_simulation.Deliberation.csd_deliberator import Deliberator
+from village_simulation.EntitiesCS.the_agent import Human
+from village_simulation.EComponentsS.enums import Days
+from village_simulation.ECSystems.sys_deliberation import SysDeliberation
+from village_simulation.ECSystems.sys_needs import SysNeeds
 from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.Model.model_builder import VillageBuilder
@@ -84,13 +84,13 @@ class ShoppingModel(ParentModel):
         for agent in self.schedule.agent_buffer(shuffled=True):
 
             if isinstance(agent, Human):
-                print("Updating needs")
-                SysNeeds.update_needs(agent.needs, self.get_time(), )
+                print("Updating needs " + str(agent.unique_id))
+                SysNeeds.update_needs(agent.needs, self.get_time_day(), self.time_steps_day)
 
         for agent in self.schedule.agent_buffer(shuffled=True):
 
             if isinstance(agent, Human):
-
+                print("#####################################")
                 print("Agent " + str(agent.unique_id) + " is deliberating")
                 deliberator.deliberate(agent)  # the deliberator performs an action for the agent
                 agent.deliberation.print()
@@ -100,15 +100,28 @@ class ShoppingModel(ParentModel):
         for agent in self.schedule.agent_buffer(shuffled=True):
 
             if isinstance(agent, Human):
-                SysAgentDeliberation().clear_deliberation(agent.deliberation)
+                SysDeliberation.clear_deliberation(agent.deliberation)
 
-    def get_time(self) -> int:
+    """ Represent time in float, see if that works otherwise change back to int """
+
+    def get_time_day(self) -> float:
         n_steps = self.schedule.steps
-        time = n_steps % self.time_hours_day
+        time = (n_steps % self.time_steps_day) / (self.time_steps_day / self.time_hours_day)
+        return time
+
+    def get_hour(self) -> int:
+        n_steps = self.schedule.steps
+        time = (n_steps - (n_steps % 4)) / 4
         return time
 
     def get_day(self) -> Days:
-        n_steps = self.schedule.steps
-        day = math.floor(n_steps / self.time_hours_day) % self.time_days
+
         days = {0: Days.MO, 1: Days.TU, 2: Days.WE, 3: Days.TH, 4: Days.FR, 5: Days.SA, 6: Days.SU}
-        return days[day]
+        return days[self.get_day_n()]
+
+    def get_day_n(self) -> int:
+
+        n_steps = self.schedule.steps
+        day = math.floor(n_steps / self.time_steps_day) % self.time_days
+
+        return day

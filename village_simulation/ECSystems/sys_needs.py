@@ -1,12 +1,10 @@
-import math
-
-from village_simulation.Agent.Data.data_needs import AgentDataNeeds
+from village_simulation.EComponentsS.cmp_needs import CmpNeeds
 
 
 class SysNeeds:
 
     @staticmethod
-    def update_needs(needs: AgentDataNeeds, time: int, times_per_day: int):
+    def update_needs(needs: CmpNeeds, time: float, times_per_day: int):
 
         # time is still a value from 0 to 24
         if 6 <= time < 23:

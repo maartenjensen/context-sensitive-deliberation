@@ -1,8 +1,8 @@
-from village_simulation.Agent.Data.enums import DefaultFood
+from village_simulation.EComponentsS.enums import DefaultFood
 from village_simulation.Common.sim_utils import SimUtils
 
 
-class AgentFood:
+class CmpFood:
 
     def __init__(self):
 

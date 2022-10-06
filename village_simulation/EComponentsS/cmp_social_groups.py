@@ -1,8 +1,8 @@
-from village_simulation.Agent.Data.enums import SocialGroups
+from village_simulation.EComponentsS.enums import SocialGroups
 from village_simulation.Common.sim_utils import SimUtils
 
 
-class AgentDataSocialGroups:
+class CmpSocialGroups:
 
     def __init__(self):
         if SimUtils.get_model().random.random() < 0.9:

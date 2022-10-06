@@ -1,7 +1,7 @@
-from village_simulation.Agent.Data.enums import Activity
+from village_simulation.EComponentsS.enums import Activity
 
 
-class AgentDataDeliberation:
+class CmpDeliberation:
 
     def __init__(self):
 

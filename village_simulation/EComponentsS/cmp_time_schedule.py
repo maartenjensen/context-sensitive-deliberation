@@ -1,4 +1,4 @@
-from village_simulation.Agent.Data.enums import LocationEnum, Activity, DefaultFood
+from village_simulation.EComponentsS.enums import LocationEnum, Activity, DefaultFood
 
 
 class ActivityInformation:
@@ -14,7 +14,7 @@ class ActivityInformation:
         self.car_to_buy = car_to_buy
         self.eat_with_friend_id = eat_with_friend_id
 
-class TimeSchedule:
+class CmpTimeSchedule:
 
     def __init__(self):
         leisure_time = ActivityInformation(Activity.LEISURE)

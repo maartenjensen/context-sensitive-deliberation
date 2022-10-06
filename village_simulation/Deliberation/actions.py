@@ -1,11 +1,14 @@
-from village_simulation.Agent.Data.enums import CarTypes
-from village_simulation.Agent.Data.the_agent import Human
-from village_simulation.Agent.Systems.sys_food import SysAgentFood
-from village_simulation.Agent.Systems.sys_position import SysAgentPosition
-from village_simulation.Agent.Systems.sys_time_schedule import SysScheduleTime
+from village_simulation.EComponentsS.enums import CarTypes
+from village_simulation.EntitiesCS.the_agent import Human
+from village_simulation.ECSystems.sys_food import SysFood
+from village_simulation.ECSystems.sys_position import SysPosition
+from village_simulation.ECSystems.sys_time_schedule import SysScheduleTime
 
 
 class Action:
+
+    def __init__(self, steps_active=0):
+        self.steps_active = steps_active
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Preconditions checked and accepted")
@@ -14,6 +17,11 @@ class Action:
     def execute_action(self, agent: Human) -> bool:
         print("Executed action")
         return True
+
+    def action_step(self, agent: Human):
+        self.steps_active -= 1
+        if self.steps_active == 0:
+            self.execute_action(agent)
 
 
 class ActNone(Action):
@@ -124,7 +132,7 @@ class ActTravelToWork(Action):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            SysAgentPosition().move_to_office(agent.position)
+            SysPosition.move_to_office(agent.position)
             print("Moving to office")
             return True
         else:
@@ -142,7 +150,7 @@ class ActTravelToHome(Action):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            SysAgentPosition().move_to_house(agent.position)
+            SysPosition.move_to_house(agent.position)
             print("Moving to home")
             return True
         else:
@@ -160,7 +168,7 @@ class ActTravelToShop(Action):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            SysAgentPosition().move_to_shop(agent.position)
+            SysPosition.move_to_shop(agent.position)
             print("Moving to shop")
             return True
         else:
@@ -172,6 +180,7 @@ class ActBuyFood(Action):
 
     def __init__(self, amount_beef, amount_chicken, amount_tofu):
 
+        super().__init__()
         self.amount_beef = amount_beef
         self.amount_chicken = amount_chicken
         self.amount_tofu = amount_tofu
@@ -192,7 +201,7 @@ class ActBuyFood(Action):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            SysAgentFood().add_food(agent.food, self.amount_beef, self.amount_chicken, self.amount_tofu)
+            SysFood.add_food(agent.food, self.amount_beef, self.amount_chicken, self.amount_tofu)
             agent.economy.money -= self.get_food_cost()
             print("Buy food: B:" + str(self.amount_beef) + ", C:" + str(self.amount_chicken) + ", T:" + str(
                 self.amount_tofu))
@@ -204,9 +213,10 @@ class ActBuyFood(Action):
 
 class ActBuyCar(Action):
 
-    def __init__(self, carType: CarTypes):
+    def __init__(self, car_type: CarTypes):
 
-        self.carType = carType
+        super().__init__()
+        self.carType = car_type
 
     def check_preconditions(self, agent: Human) -> bool:
 
@@ -216,7 +226,7 @@ class ActBuyCar(Action):
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
-            SysScheduleTime().custom_overwrite_bought_a_car(agent.schedule_time)
+            SysScheduleTime.custom_overwrite_bought_a_car(agent.schedule_time)
             # Add the car to possession and change the savings to right amount
             agent.economy.savings -= 40000
             print("Agent " + str(agent.unique_id) + " bought a " + str(self.carType))

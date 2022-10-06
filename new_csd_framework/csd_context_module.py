@@ -1,5 +1,5 @@
-from village_simulation.Agent.Data.the_agent import HumanParent
-from village_simulation.Agent.Data.enums import LocationEnum, DefaultFood
+from village_simulation.Components import HumanParent
+from village_simulation.Components.enums import LocationEnum, DefaultFood
 from village_simulation.Building.house import House
 from village_simulation.Building.shop import Shop
 from village_simulation.Model.model_parent import ParentModel

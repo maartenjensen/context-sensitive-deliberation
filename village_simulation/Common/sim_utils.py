@@ -2,7 +2,7 @@ from typing import Iterator
 
 from mesa import Agent
 
-from village_simulation.Agent.Data.enums import Days
+from village_simulation.EComponentsS.enums import Days
 from village_simulation.Model.model_parent import ParentModel
 
 

@@ -1,11 +1,11 @@
-from village_simulation.Agent.Systems.sys_position import SysAgentPosition
-from village_simulation.Agent.Systems.sys_time_schedule import SysScheduleTime
+from village_simulation.ECSystems.sys_position import SysPosition
+from village_simulation.ECSystems.sys_time_schedule import SysScheduleTime
 from village_simulation.Building.neighborhood import Neighborhood
 from village_simulation.Building.house import House
 from village_simulation.Building.office import Office
 from village_simulation.Building.shop import Shop
 from village_simulation.Building.time_indicator import TimeIndicator
-from village_simulation.Agent.Data.the_agent import Human
+from village_simulation.EntitiesCS.the_agent import Human
 from village_simulation.Common.sim_utils import SimUtils
 
 
@@ -50,7 +50,7 @@ class VillageBuilder:
             new_human = Human(self.get_unique_id(), SimUtils.get_model(), (0, 0), random_house_id, random_shop_id,
                               random_office_id)
 
-            SysAgentPosition().place_agent_in_house(new_human.position)
+            SysPosition.place_agent_in_house(new_human.position)
             sys_time_schedule = SysScheduleTime()
             sys_time_schedule.set_time_schedule(new_human.schedule_time)
             sys_time_schedule.specify_food_in_schedule(new_human.schedule_time, new_human.food.default_food)

@@ -1,4 +1,4 @@
-class AgentEconomy:
+class CmpEconomy:
 
     def __init__(self):
 

@@ -1,6 +1,6 @@
 import mesa
 
-from village_simulation.Agent.Data.enums import Days
+from village_simulation.EComponentsS.enums import Days
 
 
 class ParentModel(mesa.Model):
@@ -23,8 +23,14 @@ class ParentModel(mesa.Model):
         self.schedule = mesa.time.RandomActivation(self)
         self.running = True
 
-    def get_time(self) -> int:
+    def get_time_day(self) -> float:
+        return -1.0
+
+    def get_hour(self) -> int:
         return -1
 
     def get_day(self) -> Days:
         return Days.NONE
+
+    def get_day_n(self) -> int:
+        return -1

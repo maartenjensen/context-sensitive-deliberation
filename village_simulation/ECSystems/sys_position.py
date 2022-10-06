@@ -1,14 +1,15 @@
-from village_simulation.Agent.Data.data_position import AgentPosition
-from village_simulation.Agent.Data.enums import LocationEnum
+from village_simulation.EComponentsS.cmp_position import CmpPosition
+from village_simulation.EComponentsS.enums import LocationEnum
 from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.Building.house import House
 from village_simulation.Building.office import Office
 from village_simulation.Building.shop import Shop
 
 
-class SysAgentPosition:
+class SysPosition:
 
-    def place_agent_in_house(self, position: AgentPosition):
+    @staticmethod
+    def place_agent_in_house(position: CmpPosition):
         house = SimUtils.get_agent_by_id(position.my_house_id)
         if isinstance(house, House):
             position.pos = house.get_random_position_on()
@@ -18,7 +19,8 @@ class SysAgentPosition:
         else:
             print(SimUtils.print_error(str(house) + " is not a house"))
 
-    def move_to_house(self, position: AgentPosition):
+    @staticmethod
+    def move_to_house(position: CmpPosition):
         house = SimUtils.get_agent_by_id(position.my_house_id)
         if isinstance(house, House):
             position.pos = house.get_random_position_on()
@@ -28,7 +30,8 @@ class SysAgentPosition:
         else:
             print(SimUtils.print_error(str(house) + " is not a house"))
 
-    def move_to_shop(self, position: AgentPosition):
+    @staticmethod
+    def move_to_shop(position: CmpPosition):
         shop = SimUtils.get_agent_by_id(position.my_shop_id)
         if isinstance(shop, Shop):
             position.pos = shop.get_random_position_on()
@@ -38,7 +41,8 @@ class SysAgentPosition:
         else:
             print(SimUtils.print_error(str(shop) + " is not a shop"))
 
-    def move_to_office(self, position: AgentPosition):
+    @staticmethod
+    def move_to_office(position: CmpPosition):
         office = SimUtils.get_agent_by_id(position.my_office_id)
         if isinstance(office, Office):
             position.pos = office.get_random_position_on()

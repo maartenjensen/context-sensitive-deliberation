@@ -1,6 +1,6 @@
 from mesa import Agent
 
-from village_simulation.Agent.Data.the_agent import Human
+from village_simulation.EntitiesCS.the_agent import Human
 from village_simulation.Building.location import Location
 from village_simulation.Model.params import Constants
 

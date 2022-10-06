@@ -1,7 +1,7 @@
-from village_simulation.Agent.Data.enums import CarTypes
+from village_simulation.EComponentsS.enums import CarTypes
 
 
-class AgentDataCar:
+class CmpCar:
 
     def __init__(self):
         self.car_type = CarTypes.NONE

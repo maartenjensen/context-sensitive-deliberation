@@ -1,9 +1,11 @@
-from village_simulation.Agent.Data.data_time_schedule import ActivityInformation
-from village_simulation.Agent.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
+from math import floor
+
+from village_simulation.EComponentsS.cmp_time_schedule import ActivityInformation
+from village_simulation.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
     ActEatTofu, \
     ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood, ActBuyCar
-from village_simulation.Agent.Data.the_agent import Human
-from village_simulation.Agent.Data.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, \
+from village_simulation.EntitiesCS.the_agent import Human
+from village_simulation.EComponentsS.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, \
     Goal, CarTypes
 from village_simulation.Common.sim_utils import SimUtils
 
@@ -18,8 +20,8 @@ class Deliberator:
         # self.CTimeActivity = ContextTimeActivity()
         #
         self.actNone = ActNone()
-        self.actChill = ActChill()
-        self.actSleep = ActSleep()
+        self.actChill = ActChill(0)
+        self.actSleep = ActSleep(30)
         self.actWork = ActWork()
         self.actEatBeef = ActEatBeef()
         self.actEatChicken = ActEatChicken()
@@ -31,12 +33,17 @@ class Deliberator:
     def deliberate(self, agent: Human):
 
         print("Deliberating")
+        """ Step 0: check whether there is already an active action """
+        current_action = agent.deliberation.current_action
+        if isinstance(current_action, Action):
+            current_action.action_step(agent)
+            return  # TODO there can be exceptions where the agent cannot do an action_step and breaks out of it
+
         """ Step 1: check information and retrieve activities """
-        time = SimUtils.get_model().get_time()
-        location_type = agent.position.location_type
-        activity_information = agent.schedule_time.get_activity_based_on_time(time)  # Always gives an activity
-        print(
-            "Time: " + str(time) + ", Loc: " + str(location_type) + ", Activity: " + str(activity_information.activity))
+        # TODO rewrite this part where the activity stems from the combination of time, location and needs
+        activity_information = self.retrieve_activity_from_needs_time_location(agent)
+        print("From needs, time: " + str(floor(SimUtils.get_model().get_time_day())) + ", loc: "
+              + str(agent.position.location_type) + ", got: " + str(activity_information.activity))
 
         """ Step 2: select among activities """
         # TODO activity_from_location (not relevant for now)
@@ -85,6 +92,16 @@ class Deliberator:
 
         print("More deliberation is needed")
 
+    def retrieve_activity_from_needs_time_location(self, human: Human) -> ActivityInformation:
+
+        if human.needs.sleep > 0:
+            return ActivityInformation(Activity.SLEEP)
+
+        time = floor(SimUtils.get_model().get_time_day())
+        location_type = human.position.location_type
+        human.schedule_time.get_activity_based_on_time(time)
+
+        return ActivityInformation(Activity.LEISURE)
 
     """ Returns whether the action was successfully performed"""
 

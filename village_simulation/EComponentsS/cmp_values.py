@@ -1,5 +1,5 @@
 
-class AgentDataValues:
+class CmpValues:
 
     def __init__(self):
 

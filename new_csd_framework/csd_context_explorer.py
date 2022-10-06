@@ -1,6 +1,6 @@
 from new_csd_framework.csd_context_module import ContextModule
-from village_simulation.Agent.Data.the_agent import HumanParent
-from village_simulation.Agent.Data.enums import Activity, Plan, Need, Goal, LocationEnum, DefaultFood
+from village_simulation.Components import HumanParent
+from village_simulation.Components.enums import Activity, Plan, Need, Goal, LocationEnum, DefaultFood
 from village_simulation.Model.model_parent import ParentModel
 
 
