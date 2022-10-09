@@ -57,12 +57,8 @@ class Human(HumanParent):
 
     def to_str(self):
         info = "ID:" + str(self.unique_id) + ", "
-        info += "Money: " + str(self.economy.money) + " (" + str(self.economy.salary) + ")"
-        if self.position.has_bike:
-            info += ", Car"
-        if self.position.has_bike:
-            info += ", Bike"
-        info += ", B:" + str(self.food.beef) + ",C:" + str(self.food.chicken) + ",T:" + str(self.food.tofu)
-        info += ", Social group: " + str(self.data_social_groups.my_group)
+        # info += "Money: " + str(self.economy.money) + " (" + str(self.economy.salary) + ")"
+        # info += ", B:" + str(self.food.beef) + ",C:" + str(self.food.chicken) + ",T:" + str(self.food.tofu)
+        # info += ", Social group: " + str(self.data_social_groups.my_group)
         info += ", " + self.needs.get_str()
         return info

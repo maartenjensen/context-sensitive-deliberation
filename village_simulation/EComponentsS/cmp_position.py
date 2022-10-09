@@ -13,9 +13,6 @@ class CmpPosition:
         self.location_id = -1
         self.location_type = LocationEnum.NONE
 
-        self.has_bike = SimUtils.get_model().random.getrandbits(1)
-        self.has_car = SimUtils.get_model().random.getrandbits(1)
-
     def at_home(self) -> bool:
         return self.location_id == self.my_house_id
 

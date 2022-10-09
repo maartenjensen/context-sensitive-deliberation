@@ -17,8 +17,7 @@ class Deliberator:
 
     def __init__(self):
         print("Initialize deliberator")
-        # self.CTimeActivity = ContextTimeActivity()
-        #
+
         self.actNone = ActNone()
         self.actChill = ActChill(0)
         self.actSleep = ActSleep(30)
