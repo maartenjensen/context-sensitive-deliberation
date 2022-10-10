@@ -14,6 +14,7 @@ class Activity(Enum):
     LEISURE = auto()
     SLEEP = auto()
     TRAVEL = auto()
+    COMMUTE = auto()
 
 
 class Goal(Enum):

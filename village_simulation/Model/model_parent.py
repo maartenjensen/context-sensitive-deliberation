@@ -24,6 +24,7 @@ class ParentModel(mesa.Model):
         self.running = True
 
     def get_time_day(self) -> float:
+        """ Returns the time of the day in float from 0.0 to 24.0 in hours """
         return -1.0
 
     def get_hour(self) -> int:

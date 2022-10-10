@@ -18,6 +18,8 @@ class Deliberator:
     def __init__(self):
         print("Initialize deliberator")
 
+        # TODO this stuff should go into its own class (e.g. an action class so that instead of self.actNone its
+        # possible to do actions.actNone, however I have to see how initialize this stuff
         self.actNone = ActNone()
         self.actChill = ActChill(0)
         self.actSleep = ActSleep(30)
@@ -30,6 +32,79 @@ class Deliberator:
         self.actTravelToShop = ActTravelToShop()
 
     def deliberate(self, agent: Human):
+
+        """ All the state variables """
+        """ It should not be linear, more like state based, but how do you make this? """
+        current_action = agent.deliberation.current_action
+        current_plan = None
+        activities = []
+        available_actions = None
+
+        # Find activities
+        """ State 0: check whether there is already an active action or plan or something like this """
+        if isinstance(current_action, Action):
+            current_action.action_step(agent)
+            return
+
+        """ State 1: no active action or plan, then lets figure out what the activity is """
+        print("Figure out what the activity is")
+        activities.extend(self.get_typical_activity_from_location(agent))
+        activities.extend(self.get_typical_activity_from_time())
+        activities.extend(self.get_activity_from_needs(agent))
+
+        print("Print potential activities for agent")
+
+        string = ""
+        for act_inf in activities:
+            string += str(act_inf.activity) + ", "
+        print(string)
+
+    def get_typical_activity_from_location(self, human: Human) -> []:
+
+        activities = []
+        loc_type = human.position.location_type
+        if loc_type == LocationEnum.SHOP:
+            return [ActivityInformation(Activity.BUY_FOOD)]
+        elif loc_type == LocationEnum.WORK:
+            return [ActivityInformation(Activity.WORK)]
+        elif loc_type == LocationEnum.HOME:
+            return [ActivityInformation(Activity.LEISURE)]
+        return activities
+
+    def get_typical_activity_from_time(self) -> []:
+
+        # TODO include working day
+        # Agents could have certain anchor points, e.g. an agent likes to start working at
+        activities = []
+        time = SimUtils.get_model().get_time_day()
+        if 0 <= time <= 8 or time >= 22:
+            activities.append(ActivityInformation(Activity.SLEEP))
+        if 5 <= time <= 8 or 11 <= time <= 14 or 17 <= time <= 20:
+            activities.append(ActivityInformation(Activity.EAT))
+        if 6 <= time <= 9 or 16 <= time <= 19:
+            activities.append(ActivityInformation(Activity.COMMUTE))
+        if 7 <= time <= 18:
+            activities.append(ActivityInformation(Activity.WORK))
+        if 18 <= time <= 20:
+            activities.append(ActivityInformation(Activity.BUY_FOOD))
+        if 18 <= time <= 23:
+            activities.append(ActivityInformation(Activity.LEISURE))
+        return activities
+
+    def get_activity_from_needs(self, human: Human) -> []:
+
+        activities = []
+        if human.needs.sleep >= 1:
+            activities.append(ActivityInformation(Activity.SLEEP))
+        if human.needs.work >= 1:
+            activities.append(ActivityInformation(Activity.WORK))
+        if human.needs.hunger >= 1:
+            activities.append(ActivityInformation(Activity.EAT))
+        if human.needs.food_safety >= 1:
+            activities.append(ActivityInformation(Activity.BUY_FOOD))
+        return activities
+
+    def deliberate_old(self, agent: Human):
 
         print("Deliberating")
         """ Step 0: check whether there is already an active action """
@@ -88,7 +163,6 @@ class Deliberator:
 
         # TODO find a goal from preconditions and problems
 
-
         print("More deliberation is needed")
 
     def retrieve_activity_from_needs_time_location(self, human: Human) -> ActivityInformation:
@@ -117,6 +191,7 @@ class Deliberator:
 
     """ This function should of course be rewritten to a function where it loops, actually it should be merged
         with the function above. """
+
     def check_action_from_utility_car_buy(self, human: Human):
 
         savings = human.economy.savings
@@ -234,7 +309,6 @@ class Deliberator:
             return Goal.BUY_FOOD
 
         return Goal.NONE
-
 
 
 class ActivityHandler:
