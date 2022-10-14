@@ -4,7 +4,7 @@ import mesa
 
 from village_simulation.Deliberation.csd_deliberator import Deliberator
 from village_simulation.EntitiesCS.the_agent import Human
-from village_simulation.EComponentsS.enums import Days
+from village_simulation.EComponentsS.enums import Days, DayType
 from village_simulation.ECSystems.sys_deliberation import SysDeliberation
 from village_simulation.ECSystems.sys_needs import SysNeeds
 from village_simulation.Model.model_parent import ParentModel
@@ -72,9 +72,18 @@ class ShoppingModel(ParentModel):
                                                                  "Food": lambda a: getattr(a, "beef", None)})
 
     def step(self):
+        self.day_type_update()
         self.datacollector.collect(self)
         self.schedule.step()
         self.agents_step()
+
+    def day_type_update(self):
+        """ Simplified function that changes the day type at the start of the day, step == 0 """
+        if self.start_of_day():
+            if self.day_type == DayType.WORK:
+                self.day_type = DayType.WEEKEND
+            else:
+                self.day_type = DayType.WORK
 
     def agents_step(self):
 
@@ -103,6 +112,11 @@ class ShoppingModel(ParentModel):
                 SysDeliberation.clear_deliberation(agent.deliberation)
 
     """ Represent time in float, see if that works otherwise change back to int """
+
+    def start_of_day(self) -> bool:
+        n_steps = self.schedule.steps
+        step_in_day = n_steps % self.time_steps_day
+        return step_in_day == 0
 
     def get_time_day(self) -> float:
         n_steps = self.schedule.steps

@@ -37,7 +37,7 @@ class Deliberator:
         """ It should not be linear, more like state based, but how do you make this? """
         current_action = agent.deliberation.current_action
         current_plan = None
-        activities = []
+        activities_inf = []
         available_actions = None
 
         # Find activities
@@ -48,16 +48,44 @@ class Deliberator:
 
         """ State 1: no active action or plan, then lets figure out what the activity is """
         print("Figure out what the activity is")
-        activities.extend(self.get_typical_activity_from_location(agent))
-        activities.extend(self.get_typical_activity_from_time())
-        activities.extend(self.get_activity_from_needs(agent))
+        activities_inf.extend(self.get_typical_activity_from_location(agent))
+        activities_inf.extend(self.get_typical_activity_from_time())
+        activities_inf.extend(self.get_activity_from_needs(agent))
 
         print("Print potential activities for agent")
 
         string = ""
-        for act_inf in activities:
+        for act_inf in activities_inf:
             string += str(act_inf.activity) + ", "
         print(string)
+
+        print("Filter activities")
+        chosen_activity_inf = None
+        if len(activities_inf) == 0:
+            print("Search for more activities")
+        elif len(activities_inf) == 1:
+            chosen_activity_inf = activities_inf.pop()
+        else:
+            chosen_activity_inf = self.get_activity_from_multiple_activities(activities_inf)
+
+        if chosen_activity_inf is not None:
+            print("Chosen activity:" + str(chosen_activity_inf.activity))
+        else:
+            print("No chosen activity")
+
+    def get_activity_from_multiple_activities(self, activities_inf):
+
+        check_activity = Activity.NONE
+        saved_activity_inf = None
+        # Check for a single activity
+        for activity_inf in activities_inf:
+            if check_activity == Activity.NONE:
+                check_activity = activity_inf.activity
+                saved_activity_inf = activity_inf
+            elif check_activity != activity_inf.activity:
+                return None
+
+        return saved_activity_inf
 
     def get_typical_activity_from_location(self, human: Human) -> []:
 
@@ -67,8 +95,8 @@ class Deliberator:
             return [ActivityInformation(Activity.BUY_FOOD)]
         elif loc_type == LocationEnum.WORK:
             return [ActivityInformation(Activity.WORK)]
-        elif loc_type == LocationEnum.HOME:
-            return [ActivityInformation(Activity.LEISURE)]
+        # elif loc_type == LocationEnum.HOME:
+        #    return [ActivityInformation(Activity.LEISURE)]
         return activities
 
     def get_typical_activity_from_time(self) -> []:

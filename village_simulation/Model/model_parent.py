@@ -1,6 +1,6 @@
 import mesa
 
-from village_simulation.EComponentsS.enums import Days
+from village_simulation.EComponentsS.enums import Days, DayType
 
 
 class ParentModel(mesa.Model):
@@ -18,10 +18,14 @@ class ParentModel(mesa.Model):
         self.n_neighborhoods = 0
         self.time_days = 0
         self.time_hours_day = 0
+        self.day_type = DayType.WEEKEND
 
         self.grid = mesa.space.MultiGrid(10, 10, torus=False)
         self.schedule = mesa.time.RandomActivation(self)
         self.running = True
+
+    def start_of_day(self) -> bool:
+        return False
 
     def get_time_day(self) -> float:
         """ Returns the time of the day in float from 0.0 to 24.0 in hours """
@@ -35,3 +39,6 @@ class ParentModel(mesa.Model):
 
     def get_day_n(self) -> int:
         return -1
+
+    def get_day_type(self) -> DayType:
+        return self.day_type

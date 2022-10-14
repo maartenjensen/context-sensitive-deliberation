@@ -7,10 +7,8 @@ class SysNeeds:
     def update_needs(needs: CmpNeeds, time: float, times_per_day: int):
 
         # time is still a value from 0 to 24
-        if 6 <= time < 23:
-            needs.sleep = 0
-        else:
-            needs.sleep = 1
+        if time < 6 or time > 22:
+            needs.sleep += 0.5
 
         if 8 <= time < 12 or 13 <= time < 17:
             needs.work = 1

@@ -75,6 +75,13 @@ class Days(Enum):
     SU = 7
 
 
+class DayType(Enum):
+    NONE = auto()
+    WORK = auto()
+    WEEKEND = auto()
+    HOLIDAY = auto()
+
+
 class Vehicle(Enum):
     NONE = -1
     BIKE = 0
