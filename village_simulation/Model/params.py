@@ -26,7 +26,7 @@ class Param:
 
         time_days=7,
         time_hours_day=24,
-        time_steps_day=96
+        time_steps_day=12
     )
 
     world_w_px = model_params['world_cell_px'] * model_params['world_w_cell']

@@ -1,369 +1,357 @@
-from math import floor
-
-from village_simulation.EComponentsS.cmp_time_schedule import ActivityInformation
-from village_simulation.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
-    ActEatTofu, \
-    ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood, ActBuyCar
-from village_simulation.EntitiesCS.the_agent import Human
-from village_simulation.EComponentsS.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, \
-    Goal, CarTypes
 from village_simulation.Common.sim_utils import SimUtils
+from village_simulation.Deliberation.actions import ActNone, ActSleep, ActEatBeef, ActEatChicken, ActEatTofu
+from village_simulation.EComponentsS.enums import Activity, DcElement, Goal
+from village_simulation.EntitiesCS.the_agent import Human
+import numpy as np
 
-""" The deliberator class contains all the deliberation functions, it explores the context and calls
-    the deliberation functions to help with decision making """
+
+class DecisionContext:
+
+    def __init__(self):
+        # Main dictionaries
+        self.activities = {}
+        self.goals = {}
+        self.plans = {}
+        self.actions = {}
+
+        self.relations = np.array([[-1, DcElement.NONE, -1, DcElement.NONE]])
+
+        self.unique_id = 0
+
+    def add_activity(self, activity, linked_id=-1, dc_element=DcElement.NONE) -> int:
+        self.activities[self.unique_id] = activity
+        if linked_id >= 0:
+            self.add_relation(self.unique_id, DcElement.ACTIVITY, linked_id, dc_element)
+        return self.increase_unique_id()
+
+    def add_goal(self, goal, linked_id=-1, dc_element=DcElement.NONE) -> int:
+        self.goals[self.unique_id] = goal
+        if linked_id >= 0:
+            self.add_relation(self.unique_id, DcElement.ACTIVITY, linked_id, dc_element)
+        return self.increase_unique_id()
+
+    def add_plan(self, plan, linked_id=-1, dc_element=DcElement.NONE) -> int:
+        self.plans[self.unique_id] = plan
+        if linked_id >= 0:
+            self.add_relation(self.unique_id, DcElement.ACTIVITY, linked_id, dc_element)
+        return self.increase_unique_id()
+
+    def add_action(self, actions, linked_id=-1, dc_element=DcElement.NONE) -> int:
+        self.actions[self.unique_id] = actions
+        if linked_id >= 0:
+            self.add_relation(self.unique_id, DcElement.ACTIVITY, linked_id, dc_element)
+        return self.increase_unique_id()
+
+    def add_relation(self, id_1, type_1, id_2, type_2):
+        added_relation = [[id_1, type_1, id_2, type_2]]
+        self.relations = np.append(self.relations, added_relation, axis=0)
+        # self.relations = np.delete(self.relations, [[-1, DcElement.NONE, -1, DcElement.NONE]], axis=0)
+
+    def remove_activities_and_related_except(self, activity_id):
+
+        to_remove_ids = []
+        for key, value in self.activities.items():
+            if activity_id != key:
+                to_remove_ids.append(activity_id)
+                self.remove_related(activity_id)
+
+        for i in to_remove_ids:
+            self.activities.pop(i)
+
+    def remove_related(self, t_id):
+
+        to_remove_indexes = []
+        for i in range(len(self.relations) - 1):
+            row = self.relations[i]
+            if row[0] == t_id:
+                self.remove_based_on_id(row[2])
+                to_remove_indexes.append(i)
+            elif row[2] == t_id:
+                self.remove_based_on_id(row[0])
+                to_remove_indexes.append(i)
+
+        to_remove_indexes.reverse()
+        for index in to_remove_indexes:
+            np.delete(self.relations, index, 0)
+
+    def remove_based_on_id(self, t_id):
+        for key, value in self.activities.items():
+            if key == t_id:
+                self.activities.pop(t_id)
+                return
+        for key, value in self.goals.items():
+            if key == t_id:
+                self.goals.pop(t_id)
+                return
+        for key, value in self.plans.items():
+            if key == t_id:
+                self.plans.pop(t_id)
+                return
+        for key, value in self.actions.items():
+            if key == t_id:
+                self.actions.pop(t_id)
+                return
+
+    def get_object_from_id(self, t_id):
+        for key, value in self.activities.items():
+            if key == t_id:
+                return value
+        for key, value in self.goals.items():
+            if key == t_id:
+                return value
+        for key, value in self.plans.items():
+            if key == t_id:
+                return value
+        for key, value in self.actions.items():
+            if key == t_id:
+                return value
+        return None
+
+    def has_one_action(self) -> True:
+        return len(self.actions.keys()) == 1
+
+    def get_one_action_id(self) -> int:
+        for key, value in self.actions.items():
+            return key
+        return None
+
+    def get_one_action(self):
+        for key, value in self.actions.items():
+            return value
+        return None
+
+    def get_linked_activity(self, t_id):
+        """ Retrieves a linked activity """
+        activity_id = -1
+        for row in self.relations:
+            if row[0] == t_id and row[3] == DcElement.ACTIVITY:
+                activity_id = row[2]
+            elif row[2] == t_id and row[1] == DcElement.ACTIVITY:
+                activity_id = row[0]
+            if activity_id >= 0:
+                return self.activities.get(activity_id)
+
+    def get_linked_activity_id(self, t_id):
+        """ Retrieves a linked activity """
+        activity_id = -1
+        for row in self.relations:
+            if row[0] == t_id and row[3] == DcElement.ACTIVITY:
+                activity_id = row[2]
+            elif row[2] == t_id and row[1] == DcElement.ACTIVITY:
+                activity_id = row[0]
+            if activity_id >= 0:
+                return activity_id
+
+    def str_activity(self):
+        string = ""
+        for key, value in self.activities.items():
+            string += str(key) + ":" + str(value) + ", "
+        return string
+
+    def str_goal(self):
+        string = ""
+        for key, value in self.goals.items():
+            string += str(key) + ":" + str(value) + ", "
+        return string
+
+    def str_plan(self):
+        string = ""
+        for key, value in self.plans.items():
+            string += str(key) + ":" + str(value) + ", "
+        return string
+
+    def str_action(self):
+        string = ""
+        for key, value in self.actions.items():
+            string += str(key) + ":" + str(value) + ", "
+        return string
+
+    def str_relations(self):
+        string = ""
+        for row in self.relations:
+            if row[0] != -1:
+                string += str(row) + ", "
+        return string
+
+    def print_activity(self):
+        print(self.str_activity())
+
+    def print_action(self):
+        print(self.str_action())
+
+    def print_all(self):
+        print(
+            "Actv= " + self.str_activity() + "Goal= " + self.str_goal() + "Plan= " + self.str_plan() + "Action= " + self.str_action())
+        print("Relations= " + self.str_relations())
+
+    def increase_unique_id(self) -> int:
+        self.unique_id += 1
+        return self.unique_id - 1
+
+
+class DecisionContextExt(DecisionContext):
+
+    def __init__(self):
+        super().__init__()
+
+        # Other dictionaries
+        self.urgency = {}
+
+    def add_urgency(self, urgency, linked_id=-1, dc_element=DcElement.NONE) -> int:
+        self.urgency[self.unique_id] = urgency
+        if linked_id >= 0:
+            self.add_relation(self.unique_id, DcElement.ACTIVITY, linked_id, dc_element)
+        return self.increase_unique_id()
+
+    def get_object_from_id(self, t_id):
+        dc_object = super().get_object_from_id(t_id)
+        if dc_object is not None:
+            return dc_object
+
+        for key, value in self.urgency.items():
+            if key == t_id:
+                return value
+        return None
+
+    def remove_based_on_id(self, t_id):
+        """ TODO let this functions return true/false, True when the id has been removed """
+        super().remove_based_on_id(t_id)
+
+        for key, value in self.urgency.items():
+            if key == t_id:
+                self.urgency.pop(t_id)
+        return
+
+    def str_urgency(self):
+        string = ""
+        for key, value in self.urgency.items():
+            string += str(key) + ":" + str(value) + ", "
+        return string
+
+    def print_urgency(self):
+        print(self.str_urgency())
+
+    def print_all(self):
+        super().print_all()
+        print("Urgency:" + self.str_urgency())
 
 
 class Deliberator:
 
     def __init__(self):
-        print("Initialize deliberator")
-
-        # TODO this stuff should go into its own class (e.g. an action class so that instead of self.actNone its
-        # possible to do actions.actNone, however I have to see how initialize this stuff
         self.actNone = ActNone()
-        self.actChill = ActChill(0)
-        self.actSleep = ActSleep(30)
-        self.actWork = ActWork()
+        self.actSleep = ActSleep()
         self.actEatBeef = ActEatBeef()
         self.actEatChicken = ActEatChicken()
         self.actEatTofu = ActEatTofu()
-        self.actTravelToHome = ActTravelToHome()
-        self.actTravelToWork = ActTravelToWork()
-        self.actTravelToShop = ActTravelToShop()
+
+        self.dc = DecisionContextExt()
+        print("Initialize deliberator")
 
     def deliberate(self, agent: Human):
 
-        """ All the state variables """
-        """ It should not be linear, more like state based, but how do you make this? """
-        current_action = agent.deliberation.current_action
-        current_plan = None
-        activities_inf = []
-        available_actions = None
+        print("Start deliberation")
+        self.dc = DecisionContextExt()
+        chosen_action = self.actNone
+        chosen_activity = Activity.NONE
 
-        # Find activities
-        """ State 0: check whether there is already an active action or plan or something like this """
-        if isinstance(current_action, Action):
-            current_action.action_step(agent)
-            return
+        print("Get habits from time")
+        self.set_typical_habit_from_time()
+        self.dc.print_all()
 
-        """ State 1: no active action or plan, then lets figure out what the activity is """
-        print("Figure out what the activity is")
-        activities_inf.extend(self.get_typical_activity_from_location(agent))
-        activities_inf.extend(self.get_typical_activity_from_time())
-        activities_inf.extend(self.get_activity_from_needs(agent))
+        # Perform action
+        if self.dc.has_one_action():
+            action_id = self.dc.get_one_action_id()
+            chosen_action = self.dc.get_object_from_id(action_id)
+            chosen_activity = self.dc.get_linked_activity(action_id)
 
-        print("Print potential activities for agent")
+            if self.check_and_execute_action(agent, chosen_action):
+                self.save_agent_activity(agent, chosen_activity)
+                return
 
-        string = ""
-        for act_inf in activities_inf:
-            string += str(act_inf.activity) + ", "
-        print(string)
+        self.set_urgency_of_activities(agent)
+        most_urgent_activity_id = self.get_most_urgent_activity_id()
+        if most_urgent_activity_id >= 0:
+            self.dc.remove_activities_and_related_except(most_urgent_activity_id)
 
-        print("Filter activities")
-        chosen_activity_inf = None
-        if len(activities_inf) == 0:
-            print("Search for more activities")
-        elif len(activities_inf) == 1:
-            chosen_activity_inf = activities_inf.pop()
-        else:
-            chosen_activity_inf = self.get_activity_from_multiple_activities(activities_inf)
+        self.dc.print_all()
 
-        if chosen_activity_inf is not None:
-            print("Chosen activity:" + str(chosen_activity_inf.activity))
-        else:
-            print("No chosen activity")
+        # Perform action
+        if self.dc.has_one_action():
+            action_id = self.dc.get_one_action_id()
+            chosen_action = self.dc.get_object_from_id(action_id)
+            chosen_activity = self.dc.get_linked_activity(action_id)
 
-    def get_activity_from_multiple_activities(self, activities_inf):
-
-        check_activity = Activity.NONE
-        saved_activity_inf = None
-        # Check for a single activity
-        for activity_inf in activities_inf:
-            if check_activity == Activity.NONE:
-                check_activity = activity_inf.activity
-                saved_activity_inf = activity_inf
-            elif check_activity != activity_inf.activity:
-                return None
-
-        return saved_activity_inf
-
-    def get_typical_activity_from_location(self, human: Human) -> []:
-
-        activities = []
-        loc_type = human.position.location_type
-        if loc_type == LocationEnum.SHOP:
-            return [ActivityInformation(Activity.BUY_FOOD)]
-        elif loc_type == LocationEnum.WORK:
-            return [ActivityInformation(Activity.WORK)]
-        # elif loc_type == LocationEnum.HOME:
-        #    return [ActivityInformation(Activity.LEISURE)]
-        return activities
-
-    def get_typical_activity_from_time(self) -> []:
-
-        # TODO include working day
-        # Agents could have certain anchor points, e.g. an agent likes to start working at
-        activities = []
-        time = SimUtils.get_model().get_time_day()
-        if 0 <= time <= 8 or time >= 22:
-            activities.append(ActivityInformation(Activity.SLEEP))
-        if 5 <= time <= 8 or 11 <= time <= 14 or 17 <= time <= 20:
-            activities.append(ActivityInformation(Activity.EAT))
-        if 6 <= time <= 9 or 16 <= time <= 19:
-            activities.append(ActivityInformation(Activity.COMMUTE))
-        if 7 <= time <= 18:
-            activities.append(ActivityInformation(Activity.WORK))
-        if 18 <= time <= 20:
-            activities.append(ActivityInformation(Activity.BUY_FOOD))
-        if 18 <= time <= 23:
-            activities.append(ActivityInformation(Activity.LEISURE))
-        return activities
-
-    def get_activity_from_needs(self, human: Human) -> []:
-
-        activities = []
-        if human.needs.sleep >= 1:
-            activities.append(ActivityInformation(Activity.SLEEP))
-        if human.needs.work >= 1:
-            activities.append(ActivityInformation(Activity.WORK))
-        if human.needs.hunger >= 1:
-            activities.append(ActivityInformation(Activity.EAT))
-        if human.needs.food_safety >= 1:
-            activities.append(ActivityInformation(Activity.BUY_FOOD))
-        return activities
-
-    def deliberate_old(self, agent: Human):
-
-        print("Deliberating")
-        """ Step 0: check whether there is already an active action """
-        current_action = agent.deliberation.current_action
-        if isinstance(current_action, Action):
-            current_action.action_step(agent)
-            return  # TODO there can be exceptions where the agent cannot do an action_step and breaks out of it
-
-        """ Step 1: check information and retrieve activities """
-        # TODO rewrite this part where the activity stems from the combination of time, location and needs
-        activity_information = self.retrieve_activity_from_needs_time_location(agent)
-        print("From needs, time: " + str(floor(SimUtils.get_model().get_time_day())) + ", loc: "
-              + str(agent.position.location_type) + ", got: " + str(activity_information.activity))
-
-        """ Step 2: select among activities """
-        # TODO activity_from_location (not relevant for now)
-        # TODO insert select activity from multiple activities (e.g. higher priority)
-        # Since there is only one activity
-
-        """ Step 3: select an action from the activity """
-        action_from_activity = self.get_action_from_activity(activity_information.activity)
-        if action_from_activity == self.actNone:
-            action_from_activity = self.get_action_from_activity_with_information(activity_information)
-
-        # TODO check preconditions of action
-        if self.check_and_execute_action(agent, activity_information.activity, action_from_activity):
-            return
-
-        """ Step 4: consider accessible objects and see whether they can also be used e.g. default is eat beef
-         if no beef is available but chicken is available it can be chosen as well """
-        # TODO but this can be done later its easy, just a check on what is the activity what are my options and then is there only one option
-
-        """ Step 5: imitate from people at same location (and thus same time) """
-        action_from_imitation = self.get_action_from_imitation_at_location(agent, activity_information.activity)
-        if self.check_and_execute_action(agent, activity_information.activity, action_from_imitation):
-            return
-
-        """ Step 6: check with collective groups (this is just a hardcoded piece) """
-        action_from_social_group = self.get_action_from_social_group(agent, activity_information.activity)
-        if self.check_and_execute_action(agent, activity_information.activity, action_from_social_group):
-            return
-
-        """ Step 7: find a goal from activities """
-        goal_from_activity = self.get_goal_from_activity(activity_information)
-        # TODO get goal in other ways, maybe from imitation??
-
-        """ Step 8: Utility theory """
-        action_from_utility = self.actNone
-        if goal_from_activity == Goal.BUY_FOOD:
-            action_from_utility = self.check_action_from_utility_food_buy(agent)
-        elif goal_from_activity == Goal.BUY_CAR:
-            action_from_utility = self.check_action_from_utility_car_buy(agent)
-
-        if self.check_and_execute_action(agent, activity_information.activity, action_from_utility):
-            return
-
-        # TODO find a goal from preconditions and problems
+            if self.check_and_execute_action(agent, chosen_action):
+                self.save_agent_activity(agent, chosen_activity)
+                return
 
         print("More deliberation is needed")
 
-    def retrieve_activity_from_needs_time_location(self, human: Human) -> ActivityInformation:
+    def set_typical_habit_from_time(self):
 
-        if human.needs.sleep > 0:
-            return ActivityInformation(Activity.SLEEP)
+        # TODO include working day
+        # Agents could have certain anchor points, e.g. an agent likes to start working at
 
-        time = floor(SimUtils.get_model().get_time_day())
-        location_type = human.position.location_type
-        human.schedule_time.get_activity_based_on_time(time)
+        time = SimUtils.get_model().get_time_day()
+        if 0 <= time <= 8 or time >= 22:
+            self.add_habit_sleeping()
+        if 5 <= time <= 8 or 11 <= time <= 14 or 17 <= time <= 20:
+            self.add_habit_eat()
+        # if 7 <= time <= 18:
+        #     self.set_habit_work()
+        # if 18 <= time <= 20:
+        #     self.set_habit_buy_food()
+        # if 18 <= time <= 23:
+        #     self.set_habit_leisure()
+        # return activities
 
-        return ActivityInformation(Activity.LEISURE)
+    def set_urgency_of_activities(self, agent: Human):
 
-    """ Returns whether the action was successfully performed"""
+        for key, value in self.dc.activities.items():
+            if value == Activity.SLEEP:
+                self.dc.add_urgency(agent.needs.sleep, key, DcElement.ACTIVITY)
+            elif value == Activity.EAT:
+                self.dc.add_urgency(agent.needs.hunger, key, DcElement.ACTIVITY)
 
-    def check_action_from_utility_food_buy(self, human: Human):
+    def get_most_urgent_activity_id(self) -> int:
 
-        print("Checking utility values for food buy selection")
-        # Check if there is only one option
-        if human.food.ut_beef > human.food.ut_chicken and human.food.ut_beef > human.food.ut_tofu:
-            return ActBuyFood(human.food.buy_food_amount, 0, 0)
-        if human.food.ut_chicken > human.food.ut_beef and human.food.ut_chicken > human.food.ut_tofu:
-            return ActBuyFood(0, human.food.buy_food_amount, 0)
-        if human.food.ut_tofu > human.food.ut_beef and human.food.ut_tofu > human.food.ut_chicken:
-            return ActBuyFood(0, 0, human.food.buy_food_amount)
+        highest = -1.0
+        highest_id = -1
+        for key, value in self.dc.urgency.items():
+            if value > highest or highest_id == -1:
+                highest = value
+                highest_id = key
 
-    """ This function should of course be rewritten to a function where it loops, actually it should be merged
-        with the function above. """
+        return self.dc.get_linked_activity_id(highest_id)
 
-    def check_action_from_utility_car_buy(self, human: Human):
 
-        savings = human.economy.savings
-        if savings < human.car.cost_audi:
-            print("Not enough savings")
-            return self.actNone
-        elif savings < human.car.cost_audi:
-            return ActBuyCar(CarTypes.VOLKSWAGEN_GOLF)
-        elif savings < human.car.cost_tesla:
-            if human.car.ut_audi > human.car.ut_vw_golf:
-                return ActBuyCar(CarTypes.AUDI)
-            else:
-                return ActBuyCar(CarTypes.VOLKSWAGEN_GOLF)
-        else:
-            if human.car.ut_audi > human.car.ut_vw_golf and human.car.ut_audi > human.car.ut_tesla:
-                return ActBuyCar(CarTypes.AUDI)
-            elif human.car.ut_vw_golf > human.car.ut_audi and human.car.ut_vw_golf > human.car.ut_tesla:
-                return ActBuyCar(CarTypes.VOLKSWAGEN_GOLF)
-            elif human.car.ut_tesla > human.car.ut_audi and human.car.ut_tesla > human.car.ut_vw_golf:
-                return ActBuyCar(CarTypes.TESLA)
+    def add_habit_sleeping(self):
 
-        print("No car found TODO, implement values to make comparison on normative level")
-        return self.actNone
+        id_activity = self.dc.add_activity(Activity.SLEEP)
+        self.dc.add_action(self.actSleep, id_activity, DcElement.ACTIVITY)
 
-    def check_and_execute_action(self, agent, activity, action) -> bool:
+    def add_habit_eat(self):
+
+        id_activity = self.dc.add_activity(Activity.EAT)
+        id_goal = self.dc.add_activity(Goal.EAT_FOOD, id_activity, DcElement.ACTIVITY)
+        self.dc.add_action(self.actEatChicken, id_goal, DcElement.GOAL)
+
+    # def set_habit_work(self):
+
+    # def set_habit_buy_food(self):
+
+    # def set_habit_leisure(self):
+
+    def check_and_execute_action(self, agent: Human, action) -> bool:
 
         if action != self.actNone:
             if action.check_preconditions(agent):
                 action.execute_action(agent)
-                agent.deliberation.current_activity = activity
                 agent.deliberation.current_action = action
                 return True
 
         return False
 
-    def get_action_from_activity(self, activity: Activity) -> Action:
-
-        if activity == Activity.SLEEP:
-            return self.actSleep
-        elif activity == Activity.WORK:
-            return self.actWork
-        elif activity == Activity.EAT:
-            return self.actNone
-        elif activity == Activity.LEISURE:
-            return self.actChill
-
-        return self.actNone
-
-    def get_action_from_activity_with_information(self, activity_information: ActivityInformation) -> Action:
-
-        activity = activity_information.activity
-        if activity == Activity.TRAVEL:
-            if activity_information.travel_to == LocationEnum.HOME:
-                return self.actTravelToHome
-            elif activity_information.travel_to == LocationEnum.SHOP:
-                return self.actTravelToShop
-            elif activity_information.travel_to == LocationEnum.WORK:
-                return self.actTravelToWork
-
-        elif activity == Activity.EAT:
-            if activity_information.food_to_eat == DefaultFood.BEEF:
-                return self.actEatBeef
-            elif activity_information.food_to_eat == DefaultFood.CHICKEN:
-                return self.actEatChicken
-            elif activity_information.food_to_eat == DefaultFood.TOFU:
-                return self.actEatTofu
-
-        elif activity == Activity.BUY_FOOD:
-            if activity_information.beef_to_buy + activity_information.chicken_to_buy + activity_information.tofu_to_buy > 0:
-                return ActBuyFood(activity_information.beef_to_buy, activity_information.chicken_to_buy,
-                                  activity_information.tofu_to_buy)
-
-        return self.actNone
-
-    """ This should be implemented as taking the average of all the humans, rather than the first occurrence"""
-
-    def get_action_from_imitation_at_location(self, human: Human, activity: Activity):
-
-        if activity == activity.BUY_CAR:
-            print("No people to imitate from, could easily be implemented")
-
-        for a in SimUtils.get_all_agents(False):
-            if isinstance(a, Human):
-                if a.unique_id is not human.unique_id and a.position.location_id == human.position.location_id:
-                    if a.deliberation.current_action is not None and a.deliberation.current_activity == activity:
-                        print("Imitating H" + str(a.unique_id) + " on action: " + str(a.deliberation.current_action))
-                        return a.deliberation.current_action
-
-        return self.actNone
-
-    def get_action_from_social_group(self, human: Human, activity: Activity):
-
-        print("Get action from social group:" + str(activity))
-        if activity == activity.EAT:
-            if human.data_social_groups.my_group == SocialGroups.VEGAN:
-                return self.actEatTofu
-            elif human.data_social_groups.my_group == SocialGroups.BEEF_EATERS:
-                return self.actEatBeef
-        elif activity == activity.BUY_FOOD:
-            if human.data_social_groups.my_group == SocialGroups.VEGAN:
-                return ActBuyFood(0, 0, 3)
-            elif human.data_social_groups.my_group == SocialGroups.BEEF_EATERS:
-                return ActBuyFood(3, 0, 0)
-        elif activity == activity.BUY_CAR:
-            print("No group related to car buying, could easily be implemented")
-
-        return self.actNone
-
-    def get_goal_from_activity(self, activity_information: ActivityInformation):
-
-        print("Get goal from activity")
-        if activity_information.activity == Activity.BUY_CAR:
-            return Goal.BUY_CAR
-        elif activity_information.activity == Activity.BUY_FOOD:
-            return Goal.BUY_FOOD
-
-        return Goal.NONE
-
-
-class ActivityHandler:
-
-    def __init__(self):
-
-        self.activities = [ActivityWrapper(Activity.NONE, Urgency.NONE, Origin.NONE)]
-        self.activities.pop()
-
-    def add_activity(self, activity: Activity, urgency: Urgency, origin: Origin):
-        activity = ActivityWrapper(activity, urgency, origin)
-        self.activities.append(activity)
-
-    def remove_activity_by_origin(self, origin: Origin):
-        temp_activities = [ActivityWrapper(Activity.NONE, Urgency.NONE, Origin.NONE)]
-        temp_activities.pop()
-
-        for act in self.activities:
-            if act.origin != origin:
-                temp_activities.append(act)
-
-        self.activities = temp_activities
-
-
-class ActivityWrapper:
-
-    def __init__(self, activity: Activity, urgency: Urgency, origin: Origin):
-        self.activity = activity
-        self.urgency = urgency
-        self.origin = origin
+    def save_agent_activity(self, agent: Human, activity: Activity):
+        agent.deliberation.current_activity = activity

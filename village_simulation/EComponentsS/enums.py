@@ -3,6 +3,15 @@ from enum import Enum, auto
 """ I"m putting everything in an Enum because otherwise its just being a big mess if I put enums in multiple files """
 
 
+class DcElement(Enum):
+    NONE = auto()
+    ACTIVITY = auto()
+    GOAL = auto()
+    PLAN = auto()
+    ACTIONS = auto()
+    OTHER = auto()
+
+
 class Activity(Enum):
     NONE = auto()
     WORK = auto()
@@ -22,6 +31,7 @@ class Goal(Enum):
     BUY_FOOD = auto()
     BUY_CAR = auto()
     EAT_WITH_FRIEND = auto()
+    EAT_FOOD = auto()
 
 
 class Urgency(Enum):

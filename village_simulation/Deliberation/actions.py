@@ -55,6 +55,7 @@ class ActSleep(Action):
     def execute_action(self, agent: Human) -> bool:
         print("The agent slept")
         agent.needs.sleep -= 0.5
+        agent.needs.sleep = min(0, agent.needs.sleep)
         return True
 
 
@@ -81,7 +82,7 @@ class ActEatBeef(Action):
 
         if agent.food.beef > 0:
             agent.food.beef -= 1
-            agent.needs.sleep = 0
+            agent.needs.hunger = 0
             print("Eating beef")
             return True
         else:
@@ -100,7 +101,7 @@ class ActEatChicken(Action):
 
         if agent.food.chicken > 0:
             agent.food.chicken -= 1
-            agent.needs.sleep = 0
+            agent.needs.hunger = 0
             print("Eating chicken")
             return True
         else:
@@ -119,7 +120,7 @@ class ActEatTofu(Action):
 
         if agent.food.tofu > 0:
             agent.food.tofu -= 1
-            agent.needs.sleep = 0
+            agent.needs.hunger = 0
             print("Eating tofu")
             return True
         else:
