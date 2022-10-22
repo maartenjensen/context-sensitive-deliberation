@@ -211,14 +211,17 @@ class ActBuyFood(Action):
     def check_preconditions(self, agent: Human) -> bool:
 
         print("Check whether the agent is at the shop and has enough money")
-        if not agent.position.at_shop():
-            print("Agent not at the shop")
-            return False
+        #if not agent.position.at_shop(): # Simplified travelling
+        #    print("Agent not at the shop")
+        #    return False
         return agent.economy.money >= self.get_food_cost()
 
     def execute_action(self, agent: Human) -> bool:
 
         if self.check_preconditions(agent):
+            if not agent.position.at_shop():  # Simplified because travel is implicit
+                print("The agent moved to the shop")
+                SysPosition.move_to_shop(agent.position)
             SysFood.add_food(agent.food, self.amount_beef, self.amount_chicken, self.amount_tofu)
             agent.economy.money -= self.get_food_cost()
             print("Buy food: B:" + str(self.amount_beef) + ", C:" + str(self.amount_chicken) + ", T:" + str(

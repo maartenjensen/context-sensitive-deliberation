@@ -72,6 +72,7 @@ class Deliberator:
 
             print("3.1 set utility of actions")
             self.set_utility_of_actions(agent, failed_actions)
+            self.dc.print_all()
             actions = self.get_ordered_on_utility_actions()
             for chosen_action in actions:
                 if self.check_can_perform_action_selected(agent, chosen_action):
@@ -151,19 +152,22 @@ class Deliberator:
         for goal_node in self.dc.get_all_nodes_of_type(Goal):
             if goal_node == Goal.EAT_FOOD:
                 self.dc.add_node_and_edge(self.actEatChicken, goal_node)
+                self.dc.add_edge(self.actEatChicken, Activity.EAT)
                 self.dc.add_node_and_edge(self.actEatTofu, goal_node)
+                self.dc.add_edge(self.actEatTofu, Activity.EAT)
                 self.dc.add_node_and_edge(self.actEatBeef, goal_node)
+                self.dc.add_edge(self.actEatBeef, Activity.EAT)
 
     def set_utility_of_actions(self, agent: Human, failed_actions: []):
 
         for action_node in self.dc.get_all_nodes_of_type(Action):
             if action_node in failed_actions:
-                self.dc.add_node_and_edge(-1000, action_node)
+                self.dc.add_node_and_edge(Utility(-1000), action_node)
             elif action_node == self.actEatChicken:
                 self.dc.add_node_and_edge(Utility(agent.food.ut_chicken), action_node)
             elif action_node == self.actEatBeef:
                 self.dc.add_node_and_edge(Utility(agent.food.ut_beef), action_node)
-            elif action_node == self.actEatBeef:
+            elif action_node == self.actEatTofu:
                 self.dc.add_node_and_edge(Utility(agent.food.ut_tofu), action_node)
 
     def set_urgency_of_activities(self, agent: Human):
@@ -199,11 +203,12 @@ class Deliberator:
     def get_ordered_on_utility_actions(self) -> []:
 
         ordered_actions = []
-
-        for i in range(len(self.dc.get_all_nodes_of_type(Utility))):
+        utility_nodes = self.dc.get_all_nodes_of_type(Utility)
+        amount_of_actions = len(utility_nodes)
+        while len(ordered_actions) < amount_of_actions:
             highest = -100000000.0
             highest_utilities = []
-            for utility_node in self.dc.get_all_nodes_of_type(Utility):
+            for utility_node in utility_nodes:
                 if isinstance(utility_node, Utility):
                     amount = utility_node.get_amount()
                     if amount > highest or utility_node is None:
@@ -212,8 +217,12 @@ class Deliberator:
                     elif utility_node.get_amount() == highest:
                         highest_utilities.append(utility_node)
 
+            print(highest_utilities)
             for highest_utility in highest_utilities:
-                ordered_actions.append(self.dc.get_related_actions(highest_utility)[0])
+                action = self.dc.get_related_actions(highest_utility)[0]
+                if action not in ordered_actions:
+                    ordered_actions.append(action)
+                    utility_nodes.remove(highest_utility)
 
         print(ordered_actions)
         return ordered_actions
