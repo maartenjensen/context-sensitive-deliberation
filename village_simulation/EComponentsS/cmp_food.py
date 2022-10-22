@@ -16,6 +16,12 @@ class CmpFood:
         else:
             self.tofu = 3
 
+        # Temporary chicken
+        self.beef = 3
+        self.chicken = 3
+        self.tofu = 3
+
+
         # Default food
         self.default_food = DefaultFood.BEEF
         if self.chicken > self.beef:

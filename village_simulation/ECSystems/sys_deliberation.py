@@ -11,3 +11,4 @@ class SysDeliberation:
             if deliberation.current_action.steps_active <= 0:
                 deliberation.current_activity = Activity.NONE
                 deliberation.current_action = None
+                # deliberation.delib_cost is NOT reset here since its used in the graph

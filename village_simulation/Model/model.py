@@ -22,6 +22,16 @@ def compute_avg_food(model):
     return agent_foods / agent_n
 
 
+def compute_avg_delib_cost(model):
+    agent_delib_cost = 0
+    agent_n = 0
+    for agent in model.schedule.agents:
+        if isinstance(agent, Human):
+            agent_delib_cost += agent.deliberation.delib_cost
+            agent_n += 1
+    return agent_delib_cost / agent_n
+
+
 class ShoppingModel(ParentModel):
     """A model with some agents"""
 
@@ -67,7 +77,7 @@ class ShoppingModel(ParentModel):
         village_builder.make_some_agents_stupid()
         village_builder.print_humans()
 
-        self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food},
+        self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food, "Avg delib cost": compute_avg_delib_cost},
                                                 agent_reporters={"Money": lambda a: getattr(a, "money", None),
                                                                  "Food": lambda a: getattr(a, "beef", None)})
 

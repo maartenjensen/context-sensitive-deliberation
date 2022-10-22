@@ -8,7 +8,8 @@ class DcElement(Enum):
     ACTIVITY = auto()
     GOAL = auto()
     PLAN = auto()
-    ACTIONS = auto()
+    ACTION = auto()
+    URGENCY = auto()
     OTHER = auto()
 
 

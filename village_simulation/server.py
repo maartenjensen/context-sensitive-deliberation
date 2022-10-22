@@ -10,10 +10,12 @@ def mesa_start_simulation():
                                          Param.model_params['world_h_cell'], Param.world_w_px, Param.world_h_px)
     chart = mesa.visualization.ChartModule([{"Label": "Avg food", "Color": "Black"}],
                                            data_collector_name=Param.datacollector)
+    chart2 = mesa.visualization.ChartModule([{"Label": "Avg delib cost", "Color": "Black"}],
+                                            data_collector_name=Param.datacollector)
 
     model_name = Param.model_name
     server = mesa.visualization.ModularServer(
-        ShoppingModel, [grid, chart], model_name, Param.model_params
+        ShoppingModel, [grid, chart2, chart], model_name, Param.model_params
     )
     server.port = 8521  # The default
     print("Launching server with model : " + model_name)
