@@ -50,7 +50,7 @@ class Human(HumanParent):
         self.model.schedule.add(self)
 
     def step(self):
-        # Input context sensitive deliberation, I want the deliberator to take control over the behavior of the agent
+        # Input context-sensitive deliberation, I want the deliberator to take control over the behavior of the agent
         # this works better in python because of problems with cyclic imports, so I made a separation between data
         # and the manipulating systems
         print("#####################################")
@@ -58,7 +58,7 @@ class Human(HumanParent):
     def to_str(self):
         info = "ID:" + str(self.unique_id) + ", "
         # info += "Money: " + str(self.economy.money) + " (" + str(self.economy.salary) + ")"
-        # info += ", B:" + str(self.food.beef) + ",C:" + str(self.food.chicken) + ",T:" + str(self.food.tofu)
+        info += ", B:" + str(self.food.beef) + ",C:" + str(self.food.chicken) + ",T:" + str(self.food.tofu)
         # info += ", Social group: " + str(self.data_social_groups.my_group)
         info += ", " + self.needs.get_str()
         return info

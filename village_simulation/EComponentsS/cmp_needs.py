@@ -8,9 +8,10 @@ class CmpNeeds:
         self.socialize = 0
         self.hunger = 0
         self.food_safety = 0
+        self.leisure = 0
 
     def get_str(self):
 
         return ", Sle:" + "{:.2f}".format(self.sleep) + ", Work:" + "{:.2f}".format(self.work) \
-                + "Hun:" + "{:.2f}".format(self.hunger) + ", Food:" + "{:.2f}".format(self.food_safety) \
-                + ", Soc:" + "{:.2f}".format(self.socialize)
+                + "Hun:" + "{:.2f}".format(self.hunger) + ", Food-s:" + "{:.2f}".format(self.food_safety) \
+                + ", Soc:" + "{:.2f}".format(self.socialize) + ", Leisure:" + "{:.2f}".format(self.leisure)

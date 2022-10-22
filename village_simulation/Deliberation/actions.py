@@ -23,6 +23,8 @@ class Action:
         if self.steps_active == 0:
             self.execute_action(agent)
 
+    def to_string(self) -> str:
+        return self.__class__.__name__
 
 class ActNone(Action):
 
@@ -35,14 +37,17 @@ class ActNone(Action):
         return True
 
 
-class ActChill(Action):
+class ActRelax(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Check whether the agent is at home (simplification)")
-        return agent.position.at_home()
+        return True  # agent.position.at_home(), simplification, traveling is implicit
 
     def execute_action(self, agent: Human) -> bool:
-        print("The agent just chilled")
+        if not agent.position.at_home(): # Simplified because travel is implicit
+            print("The agent moved home")
+            SysPosition.move_to_house(agent.position)
+        print("The agent just relaxed")
         return True
 
 
@@ -50,9 +55,12 @@ class ActSleep(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Check whether the agent is at home (simplification)")
-        return agent.position.at_home()
+        return True  # agent.position.at_home(), simplification, traveling is implicit
 
     def execute_action(self, agent: Human) -> bool:
+        if not agent.position.at_home(): # Simplified because travel is implicit
+            print("The agent moved home")
+            SysPosition.move_to_house(agent.position)
         print("The agent slept")
         agent.needs.sleep -= 0.5
         agent.needs.sleep = min(0, agent.needs.sleep)
@@ -63,11 +71,15 @@ class ActWork(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
         print("Check whether the agent is at work")
-        return agent.position.at_work()
+        return True  # agent.position.at_work(), simplified because travel is implicit
 
     def execute_action(self, agent: Human) -> bool:
+        if not agent.position.at_work(): # Simplified because travel is implicit
+            print("The agent moved to work")
+            SysPosition.move_to_office(agent.position)
         print("The agent worked")
         agent.needs.work -= 0.5
+        agent.economy.worked_hours_day += 2
         return True
 
 

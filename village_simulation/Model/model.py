@@ -83,9 +83,9 @@ class ShoppingModel(ParentModel):
 
     def step(self):
         self.day_type_update()
-        self.datacollector.collect(self)
         self.schedule.step()
         self.agents_step()
+        self.datacollector.collect(self)
 
     def day_type_update(self):
         """ Simplified function that changes the day type at the start of the day, step == 0 """
@@ -104,7 +104,7 @@ class ShoppingModel(ParentModel):
 
             if isinstance(agent, Human):
                 print("Updating needs " + str(agent.unique_id))
-                SysNeeds.update_needs(agent.needs, self.get_time_day(), self.time_steps_day)
+                SysNeeds.update_needs(agent.needs, agent.economy, agent.food, self.get_time_day(), self.time_steps_day)
 
         for agent in self.schedule.agent_buffer(shuffled=True):
 
