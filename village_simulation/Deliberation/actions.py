@@ -1,3 +1,4 @@
+from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.EComponentsS.enums import CarTypes
 from village_simulation.EntitiesCS.the_agent import Human
 from village_simulation.ECSystems.sys_food import SysFood
@@ -16,6 +17,7 @@ class Action:
 
     def execute_action(self, agent: Human) -> bool:
         print("Executed action")
+        agent.deliberation.actions_list.append(self.to_string())
         return True
 
     def action_step(self, agent: Human):
@@ -34,6 +36,7 @@ class ActNone(Action):
 
     def execute_action(self, agent: Human) -> bool:
         print("This function should not even be called")
+        agent.deliberation.actions_list.append(self.to_string())
         return True
 
 
@@ -48,6 +51,7 @@ class ActRelax(Action):
             print("The agent moved home")
             SysPosition.move_to_house(agent.position)
         print("The agent just relaxed")
+        agent.deliberation.actions_list.append(self.to_string())
         return True
 
 
@@ -64,6 +68,7 @@ class ActSleep(Action):
         print("The agent slept")
         agent.needs.sleep -= 0.5
         agent.needs.sleep = min(0, agent.needs.sleep)
+        agent.deliberation.actions_list.append(self.to_string())
         return True
 
 
@@ -80,6 +85,7 @@ class ActWork(Action):
         print("The agent worked")
         agent.needs.work -= 0.5
         agent.economy.worked_hours_day += 2
+        agent.deliberation.actions_list.append(self.to_string())
         return True
 
 
@@ -92,10 +98,13 @@ class ActEatBeef(Action):
 
     def execute_action(self, agent: Human) -> bool:
 
+        if not agent.position.at_home() and SimUtils.get_model().get_time_day() > 17:  # Have dinner at home
+            print("The agent moved home")
         if agent.food.beef > 0:
             agent.food.beef -= 1
             agent.needs.hunger = 0
             print("Eating beef")
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")
@@ -111,10 +120,13 @@ class ActEatChicken(Action):
 
     def execute_action(self, agent: Human) -> bool:
 
+        if not agent.position.at_home() and SimUtils.get_model().get_time_day() > 17:  # Have dinner at home
+            print("The agent moved home")
         if agent.food.chicken > 0:
             agent.food.chicken -= 1
             agent.needs.hunger = 0
             print("Eating chicken")
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")
@@ -130,10 +142,13 @@ class ActEatTofu(Action):
 
     def execute_action(self, agent: Human) -> bool:
 
+        if not agent.position.at_home() and SimUtils.get_model().get_time_day() > 17:  # Have dinner at home
+            print("The agent moved home")
         if agent.food.tofu > 0:
             agent.food.tofu -= 1
             agent.needs.hunger = 0
             print("Eating tofu")
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")
@@ -152,6 +167,7 @@ class ActTravelToWork(Action):
         if self.check_preconditions(agent):
             SysPosition.move_to_office(agent.position)
             print("Moving to office")
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")
@@ -170,6 +186,7 @@ class ActTravelToHome(Action):
         if self.check_preconditions(agent):
             SysPosition.move_to_house(agent.position)
             print("Moving to home")
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")
@@ -188,6 +205,7 @@ class ActTravelToShop(Action):
         if self.check_preconditions(agent):
             SysPosition.move_to_shop(agent.position)
             print("Moving to shop")
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")
@@ -226,6 +244,7 @@ class ActBuyFood(Action):
             agent.economy.money -= self.get_food_cost()
             print("Buy food: B:" + str(self.amount_beef) + ", C:" + str(self.amount_chicken) + ", T:" + str(
                 self.amount_tofu))
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")
@@ -251,6 +270,58 @@ class ActBuyCar(Action):
             # Add the car to possession and change the savings to right amount
             agent.economy.savings -= 40000
             print("Agent " + str(agent.unique_id) + " bought a " + str(self.carType))
+            agent.deliberation.actions_list.append(self.to_string())
+            return True
+        else:
+            print("ERROR")
+            return False
+
+
+class ActFootballGoalie(Action):
+
+    def check_preconditions(self, agent: Human) -> bool:
+
+        return True
+
+    def execute_action(self, agent: Human) -> bool:
+
+        if self.check_preconditions(agent):
+            print("The agent football as a goalie")
+            agent.deliberation.actions_list.append(self.to_string())
+            return True
+        else:
+            print("ERROR")
+            return False
+
+
+class ActFootballTeamplayer(Action):
+
+    def check_preconditions(self, agent: Human) -> bool:
+
+        return True
+
+    def execute_action(self, agent: Human) -> bool:
+
+        if self.check_preconditions(agent):
+            print("The agent played football as a team player")
+            agent.deliberation.actions_list.append(self.to_string())
+            return True
+        else:
+            print("ERROR")
+            return False
+
+
+class ActFootballSeriousPlayer(Action):
+
+    def check_preconditions(self, agent: Human) -> bool:
+
+        return True
+
+    def execute_action(self, agent: Human) -> bool:
+
+        if self.check_preconditions(agent):
+            print("The agent played football very seriously")
+            agent.deliberation.actions_list.append(self.to_string())
             return True
         else:
             print("ERROR")

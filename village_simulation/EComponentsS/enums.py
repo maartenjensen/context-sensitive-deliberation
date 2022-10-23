@@ -25,6 +25,7 @@ class Activity(Enum):
     SLEEP = auto()
     TRAVEL = auto()
     COMMUTE = auto()
+    FOOTBALL = auto()
 
 
 class Goal(Enum):
@@ -77,13 +78,13 @@ class DefaultFood(Enum):
 
 class Days(Enum):
     NONE = -1
-    MO = 1
-    TU = 2
-    WE = 3
-    TH = 4
-    FR = 5
-    SA = 6
-    SU = 7
+    MO = 5
+    TU = 6
+    WE = 7
+    TH = 1
+    FR = 2
+    SA = 3
+    SU = 4
 
 
 class DayType(Enum):

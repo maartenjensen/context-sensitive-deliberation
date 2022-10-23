@@ -32,6 +32,30 @@ def compute_avg_delib_cost(model):
     return agent_delib_cost / agent_n
 
 
+def compute_delib_cost_a1(model):
+    for agent in model.schedule.agents:
+        if isinstance(agent, Human):
+            if agent.unique_id == 9:
+                return agent.deliberation.delib_cost
+    return 0
+
+
+def compute_delib_cost_a2(model):
+    for agent in model.schedule.agents:
+        if isinstance(agent, Human):
+            if agent.unique_id == 10:
+                return agent.deliberation.delib_cost
+    return 0
+
+
+def compute_delib_cost_a3(model):
+    for agent in model.schedule.agents:
+        if isinstance(agent, Human):
+            if agent.unique_id == 11:
+                return agent.deliberation.delib_cost
+    return 0
+
+
 class ShoppingModel(ParentModel):
     """A model with some agents"""
 
@@ -74,10 +98,14 @@ class ShoppingModel(ParentModel):
         village_builder = VillageBuilder()
         village_builder.build_buildings(self.n_houses, self.n_shops, self.n_offices, self.n_neighborhoods)
         village_builder.spawn_agents(self.num_agents)
-        village_builder.make_some_agents_stupid()
+        village_builder.make_individual_changes_to_agents()
         village_builder.print_humans()
 
-        self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food, "Avg delib cost": compute_avg_delib_cost},
+        self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food,
+                                                                 "Average Deliberation Cost": compute_avg_delib_cost,
+                                                                 "Agent 1 Deliberation Cost": compute_delib_cost_a1,
+                                                                 "Agent 2 Deliberation Cost": compute_delib_cost_a2,
+                                                                 "Agent 3 Deliberation Cost": compute_delib_cost_a3},
                                                 agent_reporters={"Money": lambda a: getattr(a, "money", None),
                                                                  "Food": lambda a: getattr(a, "beef", None)})
 
@@ -89,11 +117,10 @@ class ShoppingModel(ParentModel):
 
     def day_type_update(self):
         """ Simplified function that changes the day type at the start of the day, step == 0 """
-        if self.start_of_day():
-            if self.day_type == DayType.WORK:
-                self.day_type = DayType.WEEKEND
-            else:
-                self.day_type = DayType.WORK
+        if self.get_day_n() == 2 or self.get_day_n() == 3:
+            self.day_type = DayType.WEEKEND
+        else:
+            self.day_type = DayType.WORK
 
     def agents_step(self):
 
@@ -121,6 +148,14 @@ class ShoppingModel(ParentModel):
             if isinstance(agent, Human):
                 SysDeliberation.clear_deliberation(agent.deliberation)
 
+        if self.get_day_n() == 3:
+            for agent in self.schedule.agent_buffer(shuffled=True):
+
+                if isinstance(agent, Human):
+                    print("Actions for agent " + str(agent.unique_id))
+                    for i in agent.deliberation.actions_list:
+                        print(i)
+
     """ Represent time in float, see if that works otherwise change back to int """
 
     def start_of_day(self) -> bool:
@@ -140,7 +175,7 @@ class ShoppingModel(ParentModel):
 
     def get_day(self) -> Days:
 
-        days = {0: Days.MO, 1: Days.TU, 2: Days.WE, 3: Days.TH, 4: Days.FR, 5: Days.SA, 6: Days.SU}
+        days = {0: Days.TH, 1: Days.FR, 2: Days.SA, 3: Days.SU, 4: Days.MO, 5: Days.TU, 6: Days.WE}
         return days[self.get_day_n()]
 
     def get_day_n(self) -> int:

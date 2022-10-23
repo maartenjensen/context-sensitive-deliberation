@@ -8,6 +8,7 @@ class CmpDeliberation:
         self.current_activity = Activity.NONE
         self.current_action = None  # I should find a solution for this because this is an Actions object
         self.delib_cost = 1
+        self.actions_list = []
 
     def print(self):
         if self.current_action is not None:

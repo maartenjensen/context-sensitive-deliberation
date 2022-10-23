@@ -6,15 +6,15 @@ class CmpFood:
 
     def __init__(self):
 
-        self.beef = 3
-        self.chicken = 3
-        self.tofu = 3
+        self.beef = 6
+        self.chicken = 6
+        self.tofu = 6
         if SimUtils.get_model().random.random() < 0.334:
-            self.beef = 6
+            self.beef = 9
         elif SimUtils.get_model().random.random() < 0.5:
-            self.chicken = 6
+            self.chicken = 9
         else:
-            self.tofu = 6
+            self.tofu = 9
 
         # Default food
         self.default_food = DefaultFood.BEEF

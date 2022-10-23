@@ -5,6 +5,7 @@ from village_simulation.Building.house import House
 from village_simulation.Building.office import Office
 from village_simulation.Building.shop import Shop
 from village_simulation.Building.time_indicator import TimeIndicator
+from village_simulation.EComponentsS.enums import DefaultFood
 from village_simulation.EntitiesCS.the_agent import Human
 from village_simulation.Common.sim_utils import SimUtils
 
@@ -57,37 +58,59 @@ class VillageBuilder:
             sys_time_schedule.specify_buy_in_schedule(new_human.schedule_time, new_human.food.beef,
                                                       new_human.food.chicken, new_human.food.tofu)
 
-    def make_some_agents_stupid(self):
+    def make_individual_changes_to_agents(self):
 
-        print("Stupifying agents (this means that information is removed from their schedule")
         agent_id = 9
-        stupid_agent = SimUtils.get_agent_by_id(agent_id)
-        if isinstance(stupid_agent, Human):
-            sys_time_schedule = SysScheduleTime()
-            sys_time_schedule.custom_overwrite_buy_food(stupid_agent.schedule_time)
-            print("Agent " + str(agent_id) + " forgot which food to buy")
+        the_agent = SimUtils.get_agent_by_id(agent_id)
+        if isinstance(the_agent, Human):
+            the_agent.food.default_food = DefaultFood.CHICKEN
+            the_agent.food.beef = 0
+            the_agent.food.chicken = 6
+            the_agent.food.tofu = 0
 
         agent_id = 10
-        smart_agent = SimUtils.get_agent_by_id(agent_id)
-        if isinstance(smart_agent, Human):
-            sys_time_schedule = SysScheduleTime()
-            sys_time_schedule.custom_overwrite_buy_car(smart_agent.schedule_time)
-            print("Agent " + str(agent_id) + " wants to buy a car in the evening")
+        the_agent = SimUtils.get_agent_by_id(agent_id)
+        if isinstance(the_agent, Human):
+            the_agent.food.default_food = DefaultFood.TOFU
+            the_agent.food.beef = 6
+            the_agent.food.chicken = 6
+            the_agent.food.tofu = 5
 
-        friend_1_id = 11
-        friend_2_id = 12
-        friend_1 = SimUtils.get_agent_by_id(friend_1_id)
+        agent_id = 11
+        the_agent = SimUtils.get_agent_by_id(agent_id)
+        if isinstance(the_agent, Human):
+            print("Do nothing yet")
 
-        if isinstance(friend_1, Human):
-            sys_time_schedule = SysScheduleTime()
-            sys_time_schedule.custom_overwrite_eat_with_friend(friend_1.schedule_time, friend_2_id)
-            print("Agent " + str(friend_1_id) + " wants to eat with Agent" + str(friend_2_id))
-
-        friend_2 = SimUtils.get_agent_by_id(friend_2_id)
-        if isinstance(friend_2, Human):
-            sys_time_schedule = SysScheduleTime()
-            sys_time_schedule.custom_overwrite_eat_with_friend(friend_2.schedule_time, friend_1_id)
-            print("Agent " + str(friend_2_id) + " wants to eat with Agent" + str(friend_1_id))
+        print("Changing for some agents the internal aspects")
+        # print("Stupifying agents (this means that information is removed from their schedule")
+        # agent_id = 9
+        # stupid_agent = SimUtils.get_agent_by_id(agent_id)
+        # if isinstance(stupid_agent, Human):
+        #     sys_time_schedule = SysScheduleTime()
+        #     sys_time_schedule.custom_overwrite_buy_food(stupid_agent.schedule_time)
+        #     print("Agent " + str(agent_id) + " forgot which food to buy")
+        #
+        # agent_id = 10
+        # smart_agent = SimUtils.get_agent_by_id(agent_id)
+        # if isinstance(smart_agent, Human):
+        #     sys_time_schedule = SysScheduleTime()
+        #     sys_time_schedule.custom_overwrite_buy_car(smart_agent.schedule_time)
+        #     print("Agent " + str(agent_id) + " wants to buy a car in the evening")
+        #
+        # friend_1_id = 11
+        # friend_2_id = 12
+        # friend_1 = SimUtils.get_agent_by_id(friend_1_id)
+        #
+        # if isinstance(friend_1, Human):
+        #     sys_time_schedule = SysScheduleTime()
+        #     sys_time_schedule.custom_overwrite_eat_with_friend(friend_1.schedule_time, friend_2_id)
+        #     print("Agent " + str(friend_1_id) + " wants to eat with Agent" + str(friend_2_id))
+        #
+        # friend_2 = SimUtils.get_agent_by_id(friend_2_id)
+        # if isinstance(friend_2, Human):
+        #     sys_time_schedule = SysScheduleTime()
+        #     sys_time_schedule.custom_overwrite_eat_with_friend(friend_2.schedule_time, friend_1_id)
+        #     print("Agent " + str(friend_2_id) + " wants to eat with Agent" + str(friend_1_id))
 
 
     def print_humans(self):

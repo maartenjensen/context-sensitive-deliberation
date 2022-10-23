@@ -13,7 +13,7 @@ class TimeIndicator(Location):
 
             info = str(self.model.schedule.steps) + " "
             day = self.model.get_day_n()
-            days = {0: "Mo", 1: "Tu", 2: "We", 3: "Th", 4: "Fr", 5: "Sa", 6: "Su"}
+            days = {0: "Th", 1: "Fr", 2: "Sa", 3: "Su", 4: "Mo", 5: "Tu", 6: "We"}
             info += days[day]
             info += " {:.2f}".format(self.model.get_time_day())
             return info

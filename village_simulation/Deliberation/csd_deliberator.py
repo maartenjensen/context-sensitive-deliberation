@@ -1,8 +1,8 @@
 from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.Deliberation.actions import ActNone, ActSleep, ActEatBeef, ActEatChicken, ActEatTofu, ActWork, \
-    Action, ActBuyFood, ActRelax
+    Action, ActBuyFood, ActRelax, ActFootballGoalie, ActFootballTeamplayer, ActFootballSeriousPlayer
 from village_simulation.Deliberation.csd_decision_context import DecisionContext, Urgency, Utility
-from village_simulation.EComponentsS.enums import Activity, Goal, DefaultFood
+from village_simulation.EComponentsS.enums import Activity, Goal, DefaultFood, DayType
 from village_simulation.EntitiesCS.the_agent import Human
 
 
@@ -18,8 +18,11 @@ class Deliberator:
         self.actEatChicken = ActEatChicken()
         self.actEatTofu = ActEatTofu()
         self.actWork = ActWork()
-        self.actBuyFood = ActBuyFood(3, 3, 3)
+        self.actBuyFood = ActBuyFood(6, 6, 6)
         self.actRelax = ActRelax()
+        self.actFootballGoalie = ActFootballGoalie()
+        self.actFootballTeamplayer = ActFootballTeamplayer()
+        self.actFootballSeriousPlayer = ActFootballSeriousPlayer()
 
         self.dc = DecisionContext()
         print("Initialize deliberator")
@@ -48,7 +51,7 @@ class Deliberator:
         """ Urgency check """
         if self.dc.has_more_than_one_activities():
             print("2.1 Check urgency of activities")
-            self.increase_agent_deliberation_cost(agent, 2)
+            self.increase_agent_deliberation_cost(agent, 1)
             self.set_urgency_of_activities(agent)
             self.dc.print_all()
             print("2.2 Filter on activity with highest urgency")
@@ -67,6 +70,7 @@ class Deliberator:
         print("3.1 expanding actions")
         self.expand_actions()
         self.dc.print_all()
+        self.increase_agent_deliberation_cost(agent, 2)
 
         if self.dc.has_more_than_one_of_type(Action):
 
@@ -132,20 +136,25 @@ class Deliberator:
 
     def set_typical_habit_from_time(self, agent: Human):
 
-        # TODO include working day
-        # Agents could have certain anchor points, e.g. an agent likes to start working at
+        # These variables could be customizable dependent on the agents preference
 
         time = SimUtils.get_model().get_time_day()
         if 0 <= time <= 8 or time >= 22:
             self.add_habit_sleeping()
         if 5 <= time <= 8 or 11 <= time <= 14 or 17 <= time <= 20:
             self.add_habit_eat(agent)
-        if 7 <= time <= 18:
-            self.set_habit_work()
         if 18 <= time <= 20:
             self.set_habit_buy_food()
-        if 18 <= time <= 23:
-            self.set_habit_leisure()
+        if SimUtils.get_model().get_day_type() is DayType.WORK:
+            if 18 <= time <= 23:
+                self.set_habit_leisure()
+            if 7 <= time <= 18:
+                self.set_habit_work()
+        else:
+            if 7 <= time <= 23:
+                self.set_habit_leisure()
+            if 8 <= time <= 11:
+                self.set_habit_football()
 
     def expand_actions(self):
 
@@ -183,6 +192,8 @@ class Deliberator:
                 self.dc.add_node_and_edge(Urgency(agent.needs.food_safety), activity_node)
             elif activity_node == Activity.LEISURE:
                 self.dc.add_node_and_edge(Urgency(agent.needs.leisure), activity_node)
+            elif activity_node == Activity.FOOTBALL:
+                self.dc.add_node_and_edge(Urgency(2), activity_node)  # Hardcoded high value since football is planned
 
     def get_most_urgent_activities(self) -> []:
 
@@ -258,6 +269,11 @@ class Deliberator:
 
         self.dc.add_node(Activity.LEISURE)
         self.dc.add_node_and_edge(self.actRelax, Activity.LEISURE)
+
+    def set_habit_football(self):
+
+        self.dc.add_node(Activity.FOOTBALL)
+        self.dc.add_node_and_edge(self.actFootballSeriousPlayer, Activity.FOOTBALL)
 
     def check_and_execute_action(self, agent: Human, action) -> bool:
 
