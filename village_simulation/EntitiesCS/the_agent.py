@@ -4,6 +4,7 @@ from village_simulation.EComponentsS.cmp_car import CmpCar
 from village_simulation.EComponentsS.cmp_deliberation import CmpDeliberation
 from village_simulation.EComponentsS.cmp_economy import CmpEconomy
 from village_simulation.EComponentsS.cmp_food import CmpFood
+from village_simulation.EComponentsS.cmp_football import CmpFootball
 from village_simulation.EComponentsS.cmp_needs import CmpNeeds
 from village_simulation.EComponentsS.cmp_position import CmpPosition
 from village_simulation.EComponentsS.cmp_social_groups import CmpSocialGroups
@@ -25,6 +26,7 @@ class HumanParent(mesa.Agent):
         self.data_social_groups = CmpSocialGroups()
         self.values = CmpValues()
         self.needs = CmpNeeds()
+        self.football = CmpFootball()
 
         # Deliberation and context
         self.schedule_time = CmpTimeSchedule()
@@ -42,6 +44,9 @@ class Human(HumanParent):
         self.economy = CmpEconomy()
         self.deliberation = CmpDeliberation()
         self.data_social_groups = CmpSocialGroups()
+        self.values = CmpValues()
+        self.needs = CmpNeeds()
+        self.football = CmpFootball()
 
         # Deliberation and context
         self.schedule_time = CmpTimeSchedule()

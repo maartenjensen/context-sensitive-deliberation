@@ -68,12 +68,14 @@ class Deliberator:
                     failed_actions.append(self.dc.get_one_action_if_one())
 
         print("3.1 expanding actions")
-        self.expand_actions()
-        self.dc.print_all()
-        self.increase_agent_deliberation_cost(agent, 2)
+        if not self.dc.has_more_than_one_of_type(Action):
+            self.expand_actions()
+            self.dc.print_all()
+            self.increase_agent_deliberation_cost(agent, 1)
 
-        if self.dc.has_more_than_one_of_type(Action):
+        if self.dc.has_more_than_one_of_type(Action) and not self.has_football_activity_exception():
 
+            self.increase_agent_deliberation_cost(agent, 1)
             print("3.1 set utility of actions")
             self.set_utility_of_actions(agent, failed_actions)
             self.dc.print_all()
@@ -86,9 +88,20 @@ class Deliberator:
 
             self.dc.print_all()
 
-        print("Something else")
+        print("4.1 Expansion of goals for football")
+        self.expand_goals()
+        self.dc.print_all()
         self.increase_agent_deliberation_cost(agent, 1)
-        # self.increase_agent_deliberation_cost(agent, 1)
+
+        print("4.2 Abstraction of game theoretical approach to selecting which based on the goal")
+        self.increase_agent_deliberation_cost(agent, 3)
+        self.select_action_from_goal()
+        if self.dc.has_one_action():
+            if self.check_can_perform_action(agent):
+                return
+            else:
+                failed_actions.append(self.dc.get_one_action_if_one())
+
         # # Perform action
         # if self.dc.has_one_action():
         #     action_id = self.dc.get_one_action_id()
@@ -154,7 +167,38 @@ class Deliberator:
             if 7 <= time <= 23:
                 self.set_habit_leisure()
             if 8 <= time <= 11:
-                self.set_habit_football()
+                if agent.football.has_football_habit:
+                    self.set_habit_football()
+                else:
+                    self.set_activity_football()
+
+    def has_football_activity_exception(self):
+
+        for activity_node in self.dc.get_all_nodes_of_type(Activity):
+            if activity_node == Activity.FOOTBALL:
+                return True
+        return False
+
+    def expand_goals(self):
+
+        for activity_node in self.dc.get_all_nodes_of_type(Activity):
+            if activity_node == Activity.FOOTBALL:
+                self.dc.add_node_and_edge(Goal.SOCIAL_ACTIVITY_WITH_FRIENDS, activity_node)
+                self.dc.add_edge(self.actFootballSeriousPlayer, Activity.FOOTBALL)
+                self.dc.add_edge(self.actFootballTeamplayer, Activity.FOOTBALL)
+                self.dc.add_edge(self.actFootballGoalie, Activity.FOOTBALL)
+
+    def select_action_from_goal(self):
+
+        """ This function is very abstracted, it represents the result of a possible game theoretic approach
+         Where the friends of the agents are considered and the preferences of the agent itself, returning one
+         action. This is simplified by just predetermining the action, deleting the rest of the actions
+         In this example the player has to be goalie because the friends want to play serious and practice their
+         kicks on the goal, therefore needing the third friend to be a goalie. """
+        for goal_node in self.dc.get_all_nodes_of_type(Goal):
+            if goal_node == Goal.SOCIAL_ACTIVITY_WITH_FRIENDS:
+                self.dc.my_dc.remove_node(self.actFootballSeriousPlayer)
+                self.dc.my_dc.remove_node(self.actFootballTeamplayer)
 
     def expand_actions(self):
 
@@ -178,6 +222,12 @@ class Deliberator:
                 self.dc.add_node_and_edge(Utility(agent.food.ut_beef), action_node)
             elif action_node == self.actEatTofu:
                 self.dc.add_node_and_edge(Utility(agent.food.ut_tofu), action_node)
+            elif action_node == self.actFootballSeriousPlayer:
+                self.dc.add_node_and_edge(Utility(agent.football.football_serious), action_node)
+            elif action_node == self.actFootballTeamplayer:
+                self.dc.add_node_and_edge(Utility(agent.football.football_teamplayer), action_node)
+            elif action_node == self.actFootballGoalie:
+                self.dc.add_node_and_edge(Utility(agent.football.football_goalie), action_node)
 
     def set_urgency_of_activities(self, agent: Human):
 
@@ -274,6 +324,15 @@ class Deliberator:
 
         self.dc.add_node(Activity.FOOTBALL)
         self.dc.add_node_and_edge(self.actFootballSeriousPlayer, Activity.FOOTBALL)
+        self.dc.add_node_and_edge(Goal.BECOME_PROFESSIONAL_FOOTBALL_PLAYER, self.actFootballSeriousPlayer)
+        self.dc.add_node_and_edge(Goal.BECOME_PROFESSIONAL_FOOTBALL_PLAYER, Activity.FOOTBALL)
+
+    def set_activity_football(self):
+
+        self.dc.add_node(Activity.FOOTBALL)
+        self.dc.add_node_and_edge(self.actFootballSeriousPlayer, Activity.FOOTBALL)
+        self.dc.add_node_and_edge(self.actFootballTeamplayer, Activity.FOOTBALL)
+        self.dc.add_node_and_edge(self.actFootballGoalie, Activity.FOOTBALL)
 
     def check_and_execute_action(self, agent: Human, action) -> bool:
 

@@ -34,6 +34,8 @@ class Goal(Enum):
     BUY_CAR = auto()
     EAT_WITH_FRIEND = auto()
     EAT_FOOD = auto()
+    BECOME_PROFESSIONAL_FOOTBALL_PLAYER = auto()
+    SOCIAL_ACTIVITY_WITH_FRIENDS = auto()
 
 
 class Urgency(Enum):

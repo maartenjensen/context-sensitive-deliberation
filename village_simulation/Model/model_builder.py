@@ -5,7 +5,7 @@ from village_simulation.Building.house import House
 from village_simulation.Building.office import Office
 from village_simulation.Building.shop import Shop
 from village_simulation.Building.time_indicator import TimeIndicator
-from village_simulation.EComponentsS.enums import DefaultFood
+from village_simulation.EComponentsS.enums import DefaultFood, Goal
 from village_simulation.EntitiesCS.the_agent import Human
 from village_simulation.Common.sim_utils import SimUtils
 
@@ -79,7 +79,13 @@ class VillageBuilder:
         agent_id = 11
         the_agent = SimUtils.get_agent_by_id(agent_id)
         if isinstance(the_agent, Human):
-            print("Do nothing yet")
+            the_agent.football.has_football_habit = False
+
+            the_agent.football.football_serious = 5
+            the_agent.football.football_teamplayer = 10
+            the_agent.football.football_goalie = 10
+
+            the_agent.football_goal = Goal.SOCIAL_ACTIVITY_WITH_FRIENDS
 
         print("Changing for some agents the internal aspects")
         # print("Stupifying agents (this means that information is removed from their schedule")
