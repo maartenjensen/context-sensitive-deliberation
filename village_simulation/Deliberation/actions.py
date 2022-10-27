@@ -1,5 +1,5 @@
 from village_simulation.Common.sim_utils import SimUtils
-from village_simulation.EComponentsS.enums import CarTypes
+from village_simulation.EComponentsS.enums import CarTypes, DefaultFood
 from village_simulation.EntitiesCS.the_agent import Human
 from village_simulation.ECSystems.sys_food import SysFood
 from village_simulation.ECSystems.sys_position import SysPosition
@@ -105,6 +105,8 @@ class ActEatBeef(Action):
             agent.needs.hunger = 0
             print("Eating beef")
             agent.deliberation.actions_list.append(self.to_string())
+            if agent.food.chicken > 0:
+                agent.food.default_food = DefaultFood.BEEF
             return True
         else:
             print("ERROR")
@@ -127,6 +129,8 @@ class ActEatChicken(Action):
             agent.needs.hunger = 0
             print("Eating chicken")
             agent.deliberation.actions_list.append(self.to_string())
+            if agent.food.chicken > 0:
+                agent.food.default_food = DefaultFood.CHICKEN
             return True
         else:
             print("ERROR")
@@ -149,6 +153,8 @@ class ActEatTofu(Action):
             agent.needs.hunger = 0
             print("Eating tofu")
             agent.deliberation.actions_list.append(self.to_string())
+            if agent.food.chicken > 0:
+                agent.food.default_food = DefaultFood.TOFU
             return True
         else:
             print("ERROR")

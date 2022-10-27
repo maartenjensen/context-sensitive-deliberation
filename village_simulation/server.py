@@ -16,13 +16,16 @@ def mesa_start_simulation():
                                              {"Label": "Agent 2 Deliberation Cost", "Color": "Green"},
                                              {"Label": "Agent 3 Deliberation Cost", "Color": "Blue"}],
                                             data_collector_name=Param.datacollector)
-    chart4 = mesa.visualization.ChartModule([{"Label": "Agent 2 Deliberation Cost", "Color": "Green"}],
+    chart4 = mesa.visualization.ChartModule([{"Label": "Average Deliberation Cost", "Color": "Black"},
+                                             {"Label": "Agent 1 Deliberation Cost", "Color": "Red"},
+                                             {"Label": "Agent 2 Deliberation Cost", "Color": "Green"},
+                                             {"Label": "Agent 3 Deliberation Cost", "Color": "Blue"}],
                                             data_collector_name=Param.datacollector)
     chart5 = mesa.visualization.ChartModule([{"Label": "Agent 3 Deliberation Cost", "Color": "Blue"}],
                                             data_collector_name=Param.datacollector)
     model_name = Param.model_name
     server = mesa.visualization.ModularServer(
-        ShoppingModel, [grid, chart2, chart3, chart4, chart5, chart], model_name, Param.model_params
+        ShoppingModel, [grid, chart4, chart, chart2, chart3, chart5], model_name, Param.model_params
     )
     server.port = 8521  # The default
     print("Launching server with model : " + model_name)
