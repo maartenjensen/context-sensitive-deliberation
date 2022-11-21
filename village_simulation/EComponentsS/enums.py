@@ -13,6 +13,26 @@ class DcElement(Enum):
     OTHER = auto()
 
 
+class Criteria(Enum):
+    NONE = auto()
+    DEFAULT_HEURISTIC = auto()
+    URGENCY = auto()
+    UTILITY = auto()
+    PREFERENCE = auto()
+
+
+class MetaCriteria(Enum):
+    NONE = auto()
+    NARROW_ACTIVITIES = auto()
+    NARROW_GOALS = auto()
+    NARROW_PLANS = auto()
+    NARROW_ACTIONS = auto()
+    EXPAND_ACTIONS = auto()
+    EXPAND_PLANS = auto()
+    EXPAND_GOALS = auto()
+    EXPAND_ACTIVITIES = auto()
+
+
 class Activity(Enum):
     NONE = auto()
     WORK = auto()

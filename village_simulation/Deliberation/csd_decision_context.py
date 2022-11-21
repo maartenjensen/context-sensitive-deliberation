@@ -98,6 +98,12 @@ class DecisionContext:
         for activity in to_remove_activities:
             self.my_dc.remove_node(activity)
 
+    def is_empty(self) -> bool:
+        all_nodes = self.my_dc.nodes
+        if len(all_nodes) > 0:
+            return False
+        return True
+
     def get_dc_graph(self) -> Graph:
         return self.my_dc
 
