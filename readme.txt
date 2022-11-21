@@ -10,12 +10,3 @@ Model source code: https://github.com/projectmesa/mesa/blob/main/mesa/model.py
 Agent source code: https://github.com/projectmesa/mesa/blob/main/mesa/agent.py
 Building your own visualization component (from middle, read but not implemented)
 https://mesa.readthedocs.io/en/latest/tutorials/adv_tutorial.html
-
-
-# For next time look at:
-# https://github.com/maartenjensen/Social-simulation-fishery-village
-# For making a village
-
-# epstein_civil_violence model
-# C:\Users\SKIKK\OneDrive\work-umeå\ContextSensitiveSimulation\mesa-main\examples\epstein_civil_violence
-# For other usefull tips
