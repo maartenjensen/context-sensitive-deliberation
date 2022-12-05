@@ -1,7 +1,7 @@
 from math import floor
 
 from village_simulation.EComponentsS.cmp_time_schedule import ActivityInformation
-from village_simulation.Deliberation.actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
+from village_simulation.Deliberation.csd_actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
     ActEatTofu, \
     ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood, ActBuyCar
 from village_simulation.EntitiesCS.the_agent import Human

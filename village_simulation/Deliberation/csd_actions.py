@@ -6,6 +6,22 @@ from village_simulation.ECSystems.sys_position import SysPosition
 from village_simulation.ECSystems.sys_time_schedule import SysScheduleTime
 
 
+class DefaultActionsContainer:
+
+    def __init__(self):
+        self.actNone = ActNone()
+        self.actSleep = ActSleep()
+        self.actEatBeef = ActEatBeef()
+        self.actEatChicken = ActEatChicken()
+        self.actEatTofu = ActEatTofu()
+        self.actWork = ActWork()
+        self.actBuyFood = ActBuyFood(6, 6, 6)
+        self.actRelax = ActRelax()
+        self.actFootballGoalie = ActFootballGoalie()
+        self.actFootballTeamplayer = ActFootballTeamplayer()
+        self.actFootballSeriousPlayer = ActFootballSeriousPlayer()
+
+
 class Action:
 
     def __init__(self, steps_active=0):
@@ -28,6 +44,7 @@ class Action:
     def to_string(self) -> str:
         return self.__class__.__name__
 
+
 class ActNone(Action):
 
     def check_preconditions(self, agent: Human) -> bool:
@@ -47,7 +64,7 @@ class ActRelax(Action):
         return True  # agent.position.at_home(), simplification, traveling is implicit
 
     def execute_action(self, agent: Human) -> bool:
-        if not agent.position.at_home(): # Simplified because travel is implicit
+        if not agent.position.at_home():  # Simplified because travel is implicit
             print("The agent moved home")
             SysPosition.move_to_house(agent.position)
         print("The agent just relaxed")
@@ -62,7 +79,7 @@ class ActSleep(Action):
         return True  # agent.position.at_home(), simplification, traveling is implicit
 
     def execute_action(self, agent: Human) -> bool:
-        if not agent.position.at_home(): # Simplified because travel is implicit
+        if not agent.position.at_home():  # Simplified because travel is implicit
             print("The agent moved home")
             SysPosition.move_to_house(agent.position)
         print("The agent slept")
@@ -79,7 +96,7 @@ class ActWork(Action):
         return True  # agent.position.at_work(), simplified because travel is implicit
 
     def execute_action(self, agent: Human) -> bool:
-        if not agent.position.at_work(): # Simplified because travel is implicit
+        if not agent.position.at_work():  # Simplified because travel is implicit
             print("The agent moved to work")
             SysPosition.move_to_office(agent.position)
         print("The agent worked")
@@ -235,7 +252,7 @@ class ActBuyFood(Action):
     def check_preconditions(self, agent: Human) -> bool:
 
         print("Check whether the agent is at the shop and has enough money")
-        #if not agent.position.at_shop(): # Simplified travelling
+        # if not agent.position.at_shop(): # Simplified travelling
         #    print("Agent not at the shop")
         #    return False
         return agent.economy.money >= self.get_food_cost()

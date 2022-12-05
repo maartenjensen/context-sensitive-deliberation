@@ -1,7 +1,7 @@
 from village_simulation.Common.sim_utils import SimUtils
-from village_simulation.Deliberation.actions import ActNone, ActSleep, ActEatBeef, ActEatChicken, ActEatTofu, ActWork, \
+from village_simulation.Deliberation.csd_actions import ActNone, ActSleep, ActEatBeef, ActEatChicken, ActEatTofu, ActWork, \
     Action, ActBuyFood, ActRelax, ActFootballGoalie, ActFootballTeamplayer, ActFootballSeriousPlayer
-from village_simulation.Deliberation.csd_decision_context import DecisionContext, Urgency, Utility
+from village_simulation.Deliberation.csd_decision_context_graph import DecisionContext, NodeUrgency, NodeUtility
 from village_simulation.EComponentsS.enums import Activity, Goal, DefaultFood, DayType
 from village_simulation.EntitiesCS.the_agent import Human
 
@@ -218,42 +218,42 @@ class Deliberator:
 
         for action_node in self.dc.get_all_nodes_of_type(Action):
             if action_node in failed_actions:
-                self.dc.add_node_and_edge(Utility(-1000), action_node)
+                self.dc.add_node_and_edge(NodeUtility(-1000), action_node)
             elif action_node == self.actEatChicken:
-                self.dc.add_node_and_edge(Utility(agent.food.ut_chicken), action_node)
+                self.dc.add_node_and_edge(NodeUtility(agent.food.ut_chicken), action_node)
             elif action_node == self.actEatBeef:
-                self.dc.add_node_and_edge(Utility(agent.food.ut_beef), action_node)
+                self.dc.add_node_and_edge(NodeUtility(agent.food.ut_beef), action_node)
             elif action_node == self.actEatTofu:
-                self.dc.add_node_and_edge(Utility(agent.food.ut_tofu), action_node)
+                self.dc.add_node_and_edge(NodeUtility(agent.food.ut_tofu), action_node)
             elif action_node == self.actFootballSeriousPlayer:
-                self.dc.add_node_and_edge(Utility(agent.football.football_serious), action_node)
+                self.dc.add_node_and_edge(NodeUtility(agent.football.football_serious), action_node)
             elif action_node == self.actFootballTeamplayer:
-                self.dc.add_node_and_edge(Utility(agent.football.football_teamplayer), action_node)
+                self.dc.add_node_and_edge(NodeUtility(agent.football.football_teamplayer), action_node)
             elif action_node == self.actFootballGoalie:
-                self.dc.add_node_and_edge(Utility(agent.football.football_goalie), action_node)
+                self.dc.add_node_and_edge(NodeUtility(agent.football.football_goalie), action_node)
 
     def set_urgency_of_activities(self, agent: Human):
 
         for activity_node in self.dc.get_all_nodes_of_type(Activity):
             if activity_node == Activity.SLEEP:
-                self.dc.add_node_and_edge(Urgency(agent.needs.sleep), activity_node)
+                self.dc.add_node_and_edge(NodeUrgency(agent.needs.sleep), activity_node)
             elif activity_node == Activity.EAT:
-                self.dc.add_node_and_edge(Urgency(agent.needs.hunger), activity_node)
+                self.dc.add_node_and_edge(NodeUrgency(agent.needs.hunger), activity_node)
             elif activity_node == Activity.WORK:
-                self.dc.add_node_and_edge(Urgency(agent.needs.work), activity_node)
+                self.dc.add_node_and_edge(NodeUrgency(agent.needs.work), activity_node)
             elif activity_node == Activity.BUY_FOOD:
-                self.dc.add_node_and_edge(Urgency(agent.needs.food_safety), activity_node)
+                self.dc.add_node_and_edge(NodeUrgency(agent.needs.food_safety), activity_node)
             elif activity_node == Activity.LEISURE:
-                self.dc.add_node_and_edge(Urgency(agent.needs.leisure), activity_node)
+                self.dc.add_node_and_edge(NodeUrgency(agent.needs.leisure), activity_node)
             elif activity_node == Activity.FOOTBALL:
-                self.dc.add_node_and_edge(Urgency(2), activity_node)  # Hardcoded high value since football is planned
+                self.dc.add_node_and_edge(NodeUrgency(2), activity_node)  # Hardcoded high value since football is planned
 
     def get_most_urgent_activities(self) -> []:
 
         highest = -1.0
         highest_object = None
-        for urgency_node in self.dc.get_all_nodes_of_type(Urgency):
-            if isinstance(urgency_node, Urgency):
+        for urgency_node in self.dc.get_all_nodes_of_type(NodeUrgency):
+            if isinstance(urgency_node, NodeUrgency):
                 if urgency_node.get_urgency_amount() > highest or highest_object is None:
                     highest = urgency_node.get_urgency_amount()
                     highest_object = urgency_node
@@ -267,13 +267,13 @@ class Deliberator:
     def get_ordered_on_utility_actions(self) -> []:
 
         ordered_actions = []
-        utility_nodes = self.dc.get_all_nodes_of_type(Utility)
+        utility_nodes = self.dc.get_all_nodes_of_type(NodeUtility)
         amount_of_actions = len(utility_nodes)
         while len(ordered_actions) < amount_of_actions:
             highest = -100000000.0
             highest_utilities = []
             for utility_node in utility_nodes:
-                if isinstance(utility_node, Utility):
+                if isinstance(utility_node, NodeUtility):
                     amount = utility_node.get_amount()
                     if amount > highest or utility_node is None:
                         highest = amount

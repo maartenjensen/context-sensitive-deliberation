@@ -1,7 +1,7 @@
 import networkx as nx
 from networkx import Graph
 
-from village_simulation.Deliberation.actions import Action, ActNone
+from village_simulation.Deliberation.csd_actions import Action, ActNone
 from village_simulation.EComponentsS.enums import Activity
 
 
@@ -123,9 +123,9 @@ class DecisionContext:
 
     def to_string_node(self, node) -> str:
 
-        if isinstance(node, Urgency):
+        if isinstance(node, NodeUrgency):
             return node.to_string()
-        elif isinstance(node, Utility):
+        elif isinstance(node, NodeUtility):
             return node.to_string()
         elif isinstance(node, Action):
             return node.to_string()
@@ -133,7 +133,7 @@ class DecisionContext:
             return str(node)
 
 
-class Urgency:
+class NodeUrgency:
 
     def __init__(self, urgency_amount: float):
         self.urgency_amount = urgency_amount
@@ -145,7 +145,7 @@ class Urgency:
         return "Urgency:" + "{:.2f}".format(self.urgency_amount)
 
 
-class Utility:
+class NodeUtility:
 
     def __init__(self, utility_amount: float):
         self.utility_amount = utility_amount
