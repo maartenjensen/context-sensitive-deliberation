@@ -1,9 +1,10 @@
 from village_simulation.Common.sim_utils import SimUtils
-from village_simulation.EComponentsS.enums import CarTypes, DefaultFood
-from village_simulation.EntitiesCS.the_agent import Human
+from village_simulation.DelibFramework.csd_actions import Action
 from village_simulation.ECSystems.sys_food import SysFood
 from village_simulation.ECSystems.sys_position import SysPosition
 from village_simulation.ECSystems.sys_time_schedule import SysScheduleTime
+from village_simulation.EComponentsS.simulation_enums import DefaultFood, CarTypes
+from village_simulation.EntitiesCS.the_agent import Human
 
 
 class DefaultActionsContainer:
@@ -20,29 +21,6 @@ class DefaultActionsContainer:
         self.actFootballGoalie = ActFootballGoalie()
         self.actFootballTeamplayer = ActFootballTeamplayer()
         self.actFootballSeriousPlayer = ActFootballSeriousPlayer()
-
-
-class Action:
-
-    def __init__(self, steps_active=0):
-        self.steps_active = steps_active
-
-    def check_preconditions(self, agent: Human) -> bool:
-        print("Preconditions checked and accepted")
-        return True
-
-    def execute_action(self, agent: Human) -> bool:
-        print("Executed action")
-        agent.deliberation.actions_list.append(self.to_string())
-        return True
-
-    def action_step(self, agent: Human):
-        self.steps_active -= 1
-        if self.steps_active == 0:
-            self.execute_action(agent)
-
-    def to_string(self) -> str:
-        return self.__class__.__name__
 
 
 class ActNone(Action):

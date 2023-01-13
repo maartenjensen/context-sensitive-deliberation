@@ -1,11 +1,11 @@
 from math import floor
 
 from village_simulation.EComponentsS.cmp_time_schedule import ActivityInformation
-from village_simulation.Deliberation.csd_actions import ActSleep, ActWork, ActChill, ActEatBeef, ActEatChicken, \
-    ActEatTofu, \
-    ActNone, Action, ActTravelToHome, ActTravelToWork, ActTravelToShop, ActBuyFood, ActBuyCar
+from village_simulation.DelibFramework.csd_actions import ActChill, Action
+from village_simulation.DelibCustom.Actions.csd_actions_custom import ActNone, ActSleep, ActWork, ActEatBeef, ActEatChicken, \
+    ActEatTofu, ActTravelToWork, ActTravelToHome, ActTravelToShop, ActBuyFood, ActBuyCar
 from village_simulation.EntitiesCS.the_agent import Human
-from village_simulation.EComponentsS.enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, \
+from village_simulation.EComponentsS.simulation_enums import Activity, Urgency, Origin, LocationEnum, DefaultFood, SocialGroups, \
     Goal, CarTypes
 from village_simulation.Common.sim_utils import SimUtils
 

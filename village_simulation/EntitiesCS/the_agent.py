@@ -1,7 +1,7 @@
 import mesa
 
 from village_simulation.EComponentsS.cmp_car import CmpCar
-from village_simulation.EComponentsS.cmp_deliberation import CmpDeliberation
+from village_simulation.EComponentsS.cmp_delib_vars import CmpDeliberation
 from village_simulation.EComponentsS.cmp_economy import CmpEconomy
 from village_simulation.EComponentsS.cmp_food import CmpFood
 from village_simulation.EComponentsS.cmp_football import CmpFootball
@@ -28,8 +28,8 @@ class HumanParent(mesa.Agent):
         self.needs = CmpNeeds()
         self.football = CmpFootball()
 
-        # Deliberation and context
-        self.schedule_time = CmpTimeSchedule()
+        # DelibFramework and context
+        #self.schedule_time = CmpTimeSchedule()
 
 
 class Human(HumanParent):
@@ -48,8 +48,8 @@ class Human(HumanParent):
         self.needs = CmpNeeds()
         self.football = CmpFootball()
 
-        # Deliberation and context
-        self.schedule_time = CmpTimeSchedule()
+        # DelibFramework and context
+        #self.schedule_time = CmpTimeSchedule()
 
         # Initialisation functions
         self.model.schedule.add(self)

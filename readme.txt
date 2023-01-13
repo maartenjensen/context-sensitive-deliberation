@@ -1,3 +1,25 @@
+#####################################################
+Overview of program
+-----------------------------------------------------
+
+Main: start simulation
+Server: grids and charts
+Portrayal: agent displaying
+Model parent: model variables
+Model: model variables, model monitor, model step
+Model params: default parameters/constants for the model
+Building: the buildings
+Common: SimUtils (reach the model)
+DelibCustom: deliberation of thea gent
+EntitiesCS: the agent with its components
+ECSystems: the systems that can manipulate components
+EComponentsS: the components that are manipulated by the systems
+
+#####################################
+Program goals: create new places for the agents to go to.
+
+
+#####################################################
 This is the readme of the context-sensitive python project.
 
 # Tutorials for pythin programming, git and tkinter

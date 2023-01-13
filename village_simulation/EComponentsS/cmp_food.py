@@ -1,4 +1,4 @@
-from village_simulation.EComponentsS.enums import DefaultFood
+from village_simulation.EComponentsS.simulation_enums import DefaultFood
 from village_simulation.Common.sim_utils import SimUtils
 
 

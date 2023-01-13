@@ -1,5 +1,5 @@
-from village_simulation.EComponentsS.cmp_deliberation import CmpDeliberation
-from village_simulation.EComponentsS.enums import Activity
+from village_simulation.EComponentsS.cmp_delib_vars import CmpDeliberation
+from village_simulation.EComponentsS.simulation_enums import Activity
 
 
 class SysDeliberation:

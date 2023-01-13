@@ -1,5 +1,5 @@
 from village_simulation.EComponentsS.cmp_position import CmpPosition
-from village_simulation.EComponentsS.enums import LocationEnum
+from village_simulation.EComponentsS.simulation_enums import LocationEnum
 from village_simulation.Common.sim_utils import SimUtils
 from village_simulation.Building.house import House
 from village_simulation.Building.office import Office

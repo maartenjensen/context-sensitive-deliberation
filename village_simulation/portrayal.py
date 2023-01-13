@@ -2,7 +2,7 @@ from mesa import Agent
 
 from village_simulation.EntitiesCS.the_agent import Human
 from village_simulation.Building.location import Location
-from village_simulation.Model.params import Constants
+from village_simulation.Model.model_params import Constants
 
 
 def agent_portrayal(agent: Agent):

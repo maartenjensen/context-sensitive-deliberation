@@ -1,8 +1,10 @@
 from village_simulation.Common.sim_utils import SimUtils
-from village_simulation.Deliberation.csd_actions import ActNone, ActSleep, ActEatBeef, ActEatChicken, ActEatTofu, ActWork, \
-    Action, ActBuyFood, ActRelax, ActFootballGoalie, ActFootballTeamplayer, ActFootballSeriousPlayer
-from village_simulation.Deliberation.csd_decision_context_graph import DecisionContext, NodeUrgency, NodeUtility
-from village_simulation.EComponentsS.enums import Activity, Goal, DefaultFood, DayType
+from village_simulation.DelibFramework.csd_actions import Action
+from village_simulation.DelibCustom.Actions.csd_actions_custom import ActNone, ActRelax, ActSleep, ActWork, ActEatBeef, \
+    ActEatChicken, ActEatTofu, ActBuyFood, ActFootballGoalie, ActFootballTeamplayer, ActFootballSeriousPlayer
+from village_simulation.DelibFramework.csd_decision_context_graph import DecisionContext
+from village_simulation.DelibCustom.csd_decision_context_nodes_custom import NodeUrgency, NodeUtility
+from village_simulation.EComponentsS.simulation_enums import Activity, Goal, DefaultFood, DayType
 from village_simulation.EntitiesCS.the_agent import Human
 
 

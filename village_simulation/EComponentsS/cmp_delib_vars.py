@@ -1,4 +1,4 @@
-from village_simulation.EComponentsS.enums import Activity
+from village_simulation.EComponentsS.simulation_enums import Activity
 
 
 class CmpDeliberation:

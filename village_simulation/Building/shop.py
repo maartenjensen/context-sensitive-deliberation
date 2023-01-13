@@ -1,14 +1,12 @@
 from village_simulation.Building.location import Location
-from village_simulation.Model.params import Constants
+from village_simulation.Model.model_params import Constants
 
 
 class Shop(Location):
 
-    def __init__(self, unique_id, model, pos, neighborhood):
-        super().__init__(unique_id, model, pos, (5, 5), '#badbc6', Constants.layer_buildings)
+    def __init__(self, unique_id, model, pos):
+        super().__init__(unique_id, model, pos, (7, 3), '#badbc6', Constants.layer_buildings)
         print("Added a shop " + str(unique_id))
-
-        self.neighborhood = neighborhood
 
         self.beef = 100
         self.chicken = 100
@@ -20,6 +18,7 @@ class Shop(Location):
         self.tofu += 1
 
     def to_str(self):
-        info = "ID:" + str(self.unique_id) + ", \n"
-        info += "B:" + str(self.beef) + ",C:" + str(self.chicken) + ",T:" + str(self.tofu)
+        info = "Shop " + str(self.unique_id) + ", \n"
+        # Not necessary, can open up again when not having food in a shop becomes relevant.
+        # info += "B:" + str(self.beef) + ",C:" + str(self.chicken) + ",T:" + str(self.tofu)
         return info

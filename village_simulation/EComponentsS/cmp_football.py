@@ -1,4 +1,4 @@
-from village_simulation.EComponentsS.enums import Goal
+from village_simulation.EComponentsS.simulation_enums import Goal
 
 
 class CmpFootball:

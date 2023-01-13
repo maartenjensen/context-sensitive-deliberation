@@ -2,15 +2,19 @@ import math
 
 import mesa
 
-from village_simulation.Deliberation.csd_deliberator import Deliberator
+from village_simulation.DelibFramework.csd_deliberator import Deliberator
 from village_simulation.EntitiesCS.the_agent import Human
-from village_simulation.EComponentsS.enums import Days, DayType
-from village_simulation.ECSystems.sys_deliberation import SysDeliberation
+from village_simulation.EComponentsS.simulation_enums import Days, DayType
+from village_simulation.ECSystems.sys_delib_vars import SysDeliberation
 from village_simulation.ECSystems.sys_needs import SysNeeds
 from village_simulation.Model.model_parent import ParentModel
 from village_simulation.Common.sim_utils import SimUtils
-from village_simulation.Model.model_builder import VillageBuilder
+from village_simulation.Model.world_builder import VillageBuilder
 
+
+#####################################################
+# Compute functions for data gathering
+#####################################################
 
 def compute_avg_food(model):
     agent_foods = 0
@@ -56,23 +60,25 @@ def compute_delib_cost_a3(model):
     return 0
 
 
+#####################################################
+# Shopping model class
+#####################################################
 class ShoppingModel(ParentModel):
     """A model with some agents"""
 
-    def __init__(
-            self,
-            world_cell_px,
-            world_w_cell,
-            world_h_cell,
-            n_agents,
-            n_houses,
-            n_shops,
-            n_offices,
-            n_neighborhoods,
-            time_days,
-            time_hours_day,
-            time_steps_day
-    ):
+    def __init__(self,
+                 world_cell_px,
+                 world_w_cell,
+                 world_h_cell,
+                 n_agents,
+                 n_houses,
+                 n_shops,
+                 n_offices,
+                 n_neighborhoods,
+                 time_days,
+                 time_hours_day,
+                 time_steps_day):
+
         # Initialize model settings
         super().__init__()
 
@@ -96,16 +102,16 @@ class ShoppingModel(ParentModel):
         self.running = True
 
         village_builder = VillageBuilder()
-        village_builder.build_buildings(self.n_houses, self.n_shops, self.n_offices, self.n_neighborhoods)
-        village_builder.spawn_agents(self.num_agents)
+        village_builder.build_buildings(n_houses, n_shops, n_offices)
+        village_builder.spawn_agents(n_agents)
         village_builder.make_individual_changes_to_agents()
         village_builder.print_humans()
 
         self.datacollector = mesa.DataCollector(model_reporters={"Avg food": compute_avg_food,
-                                                                 "Average Deliberation Cost": compute_avg_delib_cost,
-                                                                 "Agent 1 Deliberation Cost": compute_delib_cost_a1,
-                                                                 "Agent 2 Deliberation Cost": compute_delib_cost_a2,
-                                                                 "Agent 3 Deliberation Cost": compute_delib_cost_a3},
+                                                                 "Average DelibFramework Cost": compute_avg_delib_cost,
+                                                                 "Agent 1 DelibFramework Cost": compute_delib_cost_a1,
+                                                                 "Agent 2 DelibFramework Cost": compute_delib_cost_a2,
+                                                                 "Agent 3 DelibFramework Cost": compute_delib_cost_a3},
                                                 agent_reporters={"Money": lambda a: getattr(a, "money", None),
                                                                  "Food": lambda a: getattr(a, "beef", None)})
 
@@ -131,14 +137,16 @@ class ShoppingModel(ParentModel):
 
             if isinstance(agent, Human):
                 print("Updating needs " + str(agent.unique_id))
-                SysNeeds.update_needs(agent.needs, agent.economy, agent.food, self.get_time_day(), self.time_steps_day)
+                SysNeeds.update_needs(agent.needs, agent.economy, agent.food, self.get_time_day(),
+                                      self.time_steps_day)
 
         for agent in self.schedule.agent_buffer(shuffled=True):
 
             if isinstance(agent, Human):
                 print("#####################################")
                 print("Agent " + str(agent.unique_id) + " is deliberating")
-                deliberator.deliberate(agent)  # the deliberator performs an action for the agent
+                print("-------------------------------------")
+                # deliberator.deliberate(agent)  # the deliberator performs an action for the agent
                 agent.deliberation.print()
 
         print("#####################################")

@@ -1,4 +1,4 @@
-from village_simulation.EComponentsS.enums import LocationEnum, Activity, DefaultFood
+from village_simulation.EComponentsS.simulation_enums import LocationEnum, Activity, DefaultFood
 
 
 class ActivityInformation:

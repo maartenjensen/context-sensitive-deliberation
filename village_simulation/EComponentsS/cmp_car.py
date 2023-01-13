@@ -1,4 +1,4 @@
-from village_simulation.EComponentsS.enums import CarTypes
+from village_simulation.EComponentsS.simulation_enums import CarTypes
 
 
 class CmpCar:

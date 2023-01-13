@@ -1,6 +1,6 @@
 import mesa
 
-from village_simulation.EComponentsS.enums import Days, DayType
+from village_simulation.EComponentsS.simulation_enums import Days, DayType
 
 
 class ParentModel(mesa.Model):

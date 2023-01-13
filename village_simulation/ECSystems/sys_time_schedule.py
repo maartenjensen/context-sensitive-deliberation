@@ -1,5 +1,5 @@
 from village_simulation.EComponentsS.cmp_time_schedule import CmpTimeSchedule, ActivityInformation
-from village_simulation.EComponentsS.enums import Activity, LocationEnum, DefaultFood
+from village_simulation.EComponentsS.simulation_enums import Activity, LocationEnum, DefaultFood
 
 " The systems should become static "
 

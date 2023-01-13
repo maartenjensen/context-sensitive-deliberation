@@ -1,6 +1,6 @@
 from village_simulation.Building.location import Location
 from village_simulation.Model.model_parent import ParentModel
-from village_simulation.Model.params import Constants
+from village_simulation.Model.model_params import Constants
 
 
 class TimeIndicator(Location):

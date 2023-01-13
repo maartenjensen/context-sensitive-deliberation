@@ -1,4 +1,4 @@
-from village_simulation.EComponentsS.enums import SocialGroups
+from village_simulation.EComponentsS.simulation_enums import SocialGroups
 from village_simulation.Common.sim_utils import SimUtils
 
 
