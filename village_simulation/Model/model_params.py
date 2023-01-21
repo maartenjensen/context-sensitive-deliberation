@@ -32,7 +32,7 @@ class Param:
         world_w_cell=37,
         world_h_cell=15,
 
-        n_agents=12,
+        n_agents=1,
         n_houses=8,
         n_shops=1,
         n_offices=1,
@@ -40,5 +40,5 @@ class Param:
 
         time_days=7,
         time_hours_day=24,
-        time_steps_day=12
+        time_steps_day=6
     )
