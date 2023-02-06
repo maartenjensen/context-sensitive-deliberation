@@ -1,4 +1,8 @@
 #####################################################
+ECS, I can use this by letting the systems go through all buildings and agents. To chck if it exists.
+These are the only types of entities there are. The advantage of ECS is still easy access and adaptability.
+
+#####################################################
 Overview of program
 -----------------------------------------------------
 
